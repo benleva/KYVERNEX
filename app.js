@@ -38,77 +38,62 @@ function localAnalyze(text) {
   let unsupported = '0';
   const trace = [];
 
-  if (!clean) {
-    return { acts: ['QUESTION'], status: 'INVALID INPUT', css: 'bad', score: 0, context: 'MISSING', contract: 'INVALID', unsupported: '0', trace: ['Input assente: pipeline interrotta.'] };
-  }
-
+  if (!clean) return { acts: ['QUESTION'], status: 'INVALID INPUT', css: 'bad', score: 0, context: 'MISSING', contract: 'INVALID', unsupported: '0', trace: ['Input assente: pipeline interrotta.'] };
   trace.push('Input preservato e normalizzato.');
   if (hasImplicit) {
-    context = 'MISSING';
-    contract = 'PARTIAL';
-    status = 'CLARIFICATION REQUIRED';
-    css = 'warn';
-    score = 58;
+    context = 'MISSING'; contract = 'PARTIAL'; status = 'CLARIFICATION REQUIRED'; css = 'warn'; score = 58;
     trace.push('Riferimento implicito rilevato.');
-    trace.push('Nessuna fonte canonica collegata nel browser.');
   }
   if (mentionsObject && !/\b(incolla|seguente|qui sotto)\b/i.test(clean)) {
-    contract = 'PARTIAL';
-    status = status === 'CLARIFICATION REQUIRED' ? status : 'OBJECT REQUIRED';
-    css = 'warn';
-    score = Math.min(score, 72);
+    contract = 'PARTIAL'; status = status === 'CLARIFICATION REQUIRED' ? status : 'OBJECT REQUIRED'; css = 'warn'; score = Math.min(score, 72);
     trace.push('Oggetto documentale citato ma non disponibile.');
   }
   if (isAdversarial) {
-    status = 'REJECTED';
-    css = 'bad';
-    score = 18;
-    contract = 'REFUSED';
-    unsupported = 'BLOCKED';
+    status = 'REJECTED'; css = 'bad'; score = 18; contract = 'REFUSED'; unsupported = 'BLOCKED';
     trace.push('Richiesta di conclusione non supportata rilevata.');
   }
   if (!acts.length && !hasImplicit && !isAdversarial) {
-    contract = 'PARTIAL';
-    status = 'COGNITIVE ACT UNKNOWN';
-    css = 'warn';
-    score = 45;
+    contract = 'PARTIAL'; status = 'COGNITIVE ACT UNKNOWN'; css = 'warn'; score = 45;
     trace.push('Atto cognitivo non classificato.');
   }
   return { acts: acts.length ? acts : ['QUESTION'], status, css, score, context, contract, unsupported, trace };
 }
 
 function apiResult(payload) {
+  const contract = payload.contract || {};
   const translation = payload.translation || {};
   const validation = payload.validation || {};
   const kernel = payload.kernel || {};
-  const valid = validation.valid === true;
+  const executable = contract.executable === true;
   const completed = kernel.status === 'COMPLETED';
-  const status = completed ? 'COMPLETED' : (kernel.status || translation.status || 'UNKNOWN');
-  const css = completed && valid ? 'good' : (status.includes('REJECT') || status.includes('ERROR') ? 'bad' : 'warn');
-  const unknowns = translation.unknowns || [];
-  const ambiguities = translation.ambiguities || [];
-  const score = completed && valid ? 100 : Math.max(20, 100 - ((unknowns.length + ambiguities.length) * 15) - ((kernel.errors || []).length * 20));
+  const status = contract.status && contract.status !== 'READY' ? contract.status : (completed ? 'COMPLETED' : (kernel.status || translation.status || 'UNKNOWN'));
+  const css = completed && executable ? 'good' : (status.includes('BLOCK') || status.includes('REJECT') || status.includes('MISSING') ? 'bad' : 'warn');
+  const missingCount = (contract.missing_objects || []).length + (contract.missing_memory || []).length + (contract.missing_capabilities || []).length + (contract.ambiguities || []).length;
+  const score = completed && executable ? 100 : Math.max(20, 100 - (missingCount * 15) - ((kernel.errors || []).length * 10));
   const trace = [];
 
   if (payload.analysis_id) trace.push(`Analysis ID: ${payload.analysis_id}`);
   if (payload.fingerprint) trace.push(`Fingerprint: ${payload.fingerprint}`);
   if (payload.created_at) trace.push(`Created: ${payload.created_at}`);
   if (typeof payload.duration_ms === 'number') trace.push(`Duration: ${payload.duration_ms} ms`);
+  if (contract.goal) trace.push(`Goal: ${contract.goal}`);
+  (contract.trace || []).forEach(item => trace.push(item));
+  if (contract.reason) trace.push(`Reason: ${contract.reason}`);
+  (payload.timeline || []).forEach(item => trace.push(`${String(item.step).padStart(2, '0')} · ${item.event} · ${item.code ? `${item.code} · ` : ''}${item.status}`));
+  (kernel.trace || []).forEach(item => trace.push(typeof item === 'string' ? item : JSON.stringify(item)));
 
-  (payload.timeline || []).forEach(item => {
-    trace.push(`${String(item.step).padStart(2, '0')} · ${item.event} · ${item.status}`);
-  });
-  (kernel.trace || []).forEach(item => {
-    trace.push(typeof item === 'string' ? item : JSON.stringify(item));
-  });
+  let context = 'BOUND / NOT REQUIRED';
+  if ((contract.missing_memory || []).length) context = 'MEMORY MISSING';
+  else if ((contract.missing_objects || []).length) context = 'OBJECT MISSING';
+  else if ((contract.ambiguities || []).length) context = 'AMBIGUOUS';
 
   return {
     acts: translation.acts || ['QUESTION'],
     status,
     css,
     score,
-    context: ambiguities.length ? 'AMBIGUOUS' : (unknowns.length ? 'MISSING' : 'BOUND/NOT REQUIRED'),
-    contract: translation.status || (valid ? 'VALID' : 'INVALID'),
+    context,
+    contract: contract.code ? `${contract.code} · ${contract.status}` : (translation.status || 'UNKNOWN'),
     unsupported: (kernel.errors || []).length,
     trace: trace.length ? trace : ['Nessuna traccia restituita.'],
   };
@@ -135,10 +120,7 @@ async function validate() {
   validateBtn.disabled = true;
   validateBtn.textContent = API_URL ? 'VALIDATING…' : 'ANALYZING…';
   try {
-    if (!API_URL) {
-      render(localAnalyze(promptEl.value));
-      return;
-    }
+    if (!API_URL) { render(localAnalyze(promptEl.value)); return; }
     const response = await fetch(`${API_URL}/validate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -164,7 +146,7 @@ document.querySelectorAll('.example').forEach(button => button.addEventListener(
   validate();
 }));
 document.querySelector('#copyCommand').addEventListener('click', async event => {
-  const command = 'git clone https://github.com/benleva/ARGUS.git\ncd ARGUS/engine-reference\npython -m pip install -e " .[test]"\nuvicorn argus_engine.api:app --host 0.0.0.0 --port 8000'.replace('" .[test]"', '".[test]"');
+  const command = 'git clone https://github.com/benleva/ARGUS.git\ncd ARGUS/engine-reference\npython -m pip install -e ".[test]"\nuvicorn argus_engine.api:app --host 0.0.0.0 --port 8000';
   try {
     await navigator.clipboard.writeText(command);
     event.currentTarget.textContent = 'COPIATO';
