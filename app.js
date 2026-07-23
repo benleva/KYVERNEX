@@ -88,7 +88,20 @@ function apiResult(payload) {
   const unknowns = translation.unknowns || [];
   const ambiguities = translation.ambiguities || [];
   const score = completed && valid ? 100 : Math.max(20, 100 - ((unknowns.length + ambiguities.length) * 15) - ((kernel.errors || []).length * 20));
-  const trace = (kernel.trace || []).map(item => typeof item === 'string' ? item : JSON.stringify(item));
+  const trace = [];
+
+  if (payload.analysis_id) trace.push(`Analysis ID: ${payload.analysis_id}`);
+  if (payload.fingerprint) trace.push(`Fingerprint: ${payload.fingerprint}`);
+  if (payload.created_at) trace.push(`Created: ${payload.created_at}`);
+  if (typeof payload.duration_ms === 'number') trace.push(`Duration: ${payload.duration_ms} ms`);
+
+  (payload.timeline || []).forEach(item => {
+    trace.push(`${String(item.step).padStart(2, '0')} · ${item.event} · ${item.status}`);
+  });
+  (kernel.trace || []).forEach(item => {
+    trace.push(typeof item === 'string' ? item : JSON.stringify(item));
+  });
+
   return {
     acts: translation.acts || ['QUESTION'],
     status,
@@ -151,7 +164,7 @@ document.querySelectorAll('.example').forEach(button => button.addEventListener(
   validate();
 }));
 document.querySelector('#copyCommand').addEventListener('click', async event => {
-  const command = 'git clone https://github.com/benleva/ARGUS.git\ncd ARGUS/engine-reference\npython -m pip install -e ".[test]"\nuvicorn argus_engine.api:app --host 0.0.0.0 --port 8000';
+  const command = 'git clone https://github.com/benleva/ARGUS.git\ncd ARGUS/engine-reference\npython -m pip install -e " .[test]"\nuvicorn argus_engine.api:app --host 0.0.0.0 --port 8000'.replace('" .[test]"', '".[test]"');
   try {
     await navigator.clipboard.writeText(command);
     event.currentTarget.textContent = 'COPIATO';
