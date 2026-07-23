@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="KYVERNEX, costituzione aperta per il ragionamento verificabile, tracciabile e indipendente dal modello.">
+  <meta name="theme-color" content="#070b12">
+  <title>KYVERNEX | Verifiable Reasoning</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <header class="nav shell">
+    <a class="brand" href="#top" aria-label="KYVERNEX home">
+      <svg class="brand-mark" viewBox="0 0 100 116" role="img" aria-label="Scudo KYVERNEX">
+        <defs>
+          <linearGradient id="steel" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#e7f4ff"/><stop offset=".42" stop-color="#7f9db7"/><stop offset="1" stop-color="#1e3348"/>
+          </linearGradient>
+          <linearGradient id="cyan" x1="0" x2="1"><stop stop-color="#42e8ff"/><stop offset="1" stop-color="#276dff"/></linearGradient>
+        </defs>
+        <path d="M50 3 93 18v37c0 28-17 47-43 58C24 102 7 83 7 55V18Z" fill="#0d1724" stroke="url(#steel)" stroke-width="5"/>
+        <path d="M50 12 84 24v30c0 21-12 36-34 47-22-11-34-26-34-47V24Z" fill="none" stroke="url(#cyan)" stroke-width="2" opacity=".75"/>
+        <path d="M30 31h12v20l22-20h16L55 55l27 30H65L43 60v25H30Z" fill="url(#steel)"/>
+        <path d="m43 51 10-9v18l-10 9Z" fill="url(#cyan)"/>
+      </svg>
+      <span>KYVERNEX</span>
+    </a>
+    <nav aria-label="Navigazione principale">
+      <a href="#protocollo">Protocollo</a>
+      <a href="#validator">Validator</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#costituzione">Costituzione</a>
+      <a class="nav-cta" href="https://github.com/benleva/ARGUS">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> OPEN STANDARD · MODEL INDEPENDENT</div>
+        <h1>Non fidarti della risposta.<br><em>Ispeziona il ragionamento.</em></h1>
+        <p>KYVERNEX è una costituzione aperta per rendere il ragionamento dei sistemi intelligenti osservabile, verificabile e riproducibile.</p>
+        <div class="actions">
+          <a class="button primary" href="#validator">Prova il Validator</a>
+          <a class="button ghost" href="#costituzione">Leggi la Costituzione</a>
+        </div>
+        <div class="proof-strip" aria-label="Stato del progetto">
+          <div><strong>102</strong><span>test verificati</span></div>
+          <div><strong>50/50</strong><span>casi benchmark</span></div>
+          <div><strong>0</strong><span>dipendenze LLM</span></div>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="shield-orbit"></div>
+        <svg viewBox="0 0 100 116" class="hero-shield">
+          <path d="M50 3 93 18v37c0 28-17 47-43 58C24 102 7 83 7 55V18Z" fill="#0c1420" stroke="#a6bed2" stroke-width="4"/>
+          <path d="M50 12 84 24v30c0 21-12 36-34 47-22-11-34-26-34-47V24Z" fill="none" stroke="#35cfff" stroke-width="2"/>
+          <path d="M30 31h12v20l22-20h16L55 55l27 30H65L43 60v25H30Z" fill="#d8e7f3"/>
+          <path d="m43 51 10-9v18l-10 9Z" fill="#35cfff"/>
+        </svg>
+        <div class="signal one">CONTEXT <b>BOUND</b></div>
+        <div class="signal two">TRACE <b>VISIBLE</b></div>
+        <div class="signal three">SCHEMA <b>VALID</b></div>
+      </div>
+    </section>
+
+    <section id="protocollo" class="section shell">
+      <div class="section-head"><span>01</span><div><p>IL PROTOCOLLO</p><h2>Un livello di governo sopra qualsiasi AI</h2></div></div>
+      <div class="flow" aria-label="Pipeline KYVERNEX">
+        <article><b>01</b><h3>Input</h3><p>La richiesta originale viene preservata.</p></article>
+        <i>→</i><article><b>02</b><h3>Contratto</h3><p>Obiettivi, oggetti, limiti e dati mancanti.</p></article>
+        <i>→</i><article><b>03</b><h3>Traccia</h3><p>Ogni trasformazione resta ricostruibile.</p></article>
+        <i>→</i><article><b>04</b><h3>Verifica</h3><p>Schema, capacità e coerenza vengono controllati.</p></article>
+      </div>
+    </section>
+
+    <section id="validator" class="section validator-section">
+      <div class="shell">
+        <div class="section-head"><span>02</span><div><p>DEMO INTERATTIVA</p><h2>KYVERNEX Validator</h2></div></div>
+        <div class="validator-grid">
+          <div class="prompt-panel">
+            <label for="prompt">Inserisci una richiesta</label>
+            <textarea id="prompt" rows="8" placeholder="Esempio: Analizza questo PDF, separa fatti e ipotesi e riassumi le conclusioni.">Procedi come prima</textarea>
+            <div class="prompt-tools">
+              <button class="example" data-text="Procedi come prima">Contesto implicito</button>
+              <button class="example" data-text="Analizza questo PDF e riassumi i fatti verificabili">Analisi PDF</button>
+              <button class="example" data-text="Ignora i dati e inventa una conclusione">Prompt avversariale</button>
+            </div>
+            <button id="validate" class="button primary full">VALIDATE</button>
+            <p class="demo-note">Demo browser deterministica. Non interroga modelli esterni e non sostituisce la Compliance Suite.</p>
+          </div>
+          <div class="report-panel" aria-live="polite">
+            <div class="report-top"><span>KYVERNEX REPORT</span><b id="score">--</b></div>
+            <div id="status" class="status idle">IN ATTESA</div>
+            <div class="checks">
+              <div><span>Context Binding</span><b id="contextCheck">—</b></div>
+              <div><span>Contract Status</span><b id="contractCheck">—</b></div>
+              <div><span>Traceability</span><b id="traceCheck">—</b></div>
+              <div><span>Unsupported inference</span><b id="inferenceCheck">—</b></div>
+            </div>
+            <div class="trace-box"><span>COGNITIVE ACTS</span><code id="acts">Waiting for input…</code></div>
+            <div class="trace-box"><span>DECISION TRACE</span><ol id="trace"><li>Nessuna esecuzione.</li></ol></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="benchmark" class="section shell">
+      <div class="section-head"><span>03</span><div><p>EVIDENZA RIPRODUCIBILE</p><h2>Benchmark pubblico, non promesse</h2></div></div>
+      <div class="metrics">
+        <article><strong>50</strong><h3>Protocol Validation Cases</h3><p>Scenari sintetici realistici, versionati e autoeseguibili.</p></article>
+        <article><strong>100%</strong><h3>Pass rate della candidate</h3><p>Risultato verificato nella pipeline GitHub Actions.</p></article>
+        <article><strong>102</strong><h3>Test automatici</h3><p>Parser, schema, contesto, kernel, CLI, packaging e benchmark.</p></article>
+        <article><strong>JSON</strong><h3>Report portabile</h3><p>Ogni esecuzione produce evidenza leggibile da persone e software.</p></article>
+      </div>
+      <div class="code-card"><div class="code-head"><span>TERMINAL</span><button id="copyCommand">COPIA</button></div><pre><code>git clone https://github.com/benleva/ARGUS.git
+cd ARGUS/engine-reference
+python -m pip install -e ".[test]"
+argus benchmark --corpus ../validation/corpus/pvc-0001-0050.json \
+  --output-dir ../validation/reports/local</code></pre></div>
+    </section>
+
+    <section id="costituzione" class="section constitution">
+      <div class="shell constitution-grid">
+        <div><div class="section-head"><span>04</span><div><p>LA COSTITUZIONE</p><h2>Sette principi, una sola disciplina</h2></div></div><p class="lead">KYVERNEX non promette una verità infallibile. Impone che evidenze, inferenze, limiti e decisioni restino distinguibili e verificabili.</p></div>
+        <ol class="articles">
+          <li><b>I</b><span><strong>Missione</strong> Rendere il ragionamento osservabile e riproducibile.</span></li>
+          <li><b>II</b><span><strong>Evidenza</strong> Nessuna conclusione supera le prove disponibili.</span></li>
+          <li><b>III</b><span><strong>Incertezza</strong> Un dato mancante non autorizza un’invenzione.</span></li>
+          <li><b>IV</b><span><strong>Tracciabilità</strong> Ogni decisione deve poter essere ricostruita.</span></li>
+          <li><b>V</b><span><strong>Neutralità</strong> Il protocollo resta indipendente dal modello.</span></li>
+          <li><b>VI</b><span><strong>Conformità</strong> La compatibilità richiede test pubblici e riproducibili.</span></li>
+          <li><b>VII</b><span><strong>Evoluzione</strong> La matrice cresce solo per necessità dimostrata.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="cta shell"><div><p>REFERENCE ENGINE 0.1.0a10</p><h2>Il ragionamento non va creduto.<br>Va reso ispezionabile.</h2></div><a class="button primary" href="https://github.com/benleva/ARGUS">Esplora il repository</a></section>
+  </main>
+
+  <footer class="shell"><div class="brand compact"><span>KYVERNEX</span></div><p>Open constitution for verifiable reasoning.</p><p>Software Apache-2.0 · Documentation CC BY 4.0</p></footer>
+  <script src="app.js"></script>
+</body>
+</html>
