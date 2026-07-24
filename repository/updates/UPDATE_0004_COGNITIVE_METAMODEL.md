@@ -43,10 +43,17 @@ Nessuna nuova categoria cognitiva potrà essere considerata consolidata senza:
 
 ## 4. Interdipendenze aggiornate
 
-- `repository/spec/AIL_SPEC_v0.1_DRAFT.md` → versione 0.2 Draft;
-- `repository/spec/MEMORY_ARCHITECTURE_v0.1_DRAFT.md` → versione 0.2 Draft;
-- `repository/spec/CORE_SPEC_v0.1_DRAFT.md` → versione 0.4 Draft;
-- `repository/spec/CCU_SPEC_v0.1_DRAFT.md` → versione 0.3 Draft.
+Aggiornamenti diretti:
+
+- `repository/spec/AIL_SPEC_v0.1_DRAFT.md` → contenuto portato a versione 0.2 Draft;
+- `repository/spec/MEMORY_ARCHITECTURE_v0.1_DRAFT.md` → contenuto portato a versione 0.2 Draft.
+
+Addendum vincolanti creati in attesa della prossima revisione completa dei documenti principali:
+
+- `repository/spec/CORE_METAMODEL_ADDENDUM_v0.1_DRAFT.md`;
+- `repository/spec/CCU_METAMODEL_ADDENDUM_v0.1_DRAFT.md`.
+
+Gli addendum non sostituiscono CORE_SPEC o CCU_SPEC. Registrano esclusivamente l'interdipendenza con il Meta-Modello fino alla loro integrazione nelle revisioni successive.
 
 ## 5. Vincoli
 
