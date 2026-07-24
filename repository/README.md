@@ -18,9 +18,11 @@ Non esiste un componente separato denominato KYRNEXEN.
 
 L'AI Adapter è il confine tecnico tra KYVERNEX e ciascuna AI ospite. Non è un secondo kernel e non sostituisce AET, AIL o i moduli CORE.
 
+La Plugin API definisce il contratto logico con cui una piattaforma AI può inizializzare una sessione, dichiarare capacità e limiti, inviare richieste, ricevere esiti di validazione e recuperare i riferimenti di audit disponibili. La tecnologia di trasporto concreta resta da definire.
+
 Flusso di riferimento:
 
-`AI ospite o sorgente esterna → AI Adapter → CORE-001 → AET → AIL → CORE KYVERNEX → Validazione continua → CORE-008 → AI Adapter → AI ospite`
+`AI ospite o sorgente esterna → Plugin API → AI Adapter → CORE-001 → AET → AIL → CORE KYVERNEX → Validazione continua → CORE-008 → AI Adapter → Plugin API → AI ospite`
 
 L'AI Adapter deve dichiarare capacità, limiti e passaggi non osservabili. Una validazione parziale non può essere presentata come completa.
 
@@ -28,6 +30,7 @@ AET preserva l'input originale, ne registra origine e contesto, identifica le ca
 
 Specifiche di riferimento:
 
+- `repository/spec/PLUGIN_API_SPEC_v0.1_DRAFT.md`;
 - `repository/spec/AI_ADAPTER_SPEC_v0.1_DRAFT.md`;
 - `repository/spec/AET_SPEC_v0.1_DRAFT.md`.
 
@@ -54,4 +57,5 @@ Aggiornamenti di riferimento:
 
 - `repository/updates/UPDATE_0003_REPOSITORY_GOVERNANCE.md`;
 - `repository/updates/UPDATE_0005_AI_ADAPTER.md`;
-- `repository/updates/UPDATE_0006_AET_SPECIFICATION.md`.
+- `repository/updates/UPDATE_0006_AET_SPECIFICATION.md`;
+- `repository/updates/UPDATE_0007_PLUGIN_API.md`.
