@@ -6,4 +6,4 @@ Versione: 1.0 Alpha
 Stato: incompleto e aggiornabile
 Autore del progetto: Andrea Pernarcic
 
-La documentazione è suddivisa in quattro parti Markdown, ricavate dai 22 PDF consolidati. La cartella sarà aggiornata progressivamente con le specifiche mancanti.
+La documentazione consolidata dei 22 PDF è archiviata in tre parti Markdown. La cartella sarà aggiornata progressivamente con le specifiche mancanti.
