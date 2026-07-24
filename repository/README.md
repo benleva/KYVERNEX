@@ -41,6 +41,14 @@ La Dependency Graph è il riferimento ufficiale delle relazioni normative, strut
 
 Ogni nuova specifica o modifica interdipendente deve dichiarare il proprio impatto sulla mappa e aggiornarla quando introduce, elimina o modifica una relazione.
 
+## Roadmap di implementazione
+
+Il file `repository/IMPLEMENTATION_ROADMAP_v0.1_DRAFT.md` definisce l'ordine preliminare per trasformare le specifiche in un primo prototipo verificabile.
+
+La roadmap non dichiara ancora scelte definitive di linguaggio, framework, protocollo o piattaforma AI. Stabilisce invece le fasi minime: consolidamento delle specifiche, modello dati, AET, validazione, audit, CORE, Plugin API, AI Adapter, memoria, scenario end-to-end e test.
+
+Nessuna fase può essere presentata come completata senza codice, test, aggiornamento tecnico e collegamento alle specifiche applicate.
+
 ## Documentazione
 
 La documentazione consolidata dei 22 PDF è archiviata in tre parti Markdown. La cartella `spec` contiene le specifiche progressive e la cartella `updates` registra ogni decisione o modifica con impatto architetturale o documentale.
@@ -57,7 +65,8 @@ Ogni nuova funzione, testo tecnico o modifica interdipendente deve:
 4. aggiornare tutti i documenti direttamente coinvolti;
 5. mantenere tracciabilità, motivazione, versione e stato;
 6. distinguere elementi consolidati, proposte progettuali e TODO;
-7. aggiornare la Dependency Graph quando cambia una relazione tra componenti.
+7. aggiornare la Dependency Graph quando cambia una relazione tra componenti;
+8. aggiornare la Roadmap quando cambia l'ordine o il criterio di implementazione.
 
 Nessun nuovo oggetto cognitivo può essere trattato come consolidato senza registrazione nel `METAMODEL_SPEC`. Fino ad allora deve essere indicato come `PROPOSTO`.
 
@@ -67,4 +76,5 @@ Aggiornamenti di riferimento:
 - `repository/updates/UPDATE_0005_AI_ADAPTER.md`;
 - `repository/updates/UPDATE_0006_AET_SPECIFICATION.md`;
 - `repository/updates/UPDATE_0007_PLUGIN_API.md`;
-- `repository/updates/UPDATE_0008_DEPENDENCY_GRAPH.md`.
+- `repository/updates/UPDATE_0008_DEPENDENCY_GRAPH.md`;
+- `repository/updates/UPDATE_0009_IMPLEMENTATION_ROADMAP.md`.
