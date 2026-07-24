@@ -22,7 +22,7 @@ La Plugin API definisce il contratto logico con cui una piattaforma AI può iniz
 
 Flusso di riferimento:
 
-`AI ospite o sorgente esterna → Plugin API → AI Adapter → CORE-001 → AET → AIL → CORE KYVERNEX → Validazione continua → CORE-008 → AI Adapter → Plugin API → AI ospite`
+`AI ospite o sorgente esterna → Plugin API → AI Adapter → CORE-001 → AET → AIL → CORE KYVERNEX → Validazione continua → Memoria / Audit / Error Model → CORE-008 → AI Adapter → Plugin API → AI ospite`
 
 L'AI Adapter deve dichiarare capacità, limiti e passaggi non osservabili. Una validazione parziale non può essere presentata come completa.
 
@@ -32,7 +32,14 @@ Specifiche di riferimento:
 
 - `repository/spec/PLUGIN_API_SPEC_v0.1_DRAFT.md`;
 - `repository/spec/AI_ADAPTER_SPEC_v0.1_DRAFT.md`;
-- `repository/spec/AET_SPEC_v0.1_DRAFT.md`.
+- `repository/spec/AET_SPEC_v0.1_DRAFT.md`;
+- `repository/spec/DEPENDENCY_GRAPH_SPEC_v0.1_DRAFT.md`.
+
+## Mappa delle dipendenze
+
+La Dependency Graph è il riferimento ufficiale delle relazioni normative, strutturali, operative e di verifica tra i componenti del progetto.
+
+Ogni nuova specifica o modifica interdipendente deve dichiarare il proprio impatto sulla mappa e aggiornarla quando introduce, elimina o modifica una relazione.
 
 ## Documentazione
 
@@ -49,7 +56,8 @@ Ogni nuova funzione, testo tecnico o modifica interdipendente deve:
 3. dichiarare le dipendenze coinvolte;
 4. aggiornare tutti i documenti direttamente coinvolti;
 5. mantenere tracciabilità, motivazione, versione e stato;
-6. distinguere elementi consolidati, proposte progettuali e TODO.
+6. distinguere elementi consolidati, proposte progettuali e TODO;
+7. aggiornare la Dependency Graph quando cambia una relazione tra componenti.
 
 Nessun nuovo oggetto cognitivo può essere trattato come consolidato senza registrazione nel `METAMODEL_SPEC`. Fino ad allora deve essere indicato come `PROPOSTO`.
 
@@ -58,4 +66,5 @@ Aggiornamenti di riferimento:
 - `repository/updates/UPDATE_0003_REPOSITORY_GOVERNANCE.md`;
 - `repository/updates/UPDATE_0005_AI_ADAPTER.md`;
 - `repository/updates/UPDATE_0006_AET_SPECIFICATION.md`;
-- `repository/updates/UPDATE_0007_PLUGIN_API.md`.
+- `repository/updates/UPDATE_0007_PLUGIN_API.md`;
+- `repository/updates/UPDATE_0008_DEPENDENCY_GRAPH.md`.
