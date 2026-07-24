@@ -2,7 +2,7 @@
 
 Archivio di continuità del progetto MATRICE ARGUS / KYVERNEX.
 
-Versione: 1.0 Alpha
+Versione: 1.0 Alpha documentale
 Stato: incompleto e aggiornabile
 Autore del progetto: Andrea Pernarcic
 
@@ -33,7 +33,8 @@ Specifiche di riferimento:
 - `repository/spec/PLUGIN_API_SPEC_v0.1_DRAFT.md`;
 - `repository/spec/AI_ADAPTER_SPEC_v0.1_DRAFT.md`;
 - `repository/spec/AET_SPEC_v0.1_DRAFT.md`;
-- `repository/spec/DEPENDENCY_GRAPH_SPEC_v0.1_DRAFT.md`.
+- `repository/spec/DEPENDENCY_GRAPH_SPEC_v0.1_DRAFT.md`;
+- `repository/spec/CONFORMANCE_SPEC_v0.1_DRAFT.md`.
 
 ## Mappa delle dipendenze
 
@@ -45,13 +46,32 @@ Ogni nuova specifica o modifica interdipendente deve dichiarare il proprio impat
 
 Il file `repository/IMPLEMENTATION_ROADMAP_v0.1_DRAFT.md` definisce l'ordine preliminare per trasformare le specifiche in un primo prototipo verificabile.
 
-La roadmap non dichiara ancora scelte definitive di linguaggio, framework, protocollo o piattaforma AI. Stabilisce invece le fasi minime: consolidamento delle specifiche, modello dati, AET, validazione, audit, CORE, Plugin API, AI Adapter, memoria, scenario end-to-end e test.
+La roadmap non dichiara ancora scelte definitive di linguaggio, framework, protocollo o piattaforma AI. Stabilisce invece le fasi minime: consolidamento delle specifiche, modello dati, AET, validazione, audit, CORE, Plugin API, AI Adapter, memoria, scenario end-to-end, test e verifica di conformità.
 
-Nessuna fase può essere presentata come completata senza codice, test, aggiornamento tecnico e collegamento alle specifiche applicate.
+Nessuna fase può essere presentata come completata senza codice, test, aggiornamento tecnico, collegamento alle specifiche applicate ed evidenze di verifica.
+
+## Conformità
+
+La specifica `repository/spec/CONFORMANCE_SPEC_v0.1_DRAFT.md` definisce livelli ed esiti preliminari per verificare repository, dati, pipeline, validazione, audit e plugin.
+
+Gli esiti ammessi sono:
+
+- CONFORME;
+- CONFORME_CON_LIMITAZIONI;
+- NON_CONFORME;
+- NON_VERIFICABILE.
+
+La specifica è Draft e non autorizza ancora l'uso di dichiarazioni di certificazione.
+
+## Stato verificato prima del codice
+
+Il rapporto `repository/reports/REPOSITORY_VERIFICATION_2026-07-25.md` assegna al repository l'esito `CONFORME_CON_LIMITAZIONI` al Level 0 Draft.
+
+È possibile iniziare un `Reference Prototype 0.1`, ma non dichiarare il plugin completo o Alpha. Restano bloccanti per il gate Alpha la specifica Audit Trace, la Versioning Policy, gli schemi serializzabili e i test eseguibili.
 
 ## Documentazione
 
-La documentazione consolidata dei 22 PDF è archiviata in tre parti Markdown. La cartella `spec` contiene le specifiche progressive e la cartella `updates` registra ogni decisione o modifica con impatto architetturale o documentale.
+La documentazione consolidata dei 22 PDF è archiviata in tre parti Markdown. La cartella `spec` contiene le specifiche progressive, la cartella `updates` registra ogni decisione o modifica con impatto architetturale o documentale e la cartella `reports` conserva le verifiche formali.
 
 ## Governance
 
@@ -66,7 +86,8 @@ Ogni nuova funzione, testo tecnico o modifica interdipendente deve:
 5. mantenere tracciabilità, motivazione, versione e stato;
 6. distinguere elementi consolidati, proposte progettuali e TODO;
 7. aggiornare la Dependency Graph quando cambia una relazione tra componenti;
-8. aggiornare la Roadmap quando cambia l'ordine o il criterio di implementazione.
+8. aggiornare la Roadmap quando cambia l'ordine o il criterio di implementazione;
+9. produrre evidenze utilizzabili dalla Conformance Specification.
 
 Nessun nuovo oggetto cognitivo può essere trattato come consolidato senza registrazione nel `METAMODEL_SPEC`. Fino ad allora deve essere indicato come `PROPOSTO`.
 
@@ -77,4 +98,5 @@ Aggiornamenti di riferimento:
 - `repository/updates/UPDATE_0006_AET_SPECIFICATION.md`;
 - `repository/updates/UPDATE_0007_PLUGIN_API.md`;
 - `repository/updates/UPDATE_0008_DEPENDENCY_GRAPH.md`;
-- `repository/updates/UPDATE_0009_IMPLEMENTATION_ROADMAP.md`.
+- `repository/updates/UPDATE_0009_IMPLEMENTATION_ROADMAP.md`;
+- `repository/updates/UPDATE_0010_CONFORMANCE_SPEC.md`.
