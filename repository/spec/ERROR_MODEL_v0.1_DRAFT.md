@@ -1,10 +1,10 @@
-# ERROR_MODEL v0.1 DRAFT
+# ERROR_MODEL v0.2 DRAFT
 
 Stato: DRAFT
 
 ## Scopo
 
-Definire il modello preliminare degli errori della Matrice ARGUS e del kernel KYVERNEX, senza introdurre comportamenti non ancora consolidati.
+Definire il modello preliminare degli errori della Matrice ARGUS e del kernel-plugin KYVERNEX, senza introdurre comportamenti non ancora consolidati.
 
 ## Principi consolidati applicabili
 
@@ -14,6 +14,7 @@ Definire il modello preliminare degli errori della Matrice ARGUS e del kernel KY
 - Le trasformazioni non possono alterare i dati originali senza tracciamento.
 - Il kernel deve operare in modo coerente e riproducibile a parità di dati e condizioni.
 - Ogni modulo deve rispettare il Contratto Cognitivo Universale (CCU).
+- Ogni anomalia rilevata durante la validazione continua deve restare collegata al relativo record di validazione.
 
 ## Funzione del modello di errore
 
@@ -24,7 +25,9 @@ Il modello di errore deve consentire al sistema di:
 - preservare il dato originale;
 - registrare il percorso logico precedente all'errore;
 - impedire che un risultato non validato venga consolidato;
-- produrre una segnalazione verificabile.
+- produrre una segnalazione verificabile;
+- ricevere e classificare anomalie provenienti da CORE-005;
+- restituire a KYVERNEX informazioni utili alla decisione di prosecuzione, riserva, sospensione o blocco.
 
 ## Categorie preliminari
 
@@ -39,7 +42,9 @@ Le seguenti categorie derivano dalle lacune già individuate nella documentazion
 - risultato non verificabile;
 - incoerenza rispetto ad assiomi, regole o meta-regole;
 - errore di memoria o persistenza;
-- errore durante bootstrap, elaborazione, validazione o restituzione.
+- errore durante bootstrap, elaborazione, validazione o restituzione;
+- passaggio dell'AI ospite non osservabile;
+- validazione parziale o impossibile.
 
 Queste categorie non costituiscono ancora una tassonomia definitiva.
 
@@ -71,16 +76,30 @@ Tali stati sono elencati come necessità progettuali e non sono ancora normativi
 Una futura segnalazione di errore dovrà poter contenere almeno:
 
 - identificatore univoco;
+- identificatore della validazione collegata;
 - fase della pipeline;
 - modulo coinvolto;
 - dato o oggetto interessato;
 - regola o vincolo violato;
 - stato cognitivo precedente;
 - esito della validazione;
+- decisione operativa conseguente;
 - riferimento alla traccia di elaborazione;
 - versione del modulo o della specifica coinvolta.
 
-La sintassi concreta resta da definire in AIL e nel CCU.
+La sintassi concreta resta da definire in AIL, CCU e AUDIT_TRACE_SPEC.
+
+## Relazione con VALIDATION_PROTOCOL
+
+Il protocollo di validazione continua:
+
+1. rileva l'anomalia;
+2. produce un esito esplicito;
+3. trasmette l'anomalia al modello degli errori;
+4. collega errore e record di validazione;
+5. impedisce il consolidamento come valido finché non avviene una nuova validazione conforme.
+
+Il modello degli errori non sostituisce il protocollo di validazione: ne riceve e organizza gli esiti negativi o incerti.
 
 ## Vincoli
 
@@ -90,7 +109,8 @@ Un errore non deve:
 - essere trasformato in risultato valido senza una nuova validazione;
 - interrompere la tracciabilità;
 - nascondere la regola o il modulo che lo ha generato;
-- essere consolidato come informazione verificata.
+- essere consolidato come informazione verificata;
+- essere omesso quando deriva da un passaggio non osservabile dell'AI ospite.
 
 ## Dipendenze
 
@@ -101,6 +121,7 @@ Il modello di errore dipende da:
 - CORE_SPEC;
 - MEMORY_ARCHITECTURE;
 - VALIDATION_PROTOCOL;
+- futura AUDIT_TRACE_SPEC;
 - definizione degli Stati Cognitivi negativi.
 
 ## Parti non ancora definite
@@ -128,4 +149,7 @@ Il documento potrà passare da DRAFT ad ALPHA quando saranno definiti:
 - regole di propagazione;
 - livelli di severità;
 - comportamento dei CORE coinvolti;
+- integrazione eseguibile con VALIDATION_PROTOCOL;
 - test minimi di validazione.
+
+Aggiornamento di riferimento: `repository/updates/UPDATE_0002_VALIDATION_PROTOCOL.md`.
