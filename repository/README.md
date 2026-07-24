@@ -14,6 +14,18 @@ KYVERNEX è l'unico motore operativo del progetto. Svolge contemporaneamente il 
 
 Non esiste un componente separato denominato KYRNEXEN.
 
+## Livello di integrazione AI
+
+L'AI Adapter è il confine tecnico tra KYVERNEX e ciascuna AI ospite. Non è un secondo kernel e non sostituisce AET, AIL o i moduli CORE.
+
+Flusso di riferimento:
+
+`AI ospite → AI Adapter → CORE-001 → AET → AIL → CORE → Validazione continua → CORE-008 → AI Adapter → AI ospite`
+
+L'AI Adapter deve dichiarare capacità, limiti e passaggi non osservabili. Una validazione parziale non può essere presentata come completa.
+
+Specifica di riferimento: `repository/spec/AI_ADAPTER_SPEC_v0.1_DRAFT.md`.
+
 ## Documentazione
 
 La documentazione consolidata dei 22 PDF è archiviata in tre parti Markdown. La cartella `spec` contiene le specifiche progressive e la cartella `updates` registra ogni decisione o modifica con impatto architetturale o documentale.
@@ -31,6 +43,9 @@ Ogni nuova funzione, testo tecnico o modifica interdipendente deve:
 5. mantenere tracciabilità, motivazione, versione e stato;
 6. distinguere elementi consolidati, proposte progettuali e TODO.
 
-Nessun nuovo oggetto cognitivo può essere trattato come consolidato senza registrazione nel futuro `METAMODEL_SPEC`. Fino ad allora deve essere indicato come `PROPOSTO`.
+Nessun nuovo oggetto cognitivo può essere trattato come consolidato senza registrazione nel `METAMODEL_SPEC`. Fino ad allora deve essere indicato come `PROPOSTO`.
 
-Aggiornamento di riferimento: `repository/updates/UPDATE_0003_REPOSITORY_GOVERNANCE.md`.
+Aggiornamenti di riferimento:
+
+- `repository/updates/UPDATE_0003_REPOSITORY_GOVERNANCE.md`;
+- `repository/updates/UPDATE_0005_AI_ADAPTER.md`.
