@@ -1,6 +1,6 @@
 # DEPENDENCY GRAPH SPECIFICATION
 
-**Versione:** 0.1 Draft  
+**Versione:** 0.2 Draft  
 **Stato:** incompleto e aggiornabile  
 **Progetto:** Matrice ARGUS / KYVERNEX  
 **Autore del progetto:** Andrea Pernarcic
@@ -37,6 +37,15 @@ KYVERNEX comprende:
 - Modello degli Errori;
 - Architettura della Memoria;
 - Audit Trace.
+
+### 2.3 Livello di verifica
+
+Il livello di verifica comprende:
+
+- Conformance Specification;
+- evidenze di test;
+- rapporti di verifica;
+- futuri controlli automatici.
 
 ## 3. Flusso operativo consolidato
 
@@ -76,6 +85,16 @@ KYVERNEX comprende:
 - `Audit Trace → Validation Protocol`
 - `Audit Trace → Error Model`
 - `Audit Trace → Memory Architecture`
+- `Conformance Specification → Governance`
+- `Conformance Specification → CCU`
+- `Conformance Specification → Meta-Modello`
+- `Conformance Specification → AIL`
+- `Conformance Specification → CORE`
+- `Conformance Specification → Validation Protocol`
+- `Conformance Specification → Audit Trace`
+- `Conformance Specification → Plugin API`
+- `Conformance Specification → AI Adapter`
+- `Conformance Specification → Implementation Roadmap`
 
 ## 5. Regole di dipendenza
 
@@ -110,9 +129,9 @@ Esempio: `AI Adapter → CORE-001`.
 
 ### 6.4 Di verifica
 
-Un componente dipende da un altro per validazione, audit o gestione degli errori.
+Un componente dipende da un altro per validazione, audit, conformità o gestione degli errori.
 
-Esempio: `CORE-005 → Audit Trace`.
+Esempio: `Conformance Specification → Validation Protocol`.
 
 ## 7. Vincoli
 
@@ -123,6 +142,7 @@ Esempio: `CORE-005 → Audit Trace`.
 - CORE-006 non può consolidare come valida un'informazione priva di esito conforme di CORE-005.
 - CORE-008 deve dichiarare risultati parzialmente validati o non verificabili.
 - Nessun componente può eludere il CCU o la validazione continua senza dichiararlo.
+- Nessun livello di conformità può essere attribuito senza evidenze sufficienti.
 
 ## 8. Parti ancora da definire
 
@@ -135,7 +155,8 @@ TODO:
 - severità delle violazioni;
 - integrazione con CI/CD;
 - diagramma generato automaticamente;
-- compatibilità tra versioni delle specifiche.
+- compatibilità tra versioni delle specifiche;
+- collegamento machine-readable ai requisiti di conformità.
 
 ## 9. Requisiti per lo stato ALPHA
 
@@ -145,4 +166,12 @@ Il documento potrà passare ad ALPHA quando saranno definiti:
 - un controllo automatico minimo;
 - identificatori stabili dei componenti;
 - regole di compatibilità tra versioni;
-- almeno un test che rilevi una dipendenza mancante o circolare.
+- almeno un test che rilevi una dipendenza mancante o circolare;
+- collegamento verificabile con la Conformance Specification.
+
+## 10. Registro modifiche
+
+| Versione | Stato | Modifica |
+|---|---|---|
+| 0.1 | Draft | Prima mappa ufficiale delle dipendenze. |
+| 0.2 | Draft | Aggiunto il livello di verifica e il collegamento con la Conformance Specification. |
