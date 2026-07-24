@@ -18,8 +18,19 @@ Non esiste un componente separato denominato KYRNEXEN.
 
 La documentazione consolidata dei 22 PDF è archiviata in tre parti Markdown. La cartella `spec` contiene le specifiche progressive e la cartella `updates` registra ogni decisione o modifica con impatto architetturale o documentale.
 
+## Governance
+
+Il file `repository/GOVERNANCE.md` contiene le regole vincolanti per l'evoluzione del progetto.
+
 Ogni nuova funzione, testo tecnico o modifica interdipendente deve:
 
-1. generare un file di aggiornamento in `repository/updates`;
-2. aggiornare tutti i documenti direttamente coinvolti;
-3. mantenere tracciabilità, motivazione e versione della modifica.
+1. generare o aggiornare il relativo file tecnico;
+2. generare un file di aggiornamento in `repository/updates`;
+3. dichiarare le dipendenze coinvolte;
+4. aggiornare tutti i documenti direttamente coinvolti;
+5. mantenere tracciabilità, motivazione, versione e stato;
+6. distinguere elementi consolidati, proposte progettuali e TODO.
+
+Nessun nuovo oggetto cognitivo può essere trattato come consolidato senza registrazione nel futuro `METAMODEL_SPEC`. Fino ad allora deve essere indicato come `PROPOSTO`.
+
+Aggiornamento di riferimento: `repository/updates/UPDATE_0003_REPOSITORY_GOVERNANCE.md`.
