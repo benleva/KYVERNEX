@@ -1,6 +1,6 @@
 # CORE SPECIFICATION
 
-Versione: 0.1 Draft
+Versione: 0.2 Draft
 Stato: incompleto e aggiornabile
 Progetto: Matrice ARGUS / KYVERNEX
 Autore del progetto: Andrea Pernarcic
@@ -8,6 +8,8 @@ Autore del progetto: Andrea Pernarcic
 ## 1. Scopo
 
 Questo documento organizza la specifica preliminare dei moduli CORE della Matrice ARGUS. Riporta esclusivamente le responsabilità già consolidate e separa chiaramente le parti ancora da definire.
+
+KYVERNEX è l'unico motore operativo del progetto: kernel cognitivo e plugin integrabile nelle principali AI per l'applicazione delle regole ARGUS, il controllo continuo e la validazione continua.
 
 ## 2. Principi vincolanti
 
@@ -19,7 +21,8 @@ Ogni modulo CORE deve rispettare:
 - modularità;
 - compatibilità con AIL e CCU;
 - verificabilità;
-- evoluzione controllata e versionata.
+- evoluzione controllata e versionata;
+- continuità del controllo durante l'intero ciclo di elaborazione dell'AI ospite.
 
 ## 3. Moduli consolidati
 
@@ -27,12 +30,13 @@ Ogni modulo CORE deve rispettare:
 
 Responsabilità consolidata:
 
-Gestione dell'acquisizione delle informazioni.
+Gestione dell'acquisizione delle informazioni, comprese quelle provenienti dall'AI ospite o dal suo ambiente di integrazione.
 
 Da definire:
 
 - formati di input ammessi;
 - interfaccia di ingresso;
+- adattatori per le diverse AI;
 - controlli iniziali;
 - gestione degli input incompleti o corrotti;
 - output verso CORE-002.
@@ -69,7 +73,7 @@ Da definire:
 
 Responsabilità consolidata:
 
-Applicazione delle regole di elaborazione del kernel.
+Applicazione delle regole di elaborazione del kernel e dei vincoli ARGUS durante l'attività dell'AI ospite.
 
 Da definire:
 
@@ -77,19 +81,22 @@ Da definire:
 - gestione delle dipendenze;
 - uso degli operatori formali;
 - condizioni di arresto;
-- registrazione della traccia logica.
+- registrazione della traccia logica;
+- punti di intercettazione dell'elaborazione dell'AI ospite.
 
-### CORE-005 — Validazione
+### CORE-005 — Validazione continua
 
 Responsabilità consolidata:
 
-Verifica della coerenza e della validità dei risultati.
+Verifica continua della coerenza e della validità di input, trasformazioni, passaggi intermedi e risultati.
 
 Da definire:
 
 - criteri di validazione;
+- frequenza e punti di controllo;
 - livelli di esito;
 - differenza tra errore e avviso;
+- condizioni di blocco, correzione o prosecuzione;
 - report di validazione;
 - dipendenze dall'operatore V.
 
@@ -114,7 +121,7 @@ Da definire:
 
 Responsabilità consolidata:
 
-Coordinamento dei processi cognitivi e delle inferenze.
+Coordinamento dei processi cognitivi, delle inferenze, dei moduli interni e dell'interazione con l'AI ospite.
 
 Da definire:
 
@@ -123,13 +130,14 @@ Da definire:
 - concorrenza;
 - priorità;
 - gestione dei blocchi;
-- criterio di completamento.
+- criterio di completamento;
+- ciclo di controllo continuo.
 
 ### CORE-008 — Restituzione
 
 Responsabilità consolidata:
 
-Restituzione dei risultati nel formato richiesto mantenendo tracciabilità e integrità.
+Restituzione dei risultati nel formato richiesto mantenendo tracciabilità e integrità, insieme all'esito della validazione quando previsto.
 
 Da definire:
 
@@ -137,13 +145,14 @@ Da definire:
 - interfaccia di restituzione;
 - ricostruzione linguistica;
 - allegati di tracciabilità;
-- gestione degli esiti parziali o non validati.
+- gestione degli esiti parziali o non validati;
+- modalità di restituzione verso l'AI ospite o l'utente finale.
 
 ## 4. Sequenza operativa consolidata
 
 CORE-001 → CORE-002 → CORE-003 → CORE-004 → CORE-005 → CORE-006 / CORE-007 → CORE-008
 
-La sequenza rappresenta il flusso minimo ricavato dalla Pipeline del Kernel. Le condizioni di salto, ripetizione o ritorno non sono ancora formalizzate.
+La sequenza rappresenta il flusso minimo ricavato dalla Pipeline del Kernel. CORE-005 può essere richiamato ripetutamente durante il ciclo, poiché la validazione è continua. Le condizioni di salto, ripetizione o ritorno non sono ancora formalizzate.
 
 ## 5. Contratto minimo di ogni modulo
 
@@ -158,7 +167,8 @@ Ogni modulo CORE dovrà in futuro dichiarare almeno:
 - invarianti;
 - errori;
 - eventi tracciati;
-- test di accettazione.
+- test di accettazione;
+- punti di integrazione con l'AI ospite, quando applicabili.
 
 Questi campi sono richiesti ma non ancora compilati in modo definitivo.
 
@@ -171,9 +181,23 @@ Un modulo CORE è conforme solo se:
 - rispetta il CCU;
 - espone responsabilità chiare e non sovrapposte;
 - produce risultati verificabili;
-- registra versione e modifiche.
+- registra versione e modifiche;
+- non elude il controllo continuo previsto da KYVERNEX.
 
-## 7. Parti mancanti
+## 7. Integrazione plugin
+
+KYVERNEX deve poter essere caricato, richiamato o utilizzato come livello di integrazione da sistemi AI differenti. I moduli CORE restano interni a KYVERNEX e non costituiscono plugin separati.
+
+Restano da definire:
+
+- API comuni;
+- adattatori specifici per piattaforma;
+- capacità minime richieste all'AI ospite;
+- modalità sincrone e asincrone;
+- autorizzazioni e isolamento;
+- comportamento in caso di indisponibilità di una funzione dell'AI ospite.
+
+## 8. Parti mancanti
 
 Prima del passaggio da Draft ad Alpha occorre definire:
 
@@ -185,8 +209,12 @@ Prima del passaggio da Draft ad Alpha occorre definire:
 6. test di accettazione;
 7. ordine operativo completo;
 8. regole di recupero;
-9. compatibilità tra versioni.
+9. compatibilità tra versioni;
+10. protocollo di integrazione con le AI;
+11. protocollo di validazione continua.
 
-## 8. Stato del documento
+## 9. Stato del documento
 
 Questo file non costituisce ancora una specifica implementabile. Costituisce la mappa ufficiale delle responsabilità CORE già consolidate e delle parti mancanti da sviluppare progressivamente.
+
+Aggiornamento architetturale di riferimento: `repository/updates/UPDATE_0001_KYVERNEX_PLUGIN_ARCHITECTURE.md`.
