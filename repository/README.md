@@ -20,11 +20,16 @@ L'AI Adapter è il confine tecnico tra KYVERNEX e ciascuna AI ospite. Non è un 
 
 Flusso di riferimento:
 
-`AI ospite → AI Adapter → CORE-001 → AET → AIL → CORE → Validazione continua → CORE-008 → AI Adapter → AI ospite`
+`AI ospite o sorgente esterna → AI Adapter → CORE-001 → AET → AIL → CORE KYVERNEX → Validazione continua → CORE-008 → AI Adapter → AI ospite`
 
 L'AI Adapter deve dichiarare capacità, limiti e passaggi non osservabili. Una validazione parziale non può essere presentata come completa.
 
-Specifica di riferimento: `repository/spec/AI_ADAPTER_SPEC_v0.1_DRAFT.md`.
+AET preserva l'input originale, ne registra origine e contesto, identifica le categorie cognitive già ammesse dal Meta-Modello, dichiara ambiguità e produce una rappresentazione candidata ad AIL senza inventare informazioni mancanti.
+
+Specifiche di riferimento:
+
+- `repository/spec/AI_ADAPTER_SPEC_v0.1_DRAFT.md`;
+- `repository/spec/AET_SPEC_v0.1_DRAFT.md`.
 
 ## Documentazione
 
@@ -48,4 +53,5 @@ Nessun nuovo oggetto cognitivo può essere trattato come consolidato senza regis
 Aggiornamenti di riferimento:
 
 - `repository/updates/UPDATE_0003_REPOSITORY_GOVERNANCE.md`;
-- `repository/updates/UPDATE_0005_AI_ADAPTER.md`.
+- `repository/updates/UPDATE_0005_AI_ADAPTER.md`;
+- `repository/updates/UPDATE_0006_AET_SPECIFICATION.md`.
