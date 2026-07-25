@@ -6,10 +6,11 @@
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
 - Code-complete milestones: **M7** through **M15**
 - Runtime evidence: **LOCAL_APP_SMOKE_VERIFIED**
-- Sprint: **S018 — Host-shaped invocation**
-- Governance mode: **KPM/KGO PRODUCT CODE BOUNDARY**
-- KPM cycle: `KPM-CYCLE-040`
-- KGO cycle: `KGO-CYCLE-051`
+- Active milestone: **M16 — Local Verification Report**
+- Active sprint: **S019 — Repeatable local verification**
+- Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
+- KPM cycle: `KPM-CYCLE-041`
+- KGO cycle: `KGO-CYCLE-052`
 - Development package version: `1.2.0.dev0`
 
 ## Verified local product path
@@ -29,48 +30,42 @@ editable install
 -> SUCCEEDED response
 ```
 
-Observed runtime facts:
+Observed runtime facts remain recorded in `RUNTIME_SMOKE_EVIDENCE.md`.
 
-- editable installation reported `Successfully installed kyvernex-1.2.0.dev0`;
-- the app reported `status: READY`;
-- the browser console loaded;
-- adapter status was `HEALTHY`;
-- capability `governed.execute` was active;
-- network and process authority remained disabled;
-- repository authority remained `FORBIDDEN`;
-- the browser invocation returned `status: SUCCEEDED` and `error: null`;
-- principal `andrea`, handler marker `local-project` and the submitted input were preserved.
+## M16 product objective
 
-Detailed evidence and limits are recorded in `RUNTIME_SMOKE_EVIDENCE.md`.
+Turn the one-time local smoke command into a reusable verification report covering the current local app contract without claiming full release qualification.
 
-## M15 delivered code
+```text
+kyvernex-ai-smoke --output verification.json
+-> loopback server on an operating-system selected port
+-> health check
+-> canonical, OpenAI, Anthropic and Gemini manifest checks
+-> OpenAPI route check
+-> direct invocation
+-> tool-call envelope invocation
+-> explicit verification boundary
+-> optional persistent JSON report
+```
 
-### M15-W001 — Canonical tool-call envelope
-Status: `CODE_COMPLETE_SMOKE_COVERED`
+## M16 delivered code
 
-- `KyvernexAIBridge.invoke_tool_call()` accepts only `name`, `arguments` and optional `id`;
-- the tool name must equal `kyvernex_execute`;
-- arguments are delegated to the existing strict `invoke()` path;
-- an optional call id is returned as `tool_call_id`;
-- unknown or mixed fields fail closed.
+### M16-W001 — Expanded local verification command
+Status: `CODE_COMPLETE_UNVERIFIED`
 
-### M15-W002 — CLI envelope routing
-Status: `CODE_COMPLETE_PARTIALLY_VERIFIED`
+- `kyvernex-ai-smoke` now accepts `--output PATH` and `--force`;
+- the command verifies adapter health is `HEALTHY`;
+- canonical, OpenAI, Anthropic and Gemini manifest shapes are inspected;
+- the OpenAPI document must expose `/invoke` and `/tool-call`;
+- direct and tool-call HTTP paths must return `SUCCEEDED`;
+- the tool-call correlation id must be preserved;
+- the JSON report identifies both verified checks and remaining unverified areas;
+- an existing report is never replaced without `--force`.
 
-- `kyvernex-ai-plugin` accepts either direct canonical arguments or the canonical tool-call envelope;
-- the same behavior applies to single JSON and persistent JSONL modes;
-- payloads mixing envelope and direct fields are rejected;
-- JSONL and all CLI failure branches were not exercised in the recorded run.
+## Active work
 
-### M15-W003 — Loopback HTTP envelope route
-Status: `LOCAL_HTTP_SMOKE_VERIFIED`
-
-- `POST /tool-call` delegates to `KyvernexAIBridge.invoke_tool_call()`;
-- `POST /invoke` remains available for direct canonical arguments;
-- `kyvernex-ai-smoke` was executed by the operator and exercises both routes;
-- the browser console independently verified the direct governed invocation path;
-- the server remained bound to `127.0.0.1` and was forwarded privately by Codespaces.
+- M16-W002 operator execution of the expanded command and capture of a persistent report: `READY_FOR_OPERATOR_RUN`.
 
 ## Verification boundary
 
-This is a successful local smoke verification, not a full release qualification. Automated suite success, clean installations on separate Windows/macOS/Linux machines, portable launcher compatibility, JSONL coverage, every provider manifest, concurrency, load, security and recovery testing remain unverified. No tag or release was created.
+The earlier Codespaces smoke remains valid evidence for the local app path. The expanded M16 command has been written but has not yet been executed after this change. Full automated suite success, clean installations on separate operating systems, portable launcher compatibility, JSONL coverage, timeout and size-limit behavior, concurrency, load, recovery and release qualification remain unverified. No tag or release was created.
