@@ -87,7 +87,7 @@ jobs:
           from kyvernex.self_verification import ContinuousSelfVerificationController, write_verification_result
 
           result = ContinuousSelfVerificationController().evaluate(
-              work_item_id="M4-W005",
+              work_item_id="M4-W007",
               targeted_output=Path("artifacts/targeted-pytest-output.txt").read_text(encoding="utf-8", errors="replace"),
               targeted_outcome=os.environ.get("TARGETED_OUTCOME", "unknown"),
               complete_output=Path("artifacts/pytest-output.txt").read_text(encoding="utf-8", errors="replace"),
@@ -128,7 +128,7 @@ jobs:
             --output-dir artifacts \
             --test-outcome "$TEST_OUTCOME" \
             --commit "$GITHUB_SHA" \
-            --work-item "M4-W005"
+            --work-item "M4-W007"
           cat artifacts/KGO_V3_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Build release distributions
@@ -150,7 +150,7 @@ jobs:
           from importlib.metadata import version
           import kyvernex
 
-          expected = "1.0.0"
+          expected = "1.1.0rc1"
           assert version("kyvernex") == expected
           assert kyvernex.__version__ == expected
           print(f"KYVERNEX clean installation verified: {expected}")
@@ -214,20 +214,20 @@ jobs:
           from pathlib import Path
 
           evidence = {
-              "schema": "kyvernex.kgo.evidence.v7",
+              "schema": "kyvernex.kgo.evidence.v8",
               "mode": os.environ.get("KGO_MODE", "autonomous"),
               "repository": os.environ.get("GITHUB_REPOSITORY"),
               "commit": os.environ.get("GITHUB_SHA"),
               "run_id": os.environ.get("GITHUB_RUN_ID"),
               "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
-              "work_item": "M4-W005",
+              "work_item": "M4-W007",
               "targeted_test_outcome": os.environ.get("TARGETED_OUTCOME", "unknown"),
               "test_outcome": os.environ.get("TEST_OUTCOME", "unknown"),
               "package_build_outcome": os.environ.get("PACKAGE_BUILD_OUTCOME", "unknown"),
               "clean_install_outcome": os.environ.get("CLEAN_INSTALL_OUTCOME", "unknown"),
               "verified_at": datetime.now(timezone.utc).isoformat(),
               "ci_provider": "github-actions",
-              "governance_engine": "KGO_V3_M4_GOVERNANCE_CONTROL_CLI",
+              "governance_engine": "KGO_V3_M4_RELEASE_CANDIDATE_1_1",
           }
           Path("artifacts/KGO_EVIDENCE.json").write_text(
               json.dumps(evidence, indent=2, sort_keys=True) + "\n",
@@ -269,7 +269,7 @@ jobs:
           CLEAN_INSTALL_OUTCOME: ${{ steps.clean_install.outcome }}
         run: |
           if [ "$TARGETED_OUTCOME" != "success" ] || [ "$TEST_OUTCOME" != "success" ] || [ "$PACKAGE_BUILD_OUTCOME" != "success" ] || [ "$CLEAN_INSTALL_OUTCOME" != "success" ]; then
-            echo "KGO_V3_BLOCKED: current M4 test, package or installed CLI evidence recorded."
+            echo "KGO_V3_BLOCKED: current M4 release-candidate evidence recorded."
             exit 1
           fi
-          echo "KGO_V3_VERIFIED: M4 governance CLI, complete suite, package build and clean installation passed for commit $GITHUB_SHA."
+          echo "KGO_V3_VERIFIED: M4 release candidate, complete suite, package build and clean installation passed for commit $GITHUB_SHA."
