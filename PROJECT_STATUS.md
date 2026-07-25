@@ -4,51 +4,54 @@
 - Stable published release: `1.1.0`
 - Immutable stable tag: `v1.1.0`
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
-- Code-complete milestones: **M7**, **M8**, **M9**, **M10**, **M11**, **M12**, **M13**, **M14**
-- Sprint: **S017 — Public integration surface**
-- Governance mode: **KPM/KGO PRODUCT CODE BOUNDARY**
-- KPM cycle: `KPM-CYCLE-037`
-- KGO cycle: `KGO-CYCLE-048`
+- Code-complete milestones: **M7** through **M14**
+- Active milestone: **M15 — Canonical Tool Call Envelope**
+- Active sprint: **S018 — Host-shaped invocation**
+- Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
+- KPM cycle: `KPM-CYCLE-038`
+- KGO cycle: `KGO-CYCLE-049`
 - Development package version: `1.2.0.dev0`
 
-## M14 objective delivered
-Expose one coherent Python integration surface for handler loading, persistent plugin sessions and AI manifest translation.
+## Product objective
+Accept real AI host calls shaped as a named tool plus arguments while preserving the existing direct canonical argument form.
 
 ```text
-from kyvernex import (
-    KyvernexPluginSession,
-    load_plugin_handler,
-    export_openai_tool,
-)
+{name, arguments, optional id}
+-> KyvernexAIBridge.invoke_tool_call
+-> existing invoke(arguments)
+-> governed plugin runtime
 ```
 
-## M14 code delivered
-### M14-W001 — Unified handler loader API
+## M15 delivered code
+
+### M15-W001 — Canonical tool-call envelope
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `load_plugin_handler` remains the canonical strict loader;
-- `load_handler` is now an explicit compatibility alias using the same implementation;
-- command-line products and Python callers no longer depend on two separate loading paths;
-- `PluginHandler` and `PluginHandlerLoadError` are exported from the package root.
+- `KyvernexAIBridge.invoke_tool_call()` accepts only `name`, `arguments` and optional `id`;
+- the tool name must equal `kyvernex_execute`;
+- arguments are delegated to the existing strict `invoke()` path;
+- an optional call id is returned as `tool_call_id`;
+- unknown or mixed fields fail closed.
 
-### M14-W002 — Public session and AI format APIs
+### M15-W002 — CLI envelope routing
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `KyvernexPluginSession` is exported from `kyvernex`;
-- its default development version is aligned to `1.2.0.dev0`;
-- dedicated exporters are available for canonical, OpenAI, Anthropic and Gemini shapes;
-- `export_manifest` dispatches through those dedicated exporters;
-- all exporter functions and `AIManifestFormatError` are exported from the package root.
+- `kyvernex-ai-plugin` accepts either direct canonical arguments or the canonical tool-call envelope;
+- the same behavior applies to single JSON and persistent JSONL modes;
+- payloads mixing envelope and direct fields are rejected;
+- no provider-specific runtime or duplicated execution path is introduced.
 
-## Public integration example
+## Example
 
-```python
-from kyvernex import KyvernexPluginSession, load_plugin_handler
-
-handler = load_plugin_handler("handler:handle")
-with KyvernexPluginSession(handler, principal="andrea") as session:
-    response = session.execute({"message": "ciao"})
+```json
+{
+  "id": "call-001",
+  "name": "kyvernex_execute",
+  "arguments": {
+    "input": {"message": "hello"}
+  }
+}
 ```
 
 ## Boundary
-M14 changes only the public Python integration surface and version alignment. It adds no runtime, transport, network access, installer, operating-system registration, verification or release publication. No tests were executed and no compatibility claim is made.
+M15 changes only local invocation shape and routing. It adds no network service, provider runtime, account, database, verification claim, tag or release publication.
