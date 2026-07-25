@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "AUTONOMOUS_PRODUCT_CODE",
-  "state": "RUNNING",
+  "mode": "PRODUCT_CODE_BOUNDARY",
+  "state": "SAFE_STOP",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -24,46 +24,46 @@
     {"id": "M11", "title": "Local Setup Bootstrap", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M12", "title": "Portable Local Launchers", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M13", "title": "Local Project Scaffold", "status": "CODE_COMPLETE_UNVERIFIED"},
-    {"id": "M14", "title": "Public API Hardening", "status": "CODE_COMPLETE_UNVERIFIED"}
+    {"id": "M14", "title": "Public API Hardening", "status": "CODE_COMPLETE_UNVERIFIED"},
+    {"id": "M15", "title": "Canonical Tool Call Envelope", "status": "CODE_COMPLETE_UNVERIFIED"}
   ],
-  "milestone": {
-    "id": "M15",
-    "title": "Canonical Tool Call Envelope",
-    "status": "ACTIVE"
-  },
   "sprint": {
     "id": "S018",
     "title": "Host-shaped invocation",
-    "status": "ACTIVE"
+    "status": "CODE_COMPLETE_UNVERIFIED"
   },
-  "cycle": "KGO-CYCLE-049",
-  "kpm_cycle": "KPM-CYCLE-038",
-  "completed_code_tasks": ["M15-W001", "M15-W002"],
+  "cycle": "KGO-CYCLE-050",
+  "kpm_cycle": "KPM-CYCLE-039",
+  "completed_code_tasks": ["M15-W001", "M15-W002", "M15-W003"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
-  "active_task": {
-    "id": "M15-W003",
-    "title": "Expose the same canonical tool-call envelope through the existing loopback HTTP server",
-    "status": "IN_PROGRESS",
-    "priority": "P1"
-  },
+  "active_task": null,
   "code_evidence": {
     "ai_bridge": "src/kyvernex/ai_bridge.py",
     "ai_command": "src/kyvernex/ai_plugin_cli.py",
+    "local_server": "src/kyvernex/local_ai_server.py",
+    "openapi_builder": "src/kyvernex/local_ai_openapi.py",
     "bridge_commit": "d23e6b348db0a51d6ecabe43d3e708188c59ecbd",
-    "cli_commit": "f797a74d4614cfea14f2218570123bf502d594a5"
+    "cli_commit": "f797a74d4614cfea14f2218570123bf502d594a5",
+    "http_commit": "f8c04e74371a8d6fae79280804e7dd5c0b04a590",
+    "openapi_commit": "8f0c4e3654daab48205c23dc48718b51130cb4a3"
   },
   "envelope_boundary": {
     "tool_name": "kyvernex_execute",
     "allowed_fields": ["name", "arguments", "id"],
     "direct_arguments_preserved": true,
+    "http_direct_route": "POST /invoke",
+    "http_envelope_route": "POST /tool-call",
+    "bind_host": "127.0.0.1",
+    "max_request_bytes": 1048576,
     "unknown_fields_fail_closed": true,
     "provider_runtime_fork": false,
     "external_network_access": false
   },
-  "autonomous_continuation": true,
-  "requires_user_proceed": false,
-  "resume_rule": "Continue only by exposing the same strict envelope through the existing loopback HTTP server. Do not add provider-specific runtimes, public hosting, accounts, databases, tests or release publication.",
+  "autonomous_continuation": false,
+  "requires_user_proceed": true,
+  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve the single governed execution path, loopback-only transport and strict envelope. Do not infer provider runtimes, public hosting, tests or release publication.",
   "stop_conditions": [
+    "PRODUCT_TARGET_NOT_DEFINED",
     "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
     "PROVIDER_RUNTIME_FORK",
