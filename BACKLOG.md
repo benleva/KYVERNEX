@@ -14,7 +14,7 @@
 | M6-W001 | Frozen plugin contract and authority boundaries | P0 | 5 | DONE | stable baseline |
 | M6-W002 | Core runtime and lifecycle state machine | P0 | 8 | DONE | M6-W001 |
 | M6-W003 | Governed request, response and error contracts | P0 | 8 | DONE | M6-W002 |
-| M6-W004 | One bounded in-process callable adapter | P0 | 3 | IN_PROGRESS | M6-W003, M6-W005 |
+| M6-W004 | One bounded in-process callable adapter | P0 | 3 | IN_VERIFICATION | M6-W003, M6-W005 |
 | M6-W005 | Immutable fail-closed configuration | P0 | 5 | DONE | M6-W002 |
 | M6-W006 | Focused lifecycle and authority integration tests | P0 | 5 | BACKLOG | M6-W004 |
 | M6-W007 | One minimal example and package entry point | P0 | 3 | BACKLOG | M6-W006 |
@@ -22,22 +22,23 @@
 | M6-W009 | Prepare `1.2.0` prerelease evidence | P1 | 2 | BACKLOG | M6-W008 |
 
 Revised total after scope lock: `44` story points.
-Completed: `26/44` story points and `4/9` work items.
+Completed remains `26/44` story points and `4/9` work items until M6-W004 receives green evidence.
 
-## M6-W004 acceptance boundary
-M6-W004 is complete only when one adapter:
+## M6-W004 implementation evidence
+- `src/kyvernex/plugin_adapter.py` contains the only permitted adapter: `InProcessCallableAdapter`;
+- it wraps one explicitly supplied Python callable;
+- capabilities are stored immutably and returned defensively;
+- the runtime remains responsible for authorization;
+- blocked requests cannot reach the callable;
+- results must be JSON-serializable;
+- health output is bounded and secret-free;
+- shutdown is idempotent;
+- no network, filesystem, subprocess, repository, publication, environment or discovery operation exists in the adapter;
+- public exports are present in `src/kyvernex/__init__.py`;
+- targeted coverage is in `tests/test_plugin_adapter.py`.
 
-- wraps one explicitly supplied Python callable;
-- exposes an explicit immutable capability set;
-- receives only runtime-authorized requests;
-- reads no environment variables;
-- performs no built-in network, filesystem, subprocess, repository or publication operation;
-- makes no governance decision;
-- validates that its result is JSON-serializable;
-- reports simple health;
-- shuts down idempotently.
-
-No second adapter or remote protocol is permitted.
+## Verification gate
+M6-W004 closes only after targeted and complete CI are green for the exact final state and no authority expansion is observed.
 
 ## Remaining path to done
 After M6-W004, KPM/KGO may execute only M6-W006, M6-W007, M6-W008 and M6-W009 in that order. New feature work is prohibited inside M6.
