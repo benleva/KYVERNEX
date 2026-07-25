@@ -1,4 +1,4 @@
-"""KYVERNEX Reference Prototype 0.1."""
+"""KYVERNEX cognitive governance and execution engine."""
 
 from .adapters import (
     AIAdapter, AdapterExecutionError, AdapterRequest, AdapterResponse, EchoAdapter, FailingAdapter,
@@ -121,4 +121,4 @@ __all__ = [
     "write_rollback_plan", "write_verification_result",
 ]
 
-__version__ = "0.1.0.dev0"
+__version__ = "1.0.0"
