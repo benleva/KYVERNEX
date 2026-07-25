@@ -208,9 +208,9 @@ def test_status_is_non_mutating_and_reports_zero_default_authority():
     status = runtime.status()
     assert runtime.state is before
     assert status["authority"] == {
-        "filesystem": "NONE",
-        "network": "DISABLED",
-        "process": "DISABLED",
+        "filesystem": {"read_roots": (), "write_roots": ()},
+        "network": {"enabled": False, "allowed_hosts": ()},
+        "process": {"enabled": False, "allowed_commands": ()},
         "repository": "FORBIDDEN",
     }
     assert "config" not in status
