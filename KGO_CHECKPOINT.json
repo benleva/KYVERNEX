@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS_SCOPE_LOCKED",
-  "state": "RUNNING",
+  "state": "VERIFYING",
   "target_release": "1.2.0",
   "stable_release": {"version": "1.1.0", "tag": "v1.1.0", "status": "PUBLISHED_LATEST", "immutable": true},
   "milestone": {"id": "M6", "title": "KYVERNEX Plugin Runtime", "status": "ACTIVE"},
@@ -13,7 +13,7 @@
   "active_task": {
     "id": "M6-W004",
     "title": "Implement one bounded in-process callable adapter",
-    "status": "IN_PROGRESS",
+    "status": "IN_VERIFICATION",
     "priority": "P0"
   },
   "scope_lock": {
@@ -30,6 +30,15 @@
     "host_contracts": "83ce3a3",
     "configuration": "a8e7f36"
   },
+  "adapter_implementation": {
+    "path": "src/kyvernex/plugin_adapter.py",
+    "tests_path": "tests/test_plugin_adapter.py",
+    "exports_path": "src/kyvernex/__init__.py",
+    "implementation_commit": "52d1c4d7a81aaea98d4e8003c68bb574c92bb171",
+    "targeted_tests": "PENDING",
+    "complete_suite": "PENDING",
+    "authority_review": "PENDING"
+  },
   "adapter_authority": {
     "network": "NONE",
     "filesystem": "NONE",
@@ -42,7 +51,7 @@
   "remaining_sequence": ["M6-W004", "M6-W006", "M6-W007", "M6-W008", "M6-W009"],
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Complete only the frozen minimum shippable plugin sequence. Reject any work that adds another adapter, external platform or unrelated capability.",
+  "resume_rule": "Read CI evidence for the exact M6-W004 state. On green, close M6-W004 and proceed directly to M6-W006. On failure, repair only the minimum adapter path.",
   "stop_conditions": [
     "SCOPE_EXPANSION",
     "CURRENT_VERIFICATION_FAILURE",
