@@ -45,6 +45,8 @@ from .models import (
 )
 from .orchestrator import GovernedExecutionResult, KyvernexOrchestrator
 from .persistence import JsonSessionMemory, PersistenceFormatError
+from .process_lock import InterProcessFileLock, ProcessLockError
+from .process_safe_journal import ProcessSafeMultiTransactionDeletionCoordinator
 from .response_governance import GovernedResponse, ResponseGovernor
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .serialization import to_primitive
@@ -80,6 +82,7 @@ __all__ = [
     "GovernedExecutionResult",
     "GovernedResponse",
     "GraphPersistenceFormatError",
+    "InterProcessFileLock",
     "JsonCognitiveGraph",
     "JsonSessionMemory",
     "KyvernexEngine",
@@ -87,6 +90,8 @@ __all__ = [
     "MemoryConflictError",
     "MultiTransactionDeletionCoordinator",
     "PersistenceFormatError",
+    "ProcessLockError",
+    "ProcessSafeMultiTransactionDeletionCoordinator",
     "RecoveryBatch",
     "RecoveryResult",
     "ReferentialIntegrityError",
