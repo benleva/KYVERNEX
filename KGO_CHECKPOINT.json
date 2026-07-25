@@ -2,44 +2,46 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "EXTERNAL_PUBLICATION_BOUNDARY",
+  "state": "RELEASE_COMPLETE",
   "target_release": "1.1.0",
-  "release_candidate": "1.1.0rc1",
-  "stable_baseline": {
-    "version": "1.0.0",
-    "tag": "v1.0.0",
-    "immutable": true,
-    "release_status": "LATEST_STABLE"
+  "stable_release": {
+    "version": "1.1.0",
+    "tag": "v1.1.0",
+    "status": "PUBLISHED_LATEST",
+    "immutable": true
   },
-  "published_prerelease": {
-    "version": "1.1.0rc1",
-    "tag": "v1.1.0-rc.1",
-    "status": "PUBLISHED_PRERELEASE",
-    "latest": false
-  },
+  "historical_releases": [
+    {
+      "version": "1.1.0rc1",
+      "tag": "v1.1.0-rc.1",
+      "status": "PUBLISHED_PRERELEASE",
+      "latest": false
+    },
+    {
+      "version": "1.0.0",
+      "tag": "v1.0.0",
+      "status": "PUBLISHED_HISTORICAL_STABLE",
+      "latest": false
+    }
+  ],
   "milestone": {
     "id": "M5",
     "title": "Promote 1.1 release candidate to stable",
-    "status": "ACTIVE"
+    "status": "DONE"
   },
   "sprint": {
     "id": "S003",
     "title": "Verify and publish stable 1.1.0",
-    "status": "ACTIVE"
+    "status": "DONE"
   },
-  "cycle": "KGO-CYCLE-022",
-  "kpm_cycle": "KPM-CYCLE-011",
+  "cycle": "KGO-CYCLE-023",
+  "kpm_cycle": "KPM-CYCLE-012",
   "completed_tasks": [
     "M5-W001",
-    "M5-W002"
+    "M5-W002",
+    "M5-W003"
   ],
-  "active_task": {
-    "id": "M5-W003",
-    "title": "Publish v1.1.0, mark it Latest and close M5/S003",
-    "status": "EXTERNAL_BOUNDARY",
-    "priority": "P0"
-  },
-  "promotion_scope": "Version, release documentation and verification only; no new functional capability.",
+  "active_task": null,
   "stable_promotion_verification": {
     "commit": "56bd8da",
     "targeted_tests": "GREEN",
@@ -50,11 +52,10 @@
     "version": "1.1.0"
   },
   "autonomous_continuation": false,
-  "requires_user_proceed": true,
-  "resume_rule": "Publish the verified stable v1.1.0 GitHub Release, mark it Latest, preserve v1.1.0-rc.1 as prerelease, then close M5 and S003.",
+  "requires_user_proceed": false,
+  "resume_rule": "Resume only for a documented defect, verified release feedback, authorized stable-line maintenance or a separately approved milestone.",
   "stop_conditions": [
-    "EXTERNAL_PUBLICATION_BOUNDARY",
-    "PUBLICATION_FAILURE",
-    "MILESTONE_DONE"
+    "RELEASE_COMPLETE",
+    "NO_AUTHORIZED_WORK"
   ]
 }
