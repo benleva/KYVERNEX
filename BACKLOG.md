@@ -3,43 +3,35 @@
 ## Baseline
 - Stable release: `1.1.0`
 - Paused milestone: `M6 — KYVERNEX Plugin Runtime`
-- Code-complete milestones: `M7`, `M8`, `M9`, `M10`, `M11`, `M12`, `M13`, `M14`
+- Code-complete milestones: `M7` through `M14`
+- Active milestone: `M15 — Canonical Tool Call Envelope`
 - Development package version: `1.2.0.dev0`
 
 ## Preserved state
 - M6-W001 through M6-W005: `DONE`;
 - M6-W006 through M6-W009: `PAUSED_BY_USER`;
-- M7 through M13 work items: `CODE_COMPLETE_UNVERIFIED`.
+- M7 through M14 work items: `CODE_COMPLETE_UNVERIFIED`.
 
-## M14 product-code backlog
+## M15 product-code backlog
 
 | Work item | Deliverable | Priority | Status |
 |---|---|---:|---|
-| M14-W001 | Unified strict handler loader API with compatibility alias | P0 | CODE_COMPLETE_UNVERIFIED |
-| M14-W002 | Package-root exports for plugin sessions and AI manifest exporters | P0 | CODE_COMPLETE_UNVERIFIED |
+| M15-W001 | Strict `name` plus `arguments` tool-call envelope on `KyvernexAIBridge` | P0 | CODE_COMPLETE_UNVERIFIED |
+| M15-W002 | Automatic direct/envelope routing in single JSON and JSONL CLI modes | P0 | CODE_COMPLETE_UNVERIFIED |
+| M15-W003 | Local HTTP envelope route reusing the same bridge method | P1 | BACKLOG |
 
-## M14 code evidence
-- `src/kyvernex/plugin_loader.py`: canonical `load_plugin_handler` plus `load_handler` compatibility alias;
-- `src/kyvernex/plugin_session.py`: persistent session aligned to development version `1.2.0.dev0`;
-- `src/kyvernex/ai_formats.py`: dedicated canonical, OpenAI, Anthropic and Gemini exporters;
-- `src/kyvernex/__init__.py`: public exports for loaders, session and format APIs.
+## M15 code evidence
+- `src/kyvernex/ai_bridge.py`: strict `invoke_tool_call()` method;
+- `src/kyvernex/ai_plugin_cli.py`: direct or envelope payload routing;
+- unknown names, fields and mixed payloads fail closed;
+- optional envelope id is echoed as `tool_call_id`;
+- direct canonical arguments remain supported.
 
-## Public imports
+## Product behavior
 
-```python
-from kyvernex import (
-    AIManifestFormatError,
-    KyvernexPluginSession,
-    PluginHandlerLoadError,
-    export_anthropic_tool,
-    export_canonical_tool,
-    export_gemini_tools,
-    export_manifest,
-    export_openai_tool,
-    load_handler,
-    load_plugin_handler,
-)
+```json
+{"name":"kyvernex_execute","arguments":{"input":{"message":"hello"}}}
 ```
 
 ## Boundary
-M14 has no active coding item. It is code-complete but unverified. No tests, clean-install checks, CI assertions, tags or releases were produced.
+M15 may expose this same envelope through the existing loopback HTTP process only. It must not create provider-specific runtimes, public hosting, accounts, databases or publication claims. Testing is not the active user-directed workstream and no green claim is made.
