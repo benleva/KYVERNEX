@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "PRODUCT_CODE_BOUNDARY",
-  "state": "SAFE_STOP",
+  "mode": "AUTONOMOUS_PRODUCT_CODE",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -23,44 +23,49 @@
     {"id": "M10", "title": "Local Desktop Launcher", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M11", "title": "Local Setup Bootstrap", "status": "CODE_COMPLETE_UNVERIFIED"}
   ],
+  "milestone": {
+    "id": "M12",
+    "title": "Portable Local Launchers",
+    "status": "ACTIVE"
+  },
   "sprint": {
-    "id": "S014",
-    "title": "Explicit local initialization",
-    "status": "CODE_COMPLETE_UNVERIFIED"
+    "id": "S015",
+    "title": "Cross-platform local start files",
+    "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-043",
-  "kpm_cycle": "KPM-CYCLE-032",
-  "completed_code_tasks": ["M11-W001", "M11-W002"],
+  "cycle": "KGO-CYCLE-044",
+  "kpm_cycle": "KPM-CYCLE-033",
+  "completed_code_tasks": ["M12-W001"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
-  "active_task": null,
+  "active_task": {
+    "id": "M12-W002",
+    "title": "Add optional launcher generation to kyvernex-ai-setup",
+    "status": "IN_PROGRESS",
+    "priority": "P1"
+  },
   "code_evidence": {
-    "setup_command": "src/kyvernex/local_ai_setup_cli.py",
-    "profile_validator": "src/kyvernex/local_ai_profile.py",
-    "desktop_launcher": "src/kyvernex/local_ai_app_cli.py",
-    "package_entry_point": "kyvernex-ai-setup",
-    "latest_code_commit": "b4554684d3115d11280f7a7eb0fcae799dd909c6"
+    "portable_launcher_command": "src/kyvernex/local_ai_shortcut_cli.py",
+    "package_entry_point": "kyvernex-ai-shortcut",
+    "latest_code_commit": "1b4736590efe2c9263b147c6d7e0dd2b874c76bc"
   },
-  "setup_boundary": {
-    "explicit_output_path": true,
-    "default_output": "kyvernex.local.json",
-    "replace_requires_force": true,
-    "optional_immediate_launch": true,
-    "launch_uses_existing_app": true,
-    "profile_discovery": false,
-    "environment_read": false,
-    "network_access": false,
-    "package_installation": false,
-    "operating_system_registration": false
+  "launcher_boundary": {
+    "explicit_profile": true,
+    "profile_validation": true,
+    "supported_platforms": ["windows", "macos", "linux"],
+    "portable_files_only": true,
+    "operating_system_registration": false,
+    "automatic_startup": false,
+    "background_service": false,
+    "network_access": false
   },
-  "autonomous_continuation": false,
-  "requires_user_proceed": true,
-  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve explicit local configuration and loopback-only operation. Do not infer installers, services, public hosting, verification or release publication.",
+  "autonomous_continuation": true,
+  "requires_user_proceed": false,
+  "resume_rule": "Continue only by integrating optional portable launcher generation into the existing setup command. Do not add installers, operating-system registration, services, automatic startup, network access or publication.",
   "stop_conditions": [
-    "PRODUCT_TARGET_NOT_DEFINED",
     "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
     "NETWORK_ACCESS_INTRODUCED",
-    "OPERATING_SYSTEM_SERVICE_INTRODUCED",
+    "OPERATING_SYSTEM_REGISTRATION_INTRODUCED",
     "EXTERNAL_PUBLICATION_BOUNDARY",
     "MILESTONE_DONE"
   ]
