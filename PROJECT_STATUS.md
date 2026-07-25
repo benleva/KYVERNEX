@@ -2,14 +2,14 @@
 
 ## Control
 - Governance system: KDP + KPM + KGO v1/v2/v3 + KEX + M3 Autonomous Development Engine
-- Repository version: `0.1.0.dev0`
+- Repository version: `1.0.0`
 - Completed milestone: **M3 — Autonomous Development**
-- Current phase: **Release 1.0 Audit**
-- CI status: **M3 VERIFIED — GitHub Actions run #53 green**
-- Historical red runs remain immutable records of earlier commits and do not override the latest verified evidence.
+- Current phase: **Release 1.0 Candidate Verification**
+- CI status: **RELEASE CANDIDATE IMPLEMENTED — FRESH CI RUN PENDING**
+- Last verified evidence remains GitHub Actions run `#53`, green, for the completed M3 implementation.
 
 ## Current objective
-Complete the Release 1.0 audit without expanding KGO or KPM. Resolve only release-readiness gaps supported by repository evidence, rerun complete CI after every code or workflow change, and do not create the `v1.0.0` tag until all release gates are satisfied.
+Obtain fresh complete CI evidence for the synchronized `1.0.0` package, including targeted tests, the complete test suite, source and wheel builds, and installation of the wheel in a clean virtual environment. Do not create the `v1.0.0` tag until this evidence is green.
 
 ## Governance activation state
 - KPM: `FROZEN_EXCEPT_BUG_FIXES`
@@ -24,8 +24,9 @@ Complete the Release 1.0 audit without expanding KGO or KPM. Resolve only releas
 - Safe isolated commit manager: `IMPLEMENTED_AND_VERIFIED`
 - Evidence-based rollback controller: `IMPLEMENTED_AND_VERIFIED`
 - Execution performance clock: `IMPLEMENTED_AND_VERIFIED`
+- Release build verification: `IMPLEMENTED_FRESH_CI_PENDING`
+- Clean wheel installation verification: `IMPLEMENTED_FRESH_CI_PENDING`
 - Workflow: `.github/workflows/kgo.yml`
-- Verification evidence: latest user-observed GitHub Actions run `#53`, green, after commit `2b6ce4c2b2dbafaccec4db542d7996588401c6e4`.
 
 ## M3 completion
 The frozen M3 backlog is complete:
@@ -37,7 +38,16 @@ The frozen M3 backlog is complete:
 5. `M3-W005` Evidence-based rollback controller.
 6. `M3-W006` Execution performance clock and improvement metrics.
 
-The final verification run passed after correcting a test fixture so that explicit current rollback-failure evidence matched the parser contract. Production rollback safeguards were not weakened.
+## Release 1.0 changes
+- package metadata synchronized to `1.0.0`;
+- public API `kyvernex.__version__` synchronized to `1.0.0`;
+- proprietary root license present and referenced by package metadata;
+- root `README.md` and `CHANGELOG.md` present;
+- CI builds source and wheel distributions;
+- CI installs the generated wheel in a clean virtual environment;
+- CI verifies both installed metadata and public API version;
+- release build and clean-install outcomes are included in the governed evidence record;
+- distribution files are uploaded with the CI evidence artifact.
 
 ## Persistent artifacts
 - `KGO_STATE.json`
@@ -49,37 +59,35 @@ The final verification run passed after correcting a test fixture so that explic
 - `SELF_VERIFICATION_SUMMARY.md`
 - `ROLLBACK_PLAN.json` when persisted by an authorized executor
 - `EXECUTION_METRICS.json` when persisted by an authorized executor
+- source and wheel distributions under `dist/` during CI
 
 ## Release 1.0 audit gates
 
 ### Passed
-- frozen M3 backlog implemented;
-- complete repository CI green on the latest observed run;
-- targeted verification integrated into GitHub Actions;
-- governance and execution APIs exported;
-- deterministic tests present for M3-W003 through M3-W006;
-- root `LICENSE` created with proprietary terms authorized by the owner;
-- `pyproject.toml` references the root proprietary license;
+- frozen M3 backlog implemented and previously verified;
+- package and public API versions synchronized to `1.0.0`;
+- proprietary root `LICENSE` present;
+- package metadata references the root license;
 - root `CHANGELOG.md` present;
-- `README.md` synchronized with the completed six-item M3 backlog and release workflow.
+- `README.md` synchronized with M3;
+- release build and clean-install verification integrated into CI.
 
 ### Open blockers
-1. Package and public API version remain `0.1.0.dev0`; no `1.0.0` version synchronization has been performed.
-2. A clean package build and clean-environment installation have not yet been evidenced by CI.
-3. The proprietary license text is an operational repository notice and has not been independently reviewed by legal counsel.
-4. No `v1.0.0` tag or GitHub Release may be created before all preceding technical gates pass.
+1. Fresh CI evidence for tests, package build and clean wheel installation is pending.
+2. The proprietary license text is an operational repository notice and has not been independently reviewed by legal counsel.
+3. No `v1.0.0` tag or GitHub Release may be created before the technical verification gate passes.
 
 ## Release continuation rule
-Resolve the first open release blocker in order, verify the repository after each relevant change, update this file, and stop before tagging if legal ownership or licensing terms require explicit user authorization.
+After a fresh green workflow run, record the successful evidence, then prepare the immutable `v1.0.0` tag and GitHub Release without adding new governance scope.
 
 ## Authority boundary
-KGO v3 governs decisions and state. Semantic code generation, repository writes, branch creation, pull requests, rollback execution, merge, licensing choice, version publication and release tagging remain subject to the authorized executor and available GitHub permissions. Performance measurements do not authorize execution.
+KGO v3 governs decisions and state. Repository writes, release tagging and publication remain subject to the authorized executor and available GitHub permissions. Performance measurements do not authorize execution.
 
 ## Autonomous stop conditions
-Stop only for documented current test failure, invalid dependency state, exceeded policy boundary, missing external authorization, external execution unavailability, unresolved licensing authority or completed release.
+Stop only for documented current test failure, package build failure, clean-install failure, invalid dependency state, exceeded policy boundary, missing external authorization, external execution unavailability or completed release.
 
 ## Anti-infinite rule
 KGO and KPM are frozen for Release 1.0 except for verified blocking defects. New observations are deferred and do not interrupt release consolidation.
 
 ## Verification note
-M3 is complete and verified by the latest user-observed green GitHub Actions run. Release 1.0 remains in audit and is not yet certified or tagged.
+M3 remains complete and verified. KYVERNEX `1.0.0` is now a release candidate awaiting fresh GitHub Actions evidence and is not yet tagged or certified.
