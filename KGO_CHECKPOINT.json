@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "PRODUCT_CODE_BOUNDARY",
-  "state": "SAFE_STOP",
+  "mode": "AUTONOMOUS_PRODUCT_CODE",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -14,47 +14,51 @@
   "paused_milestone": {
     "id": "M6",
     "title": "KYVERNEX Plugin Runtime",
-    "status": "PAUSED_BY_USER",
-    "completed_tasks": ["M6-W001", "M6-W002", "M6-W003", "M6-W004", "M6-W005"],
-    "paused_tasks": ["M6-W006", "M6-W007", "M6-W008", "M6-W009"]
+    "status": "PAUSED_BY_USER"
   },
   "completed_code_milestones": [
     {"id": "M7", "title": "Plugin Product Interface", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M8", "title": "Universal AI Plugin Bridge", "status": "CODE_COMPLETE_UNVERIFIED"}
   ],
+  "milestone": {
+    "id": "M9",
+    "title": "Local AI Tool Server",
+    "status": "ACTIVE"
+  },
   "sprint": {
-    "id": "S011",
-    "title": "Provider-neutral AI invocation",
-    "status": "CODE_COMPLETE_UNVERIFIED"
+    "id": "S012",
+    "title": "Loopback HTTP access",
+    "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-036",
-  "kpm_cycle": "KPM-CYCLE-025",
-  "completed_code_tasks": ["M8-W001", "M8-W002", "M8-W003", "M8-W004"],
+  "cycle": "KGO-CYCLE-037",
+  "kpm_cycle": "KPM-CYCLE-026",
+  "completed_code_tasks": ["M9-W001", "M9-W002"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
-  "active_task": null,
+  "active_task": {
+    "id": "M9-W003",
+    "title": "Generate a local OpenAPI document for the fixed routes",
+    "status": "IN_PROGRESS",
+    "priority": "P1"
+  },
   "code_evidence": {
-    "ai_bridge": "src/kyvernex/ai_bridge.py",
-    "manifest_formats": "src/kyvernex/ai_formats.py",
-    "ai_command": "src/kyvernex/ai_plugin_cli.py",
-    "package_entry_point": "kyvernex-ai-plugin",
-    "public_export": "KyvernexAIBridge",
-    "latest_code_commit": "967365bcc675d1ea1e68c79016b49d163f8fca11"
+    "local_server": "src/kyvernex/local_ai_server.py",
+    "server_command": "src/kyvernex/local_ai_server_cli.py",
+    "package_entry_point": "kyvernex-ai-server",
+    "latest_code_commit": "2d1c1e015d49b2b853d558d9ca3c4e5497d9742a"
   },
-  "product_capabilities": {
-    "canonical_ai_manifest": true,
-    "openai_manifest_shape": true,
-    "anthropic_manifest_shape": true,
-    "gemini_manifest_shape": true,
-    "provider_neutral_invocation": true,
-    "persistent_jsonl_mode": true,
-    "separate_provider_runtimes": false,
-    "remote_transport": false
+  "transport_boundary": {
+    "bind_host": "127.0.0.1",
+    "public_bind": false,
+    "max_request_bytes": 1048576,
+    "routes": ["GET /health", "GET /manifest", "POST /invoke"],
+    "external_network_client": false,
+    "cloud_dependency": false
   },
-  "autonomous_continuation": false,
-  "requires_user_proceed": true,
-  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve one canonical runtime and do not infer publication or verification.",
+  "autonomous_continuation": true,
+  "requires_user_proceed": false,
+  "resume_rule": "Continue only with executable local-server product code. Preserve loopback binding and the canonical bridge. Do not add public hosting, accounts, databases or provider-specific runtimes.",
   "stop_conditions": [
-    "PRODUCT_TARGET_NOT_DEFINED",
+    "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
     "SEPARATE_PROVIDER_RUNTIME_FORK",
     "EXTERNAL_PUBLICATION_BOUNDARY",
