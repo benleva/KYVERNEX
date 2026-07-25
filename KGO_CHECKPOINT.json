@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "PRODUCT_CODE_BOUNDARY",
-  "state": "SAFE_STOP",
+  "mode": "AUTONOMOUS_PRODUCT_CODE",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -21,49 +21,47 @@
     {"id": "M8", "title": "Universal AI Plugin Bridge", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M9", "title": "Local AI Tool Server", "status": "CODE_COMPLETE_UNVERIFIED"}
   ],
+  "milestone": {
+    "id": "M10",
+    "title": "Local Desktop Launcher",
+    "status": "ACTIVE"
+  },
   "sprint": {
-    "id": "S012",
-    "title": "Loopback HTTP access",
-    "status": "CODE_COMPLETE_UNVERIFIED"
+    "id": "S013",
+    "title": "One-command local app",
+    "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-039",
-  "kpm_cycle": "KPM-CYCLE-028",
-  "completed_code_tasks": ["M9-W001", "M9-W002", "M9-W003", "M9-W004"],
+  "cycle": "KGO-CYCLE-040",
+  "kpm_cycle": "KPM-CYCLE-029",
+  "completed_code_tasks": ["M10-W001"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
-  "active_task": null,
+  "active_task": {
+    "id": "M10-W002",
+    "title": "Add an optional local launch profile file",
+    "status": "IN_PROGRESS",
+    "priority": "P1"
+  },
   "code_evidence": {
-    "local_server": "src/kyvernex/local_ai_server.py",
-    "server_command": "src/kyvernex/local_ai_server_cli.py",
-    "openapi_builder": "src/kyvernex/local_ai_openapi.py",
-    "local_console": "src/kyvernex/local_ai_page.py",
-    "package_entry_point": "kyvernex-ai-server",
-    "latest_code_commit": "819e1feb1426fa5a89abf9a5f7a8b696b7373bb0"
+    "desktop_launcher": "src/kyvernex/local_ai_app_cli.py",
+    "package_entry_point": "kyvernex-ai-app",
+    "latest_code_commit": "b889789676333c34c27f902e147d6a7f5e33019b"
   },
-  "transport_boundary": {
+  "launcher_boundary": {
     "bind_host": "127.0.0.1",
-    "public_bind": false,
-    "max_request_bytes": 1048576,
-    "routes": [
-      "GET /",
-      "GET /console",
-      "GET /health",
-      "GET /manifest",
-      "GET /openapi.json",
-      "POST /invoke"
-    ],
-    "same_origin_console": true,
-    "external_assets": false,
-    "external_network_client": false,
-    "cloud_dependency": false
+    "opens_system_browser": true,
+    "headless_option": true,
+    "second_backend": false,
+    "cloud_dependency": false,
+    "background_service": false
   },
-  "autonomous_continuation": false,
-  "requires_user_proceed": true,
-  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve loopback-only transport and do not infer public hosting, authentication, databases, verification or release publication.",
+  "autonomous_continuation": true,
+  "requires_user_proceed": false,
+  "resume_rule": "Continue only with an optional local launch profile consumed by the same one-command launcher. Do not add installers, services, public hosting, accounts or databases.",
   "stop_conditions": [
-    "PRODUCT_TARGET_NOT_DEFINED",
     "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
     "SECOND_BACKEND_INTRODUCED",
+    "OPERATING_SYSTEM_SERVICE_INTRODUCED",
     "EXTERNAL_PUBLICATION_BOUNDARY",
     "MILESTONE_DONE"
   ]
