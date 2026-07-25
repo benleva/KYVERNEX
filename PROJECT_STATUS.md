@@ -5,11 +5,11 @@
 - Repository version: `0.1.0.dev0`
 - Current milestone: **M3 — Autonomous Development**
 - Current sprint: **S002 — Establish policy-bounded autonomous cycles**
-- CI status: **M3-W005 IMPLEMENTED — FRESH RUN PENDING**
+- CI status: **M3-W006 IMPLEMENTED — FRESH RUN PENDING**
 - Last user-observed workflow state: green / `VERIFIED`; historical red runs remain immutable records of earlier commits.
 
 ## Current objective
-Complete the existing M3 code path without expanding KGO or KPM. Verify the evidence-based rollback controller, then proceed only to the next dependency-valid implementation required by the frozen milestone backlog.
+Obtain fresh targeted and complete CI evidence for the final frozen M3 work item. Do not expand KGO or KPM and do not claim milestone verification before current successful evidence exists.
 
 ## Governance activation state
 - KPM: `FROZEN_EXCEPT_BUG_FIXES`
@@ -23,25 +23,29 @@ Complete the existing M3 code path without expanding KGO or KPM. Verify the evid
 - Continuous self-verification controller: `IMPLEMENTED_FRESH_CI_PENDING`
 - Safe isolated commit manager: `IMPLEMENTED_FRESH_CI_PENDING`
 - Evidence-based rollback controller: `IMPLEMENTED_FRESH_CI_PENDING`
-- Execution performance clock: `BACKLOG_PRIORITY_ASSIGNED_BY_KPM`
+- Execution performance clock: `IMPLEMENTED_FRESH_CI_PENDING`
 - Workflow: `.github/workflows/kgo.yml`
 - Start channel: manual `workflow_dispatch` or qualifying push to `main`
 
-## M3-W005 implementation
-The controller in `src/kyvernex/rollback.py` produces deterministic commit-level rollback plans without executing git or GitHub operations internally.
+## M3-W006 implementation
+The clock in `src/kyvernex/execution_clock.py` records named monotonic execution intervals and produces deterministic improvement metrics without changing governance decisions.
 
-Decisions:
-- `NOT_REQUIRED`: current targeted and complete verification succeeded;
-- `ROLLBACK_APPROVED`: explicit current supported test-failure evidence exists;
-- `EXECUTION_BLOCKED`: verification is incomplete and cannot justify rollback.
+Metrics:
+- sample count;
+- total duration;
+- average duration;
+- minimum and maximum duration;
+- optional baseline difference;
+- optional percentage improvement, including negative regression values.
 
 Controls:
-- explicit authorization;
-- distinct failed and restore commits;
-- matching approved/current isolated changeset fingerprints;
-- supported current failure evidence requirement;
-- deterministic SHA-256 evidence fingerprint;
-- advisory executor command only, with no internal repository mutation.
+- injected monotonic clock for deterministic tests;
+- duplicate-running-sample rejection;
+- missing-stop rejection;
+- backward-clock rejection;
+- invalid duration and baseline rejection;
+- incomplete running evidence blocks summarization;
+- performance remains observational and cannot replace correctness evidence.
 
 ## Persistent artifacts
 - `KGO_STATE.json`
@@ -52,6 +56,7 @@ Controls:
 - `SELF_VERIFICATION.json`
 - `SELF_VERIFICATION_SUMMARY.md`
 - `ROLLBACK_PLAN.json` when persisted by an authorized executor
+- `EXECUTION_METRICS.json` when persisted by an authorized executor
 
 ## M3 canonical backlog
 1. `M3-W001` Autonomous task scheduler.
@@ -62,24 +67,24 @@ Controls:
 6. `M3-W006` Execution performance clock and improvement metrics.
 
 ## Current governance cycle
-- Cycle: `KGO-CYCLE-011`
-- Status: `M3_W005_IMPLEMENTED_FRESH_RUN_PENDING`
-- Active task: obtain fresh targeted and complete CI evidence for M3-W005.
-- Continuation rule: after successful verification, proceed to `M3-W006` without adding new governance scope.
+- Cycle: `KGO-CYCLE-012`
+- Status: `M3_W006_IMPLEMENTED_FRESH_RUN_PENDING`
+- Active task: obtain fresh targeted and complete CI evidence for M3-W006 and the complete repository suite.
+- Continuation rule: after successful verification, record M3 completion without adding new Release 1.0 governance scope.
 
-## Definition of Done for M3-W005
-- rollback controller implementation present;
+## Definition of Done for M3-W006
+- execution clock implementation present;
 - public API exported;
-- deterministic decision tests present;
-- authorization and fingerprint mutation tests present;
-- incomplete evidence cannot authorize rollback;
+- deterministic timing and metric tests present;
+- baseline improvement and regression metrics present;
+- invalid and incomplete timing evidence rejected;
 - specification present;
 - workflow targeted integration present;
 - project status synchronized;
 - fresh complete CI evidence successful.
 
 ## Authority boundary
-KGO v3 governs decisions and state. Semantic code generation, repository writes, branch creation, pull requests, rollback execution and merge remain subject to the authorized executor and available GitHub permissions.
+KGO v3 governs decisions and state. Semantic code generation, repository writes, branch creation, pull requests, rollback execution and merge remain subject to the authorized executor and available GitHub permissions. Performance measurements do not authorize execution.
 
 ## Autonomous stop conditions
 Stop only for documented current test failure, invalid dependency state, exceeded policy boundary, missing external authorization, external execution unavailability or completed milestone/release. Absence of evidenced error is not a blocker.
@@ -88,4 +93,4 @@ Stop only for documented current test failure, invalid dependency state, exceede
 KGO and KPM are frozen for Release 1.0 except for verified blocking defects. New observations are deferred and do not interrupt implementation.
 
 ## Verification note
-M3-W003, M3-W004 and M3-W005 implementations are committed. No passing result is claimed until a fresh GitHub Actions run completes successfully.
+M3-W003, M3-W004, M3-W005 and M3-W006 implementations are committed. No passing result or completed M3 milestone is claimed until a fresh GitHub Actions run completes successfully.
