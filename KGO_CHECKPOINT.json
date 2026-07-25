@@ -2,84 +2,37 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "RUNNING",
+  "state": "VERIFYING",
   "target_release": "1.2.0",
-  "stable_release": {
-    "version": "1.1.0",
-    "tag": "v1.1.0",
-    "status": "PUBLISHED_LATEST",
-    "immutable": true
-  },
-  "historical_releases": [
-    {
-      "version": "1.1.0rc1",
-      "tag": "v1.1.0-rc.1",
-      "status": "PUBLISHED_PRERELEASE",
-      "latest": false
-    },
-    {
-      "version": "1.0.0",
-      "tag": "v1.0.0",
-      "status": "PUBLISHED_HISTORICAL_STABLE",
-      "latest": false
-    }
-  ],
-  "milestone": {
-    "id": "M6",
-    "title": "KYVERNEX Plugin Runtime",
-    "status": "ACTIVE"
-  },
-  "sprint": {
-    "id": "S007",
-    "title": "Fail-closed plugin configuration",
-    "status": "ACTIVE"
-  },
+  "stable_release": {"version": "1.1.0", "tag": "v1.1.0", "status": "PUBLISHED_LATEST", "immutable": true},
+  "milestone": {"id": "M6", "title": "KYVERNEX Plugin Runtime", "status": "ACTIVE"},
+  "sprint": {"id": "S007", "title": "Fail-closed plugin configuration", "status": "ACTIVE"},
   "cycle": "KGO-CYCLE-027",
   "kpm_cycle": "KPM-CYCLE-016",
-  "completed_tasks": [
-    "M6-W001",
-    "M6-W002",
-    "M6-W003"
-  ],
+  "completed_tasks": ["M6-W001", "M6-W002", "M6-W003"],
   "active_task": {
     "id": "M6-W005",
     "title": "Add configuration loading, validation and fail-closed defaults",
-    "status": "IN_PROGRESS",
+    "status": "IN_VERIFICATION",
     "priority": "P0"
   },
-  "plugin_contract": {
-    "specification_id": "KYVERNEX-M6-PLUGIN-CONTRACT",
-    "version": "1.0.0",
-    "status": "FROZEN",
-    "normative_path": "repository/specifications/M6_PLUGIN_RUNTIME_CONTRACT.md",
-    "schema_path": "repository/specifications/m6-plugin-contract.schema.json",
-    "unresolved_p0_authority_ambiguity": false
-  },
-  "verified_runtime": {
-    "verification_commit": "691c769",
-    "test_suite": "GREEN",
-    "kgo_v3": "GREEN",
-    "reference_prototype_tests": "GREEN",
-    "pages_deployment": "GREEN",
-    "authority_review": "GREEN_NO_EXPANSION"
-  },
-  "verified_host_contracts": {
-    "verification_commit": "83ce3a3",
-    "contracts_path": "src/kyvernex/plugin_contracts.py",
+  "verified_runtime": {"verification_commit": "691c769", "status": "GREEN"},
+  "verified_host_contracts": {"verification_commit": "83ce3a3", "status": "GREEN"},
+  "configuration_implementation": {
+    "config_path": "src/kyvernex/plugin_config.py",
     "runtime_path": "src/kyvernex/plugin_runtime.py",
-    "tests_path": "tests/test_plugin_runtime.py",
-    "exports_path": "src/kyvernex/__init__.py",
-    "test_suite": "GREEN",
-    "kgo_v3": "GREEN",
-    "reference_prototype_tests": "GREEN",
-    "pages_deployment": "GREEN",
-    "authority_review": "GREEN_NO_EXPANSION"
+    "tests_path": "tests/test_plugin_config.py",
+    "implementation_commit": "460e2751f40d9897f50dce3c3ce0e2bb70169459",
+    "targeted_tests": "PENDING",
+    "complete_suite": "PENDING",
+    "authority_review": "PENDING"
   },
   "configuration_scope": {
     "unknown_fields": "REJECT",
     "filesystem_default": "NONE",
     "network_default": "DISABLED",
     "process_default": "DISABLED",
+    "audit_required": true,
     "repository_authority": "FORBIDDEN",
     "silent_authority_expansion": "FORBIDDEN",
     "configuration_mutation_after_initialize": "UNSUPPORTED"
@@ -92,12 +45,6 @@
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Implement M6-W005 against the frozen contract and verified runtime, add targeted configuration tests and obtain current regression evidence before advancing.",
-  "stop_conditions": [
-    "CURRENT_VERIFICATION_FAILURE",
-    "CONTRACT_CONTRADICTION",
-    "UNRESOLVED_P0_SECURITY_BOUNDARY",
-    "EXTERNAL_PUBLICATION_BOUNDARY",
-    "MILESTONE_DONE"
-  ]
+  "resume_rule": "Read current CI evidence for M6-W005. On green, close it and activate the next dependency-valid item. On failure, record the exact failure before repair.",
+  "stop_conditions": ["CURRENT_VERIFICATION_FAILURE", "CONTRACT_CONTRADICTION", "UNRESOLVED_P0_SECURITY_BOUNDARY", "EXTERNAL_PUBLICATION_BOUNDARY", "MILESTONE_DONE"]
 }
