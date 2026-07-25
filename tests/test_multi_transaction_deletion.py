@@ -56,7 +56,7 @@ def test_recovery_restores_relations_when_object_still_exists(tmp_path):
         target_object_id=right.object_id,
         relation_type=RelationType.DERIVED_FROM,
     )
-    graph.remove(relation.relation_id, session_id="s")
+    graph.remove("s", relation.relation_id)
     transaction_id = "tx-rollback"
     payload = {
         "format_version": "0.2",
