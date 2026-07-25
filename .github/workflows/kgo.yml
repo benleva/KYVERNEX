@@ -71,6 +71,14 @@ jobs:
           python -m kyvernex.kgo_v2 artifacts/pytest-output.txt --output-dir artifacts
           cat artifacts/KGO_V2_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Plan next M3 autonomous development cycle
+        if: steps.tests.outcome == 'success' && (github.event.inputs.mode || 'autonomous') == 'autonomous'
+        shell: bash
+        run: |
+          python -m kyvernex.ade_cli --artifact-directory artifacts
+          echo "## M3 autonomous development" >> "$GITHUB_STEP_SUMMARY"
+          echo "The next policy-bounded development cycle is available in ADE_CYCLE_PLAN.json." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Produce CI evidence record
         if: always()
         shell: bash
@@ -85,7 +93,7 @@ jobs:
           from pathlib import Path
 
           evidence = {
-              "schema": "kyvernex.kgo.evidence.v2",
+              "schema": "kyvernex.kgo.evidence.v3",
               "mode": os.environ.get("KGO_MODE", "autonomous"),
               "repository": os.environ.get("GITHUB_REPOSITORY"),
               "commit": os.environ.get("GITHUB_SHA"),
@@ -94,7 +102,7 @@ jobs:
               "test_outcome": os.environ.get("TEST_OUTCOME", "unknown"),
               "verified_at": datetime.now(timezone.utc).isoformat(),
               "ci_provider": "github-actions",
-              "governance_engine": "KGO_V2",
+              "governance_engine": "KGO_V2_ADE_M3",
           }
           Path("artifacts/KGO_EVIDENCE.json").write_text(
               json.dumps(evidence, indent=2, sort_keys=True) + "\n",
@@ -117,7 +125,7 @@ jobs:
             gh issue create --title "$title" --body-file "$body_file"
           fi
 
-      - name: Upload KGO v2 governance evidence
+      - name: Upload KGO v2 and M3 governance evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
