@@ -4,78 +4,65 @@
 - Governance system: KDP + KPM + KGO v1/v2/v3 + KEX + Autonomous Development Engine
 - Stable release: `1.0.0`
 - Immutable published tag: `v1.0.0`
+- Release candidate: `1.1.0rc1`
 - Completed milestones: **M2 — Governance consolidation; M3 — Autonomous Development**
 - Active milestone: **M4 — Governed post-release evolution**
 - Active sprint: **S002 — Establish the 1.1 evidence baseline**
-- Target version: `1.1.0`
 - Governance mode: **AUTONOMOUS**
-- KPM cycle: `KPM-CYCLE-006`
-- KGO cycle: `KGO-CYCLE-017`
-- CI baseline: **Release 1.0 verified in GitHub Actions run #58**
-- Current M4 CI: **FRESH RUN PENDING**
+- KPM cycle: `KPM-CYCLE-007`
+- KGO cycle: `KGO-CYCLE-018`
+- M4 implementation evidence: **GREEN on commit `0312f97857dd954b71ad44b07834c545f40a9db1`**
+- Release-candidate CI: **FRESH RUN PENDING**
 
 ## Current objective
-Obtain fresh targeted and complete verification for the bounded KPM/KGO autonomous control CLI, including source and wheel builds, clean installation and installed console-script behavior. Do not claim M4 verification before current evidence is green.
+Verify the synchronized `1.1.0rc1` package, public API and installed `kyvernex-governance` console script through targeted tests, the complete suite, source and wheel builds and clean installation. Do not tag or publish the release candidate before fresh green evidence exists.
 
 ## Active governance state
 - KPM: `RUNNING`
-- KGO v1 analyzer: `IMPLEMENTED_AND_VERIFIED`
-- KGO v2 planner: `IMPLEMENTED_AND_VERIFIED`
 - KGO v3 autonomous loop: `RUNNING`
-- KEX: `IMPLEMENTED_AND_VERIFIED`
 - M4-W001 control-plane synchronization: `DONE`
 - M4-W002 capability-gap inventory: `DONE`
 - M4-W003 capability selection: `DONE`
 - M4-W004 frozen specification and manifest: `DONE`
-- M4-W005 governance CLI implementation: `TEST`
-- M4-W006 verification and clean installation: `IN_DEVELOPMENT`
-- M4-W007 release-candidate synchronization: `BACKLOG`
-- Autonomous continuation: `ENABLED`
+- M4-W005 governance CLI implementation: `DONE`
+- M4-W006 verification and clean installation: `DONE`
+- M4-W007 release-candidate synchronization: `IN_DEVELOPMENT`
 - Checkpoint: `KGO_CHECKPOINT.json`
 
-## Implemented M4 capability
-
-The package now exposes:
+## Verified M4 capability
+The installed package exposes:
 
 ```bash
 kyvernex-governance <start|status|advance|resume> --plan <path> --checkpoint <path>
 ```
 
-Controls:
+Verified controls include deterministic JSON output, fail-closed plan validation, dependency enforcement, closed-milestone protection, checkpoint overwrite rejection, active-item advancement rejection, governed exit codes, bounded checkpoint writes and absence of unsupported execution claims.
 
-- deterministic sorted JSON output;
-- fail-closed plan parsing and enum validation;
-- unknown dependency rejection;
-- closed milestone with incomplete work rejection;
-- existing checkpoint overwrite rejection;
-- no advancement while a current item is active;
-- blocked-state exit code `2`;
-- invalid input or policy error exit code `3`;
-- non-permitted operation exit code `4`;
-- writes limited to the explicitly supplied checkpoint path;
-- no unsupported repository, test, CI or publication claim.
+## Verification evidence
+The user-observed Actions page confirms green results for commit `0312f97` in:
 
-## Verification sequence
+- KYVERNEX KGO v3;
+- KYVERNEX Reference Prototype Tests;
+- KYVERNEX Test Suite;
+- GitHub Pages deployment.
 
-1. targeted `test_governance_cli.py`, program-manager and KGO tests;
-2. complete repository suite;
-3. source and wheel build;
-4. clean wheel installation;
-5. installed `kyvernex-governance start` smoke test;
-6. governed evidence upload and result enforcement.
+This closes M4-W005 and M4-W006. The subsequent version and documentation synchronization to `1.1.0rc1` requires a new green run.
+
+## Release-candidate contents
+- package version `1.1.0rc1`;
+- public API version `1.1.0rc1`;
+- installed `kyvernex-governance` console script;
+- release notes in `RELEASE_NOTES_1.1.0rc1.md`;
+- CI version, build, clean-install and installed-CLI checks.
 
 ## Stable-baseline protection
-- `v1.0.0` remains immutable.
-- New work targets `1.1.0` and cannot rewrite the published release.
-- KPM selects only dependency-valid work.
-- KGO advances only from current repository evidence.
-- Performance evidence cannot replace correctness evidence or authorize execution.
-
-## Autonomous stop conditions
-Stop for current targeted or complete verification failure, package or clean-install failure, invalid dependency state, exceeded policy boundary, missing authorization, unavailable executor or completed milestone.
+- `v1.0.0` remains immutable;
+- Release 1.0 remains the published stable baseline;
+- the release candidate must be tagged separately and marked as a prerelease;
+- no current evidence may be inferred from historical runs.
 
 ## Continuation rule
-After a fresh green workflow, record M4-W005 and M4-W006 as done, synchronize release-candidate documentation and select the next dependency-valid action. If the workflow fails, stop and record the current failure before repair.
+After a fresh green release-candidate workflow, close M4-W007 and prepare the separate `v1.1.0-rc.1` prerelease. On current failure, stop and record the failure before repair.
 
 ## Verification note
-The governance CLI implementation, tests, package entry point and CI integration are committed. M4 verification remains pending until a fresh GitHub Actions run completes.
+M4 implementation is verified. KYVERNEX `1.1.0rc1` is prepared but not yet verified, tagged or published.
