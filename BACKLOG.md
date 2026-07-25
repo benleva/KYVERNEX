@@ -5,49 +5,59 @@
 - Paused milestone: `M6 — KYVERNEX Plugin Runtime`
 - Code-complete milestones: `M7` through `M15`
 - Local runtime path: `LOCAL_APP_SMOKE_VERIFIED`
+- Active milestone: `M16 — Local Verification Report`
 - Development package version: `1.2.0.dev0`
 
 ## Preserved state
 - M6-W001 through M6-W005: `DONE`;
 - M6-W006 through M6-W009: `PAUSED_BY_USER`;
-- M7 through M14 remain code-complete, with only the portions exercised by the local app smoke path promoted beyond `UNVERIFIED`.
+- M7 through M15 retain their recorded code and smoke-verification qualifiers;
+- `RUNTIME_SMOKE_EVIDENCE.md` remains the evidence for the operator-run Codespaces path.
 
-## M15 status
+## M16 product-code backlog
 
 | Work item | Deliverable | Priority | Status |
 |---|---|---:|---|
-| M15-W001 | Strict `name` plus `arguments` tool-call envelope on `KyvernexAIBridge` | P0 | CODE_COMPLETE_SMOKE_COVERED |
-| M15-W002 | Automatic direct/envelope routing in single JSON and JSONL CLI modes | P0 | CODE_COMPLETE_PARTIALLY_VERIFIED |
-| M15-W003 | Loopback `POST /tool-call` route reusing the same bridge method | P1 | LOCAL_HTTP_SMOKE_VERIFIED |
+| M16-W001 | Expanded `kyvernex-ai-smoke` checks and optional persistent JSON report | P0 | CODE_COMPLETE_UNVERIFIED |
+| M16-W002 | Operator execution of the expanded command with saved report | P0 | READY_FOR_OPERATOR_RUN |
 
-## Runtime evidence
+## M16 code evidence
 
-`RUNTIME_SMOKE_EVIDENCE.md` records the operator-run Codespaces evidence:
+- `src/kyvernex/local_ai_smoke_cli.py` accepts `--output` and `--force`;
+- adapter health, four provider manifest shapes and OpenAPI invocation routes are checked;
+- `/invoke` and `/tool-call` must both succeed;
+- tool-call correlation id preservation is checked;
+- report output lists remaining unverified areas instead of implying full qualification;
+- existing report files require `--force` before replacement.
 
-- editable installation of `1.2.0.dev0`;
-- execution of `kyvernex-ai-smoke`;
-- generation of `prova-kyvernex`;
-- loopback app readiness on port `8765`;
-- private Codespaces forwarding;
-- browser console loading;
-- healthy adapter and restricted authority state;
-- governed browser invocation returning `SUCCEEDED` with principal `andrea` and handler marker `local-project`.
+## Operator command
+
+```text
+python -m pip install -e .
+kyvernex-ai-smoke --output local-verification.json
+```
+
+Readable output:
+
+```text
+python -m json.tool local-verification.json
+```
 
 ## Remaining verification backlog
 
 | Verification item | Priority | Status |
 |---|---:|---|
+| Expanded M16 verification run | P0 | READY_FOR_OPERATOR_RUN |
 | Full automated test suite | P0 | NOT_RUN |
 | Clean install outside Codespaces | P0 | NOT_RUN |
 | Windows portable launcher | P1 | NOT_RUN |
 | macOS portable launcher | P1 | NOT_RUN |
 | Linux portable launcher outside Codespaces | P1 | NOT_RUN |
 | JSONL persistent CLI path | P1 | NOT_RUN |
-| All provider manifest shapes | P1 | NOT_RUN |
 | Failure, timeout and size-limit paths | P1 | NOT_RUN |
 | Concurrency, load and recovery behavior | P2 | NOT_RUN |
 | Release qualification | P0 | NOT_STARTED |
 
 ## Boundary
 
-The successful smoke run verifies one concrete local Codespaces path. It does not justify a green test-suite claim, cross-platform compatibility claim or release publication. Stable `v1.1.0` remains unchanged.
+The existing successful smoke run verifies one concrete local Codespaces path. M16 adds repeatable reporting but remains unverified until the operator runs the updated command. Stable `v1.1.0` remains unchanged.
