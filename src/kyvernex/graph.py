@@ -44,7 +44,6 @@ class CognitiveGraph:
             raise ValueError("ESTREMI_RELAZIONE_MANCANTI")
         if relation.source_object_id == relation.target_object_id:
             raise ValueError("AUTO_RELAZIONE_NON_AMMESSA")
-
         with self._lock:
             session = self._relations.setdefault(relation.session_id, {})
             duplicate = any(
@@ -57,15 +56,7 @@ class CognitiveGraph:
                 raise RelationConflictError("RELAZIONE_GIA_PRESENTE_NELLA_SESSIONE")
             session[relation.relation_id] = relation
 
-    def connect(
-        self,
-        *,
-        session_id: str,
-        source_object_id: str,
-        target_object_id: str,
-        relation_type: RelationType,
-        metadata: dict[str, Any] | None = None,
-    ) -> CognitiveRelation:
+    def connect(self, *, session_id: str, source_object_id: str, target_object_id: str, relation_type: RelationType, metadata: dict[str, Any] | None = None) -> CognitiveRelation:
         relation = CognitiveRelation(
             session_id=session_id,
             source_object_id=source_object_id,
@@ -81,18 +72,10 @@ class CognitiveGraph:
             return tuple(self._relations.get(session_id, {}).values())
 
     def outgoing(self, session_id: str, object_id: str) -> tuple[CognitiveRelation, ...]:
-        return tuple(
-            relation
-            for relation in self.list(session_id)
-            if relation.source_object_id == object_id
-        )
+        return tuple(r for r in self.list(session_id) if r.source_object_id == object_id)
 
     def incoming(self, session_id: str, object_id: str) -> tuple[CognitiveRelation, ...]:
-        return tuple(
-            relation
-            for relation in self.list(session_id)
-            if relation.target_object_id == object_id
-        )
+        return tuple(r for r in self.list(session_id) if r.target_object_id == object_id)
 
     def related_object_ids(self, session_id: str, object_id: str) -> tuple[str, ...]:
         related: list[str] = []
@@ -102,6 +85,32 @@ class CognitiveGraph:
             elif relation.target_object_id == object_id:
                 related.append(relation.source_object_id)
         return tuple(dict.fromkeys(related))
+
+    def remove(self, session_id: str, relation_id: str) -> CognitiveRelation | None:
+        with self._lock:
+            session = self._relations.get(session_id)
+            if session is None:
+                return None
+            relation = session.pop(relation_id, None)
+            if not session:
+                self._relations.pop(session_id, None)
+            return relation
+
+    def remove_for_object(self, session_id: str, object_id: str) -> tuple[CognitiveRelation, ...]:
+        with self._lock:
+            session = self._relations.get(session_id)
+            if session is None:
+                return ()
+            removed = tuple(
+                relation
+                for relation in session.values()
+                if relation.source_object_id == object_id or relation.target_object_id == object_id
+            )
+            for relation in removed:
+                session.pop(relation.relation_id, None)
+            if not session:
+                self._relations.pop(session_id, None)
+            return removed
 
     def count(self, session_id: str) -> int:
         with self._lock:
