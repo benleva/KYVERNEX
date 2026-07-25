@@ -48,6 +48,10 @@ from .persistence import JsonSessionMemory, PersistenceFormatError
 from .response_governance import GovernedResponse, ResponseGovernor
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .serialization import to_primitive
+from .transaction_journal import (
+    MultiTransactionDeletionCoordinator,
+    RecoveryBatch,
+)
 
 __all__ = [
     "AET",
@@ -81,7 +85,9 @@ __all__ = [
     "KyvernexEngine",
     "KyvernexOrchestrator",
     "MemoryConflictError",
+    "MultiTransactionDeletionCoordinator",
     "PersistenceFormatError",
+    "RecoveryBatch",
     "RecoveryResult",
     "ReferentialIntegrityError",
     "RelationConflictError",
