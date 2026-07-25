@@ -5,58 +5,51 @@
 - Immutable stable tag: `v1.1.0`
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
 - Code-complete milestones: **M7**, **M8**, **M9**, **M10**
-- Sprint: **S013 — One-command local app**
-- Governance mode: **KPM/KGO PRODUCT CODE BOUNDARY**
-- KPM cycle: `KPM-CYCLE-030`
-- KGO cycle: `KGO-CYCLE-041`
+- Active milestone: **M11 — Local Setup Bootstrap**
+- Active sprint: **S014 — Explicit local initialization**
+- Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
+- KPM cycle: `KPM-CYCLE-031`
+- KGO cycle: `KGO-CYCLE-042`
 - Development package version: `1.2.0.dev0`
 
-## Product objective delivered
-Start the existing loopback server and open its console with one installed command, optionally configured by one explicit local JSON profile.
+## Product objective
+Create one validated local launch profile with a single installed command, then use that profile with the existing desktop launcher.
 
 ```text
-kyvernex-ai-app
--> command arguments or explicit profile
--> host callable
--> KyvernexLocalAIServer on 127.0.0.1
--> system browser
--> local KYVERNEX console
+kyvernex-ai-setup
+-> strict JSON profile
+-> kyvernex-ai-app --profile ...
+-> loopback server
+-> local browser console
 ```
 
 ## Preserved product code
-M7, M8 and M9 remain `CODE_COMPLETE_UNVERIFIED`. M10 reuses the same plugin, AI bridge, local server and browser console. No second backend or runtime is introduced.
+M7 through M10 remain `CODE_COMPLETE_UNVERIFIED`. M11 does not add another runtime, server, backend or configuration source.
 
-## M10 code delivered
-### M10-W001 — One-command desktop launcher
+## M11 delivered code
+### M11-W001 — Explicit setup bootstrap command
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `src/kyvernex/local_ai_app_cli.py` provides the launcher;
-- `pyproject.toml` installs `kyvernex-ai-app`;
-- the launcher starts the fixed loopback server and opens the local console;
-- `--no-browser` keeps the same application headless;
-- `Ctrl+C` shuts down server and bridge.
-
-### M10-W002 — Explicit local JSON profile
-Status: `CODE_COMPLETE_UNVERIFIED`
-
-- `src/kyvernex/local_ai_profile.py` loads one explicitly named UTF-8 JSON file;
-- supported fields are only `handler`, `principal`, `port` and `open_browser`;
-- unknown fields fail closed;
-- no automatic discovery, environment read or fallback profile is used;
-- command-line values override profile values;
-- `examples/local_ai_profile.json` provides a minimal usable profile.
+- `src/kyvernex/local_ai_setup_cli.py` provides `kyvernex-ai-setup`;
+- `pyproject.toml` installs the command;
+- the command writes one explicit UTF-8 JSON profile;
+- the generated profile is validated by the existing strict profile loader;
+- default output is `kyvernex.local.json`;
+- an existing file is never replaced unless `--force` is supplied;
+- supported values remain only handler, principal, port and browser preference.
 
 ## Current use
 
 ```text
-kyvernex-ai-app --profile examples/local_ai_profile.json
+kyvernex-ai-setup --handler examples.plugin_handler:handle --principal andrea
+kyvernex-ai-app --profile kyvernex.local.json
 ```
 
-Command-line override:
+Alternative output:
 
 ```text
-kyvernex-ai-app --profile examples/local_ai_profile.json --port 9000 --no-browser
+kyvernex-ai-setup --output config/kyvernex.json --handler examples.plugin_handler:handle --no-browser
 ```
 
 ## Boundary
-M10 is code-complete but unverified. It launches only the already delivered loopback product. It does not add public binding, remote hosting, authentication, databases, accounts, installers, operating-system services or release publication. No CI, clean-install or runtime verification claim is made.
+M11 creates only a local profile file named explicitly by the user. It performs no discovery, environment reads, network access, package installation, operating-system registration, background service creation or release publication. No verification claim is made.
