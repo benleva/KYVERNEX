@@ -4,6 +4,7 @@ from dataclasses import dataclass, replace
 
 from .adapters import AdapterResponse
 from .core import ContinuousValidator
+from .graph import CognitiveGraph, CognitiveRelation, RelationType
 from .memory import SessionMemory
 from .models import (
     AuditEvent,
@@ -21,6 +22,7 @@ class GovernedResponse:
     cognitive_object: CognitiveObject
     validation: ValidationRecord
     audit: tuple[AuditEvent, ...]
+    relation: CognitiveRelation
 
 
 class ResponseGovernor:
@@ -30,11 +32,17 @@ class ResponseGovernor:
         self,
         *,
         memory: SessionMemory,
+        graph: CognitiveGraph | None = None,
         rule_engine: RuleEngine | None = None,
     ) -> None:
         self._memory = memory
+        self._graph = graph or CognitiveGraph()
         self._rule_engine = rule_engine or RuleEngine()
         self._validator = ContinuousValidator(self._rule_engine)
+
+    @property
+    def graph(self) -> CognitiveGraph:
+        return self._graph
 
     def govern(
         self,
@@ -103,8 +111,34 @@ class ResponseGovernor:
             )
         )
 
+        relation = self._graph.connect(
+            session_id=session_id,
+            source_object_id=obj.object_id,
+            target_object_id=parent_object_id,
+            relation_type=RelationType.DERIVED_FROM,
+            metadata={
+                "adapter_name": response.adapter_name,
+                "model": response.model,
+            },
+        )
+        audit.append(
+            AuditEvent.create(
+                session_id=session_id,
+                component="COGNITIVE_GRAPH",
+                event_type="RELAZIONE_COGNITIVA_REGISTRATA",
+                object_id=obj.object_id,
+                details={
+                    "relation_id": relation.relation_id,
+                    "relation_type": relation.relation_type.value,
+                    "target_object_id": parent_object_id,
+                    "session_relation_count": self._graph.count(session_id),
+                },
+            )
+        )
+
         return GovernedResponse(
             cognitive_object=obj,
             validation=validation,
             audit=tuple(audit),
+            relation=relation,
         )
