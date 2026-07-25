@@ -1,6 +1,7 @@
 """KYVERNEX Reference Prototype 0.1."""
 
 from .core import AET, ContinuousValidator, KyvernexEngine
+from .memory import MemoryConflictError, SessionMemory
 from .models import (
     AuditEvent,
     CognitiveCategory,
@@ -22,10 +23,12 @@ __all__ = [
     "ContinuousValidator",
     "ExecutionResult",
     "KyvernexEngine",
+    "MemoryConflictError",
     "Rule",
     "RuleEngine",
     "RuleResult",
     "RuleSeverity",
+    "SessionMemory",
     "ValidationOutcome",
     "ValidationRecord",
     "default_rules",
