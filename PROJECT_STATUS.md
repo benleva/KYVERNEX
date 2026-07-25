@@ -4,66 +4,51 @@
 - Stable published release: `1.1.0`
 - Immutable stable tag: `v1.1.0`
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
-- Code-complete milestones: **M7**, **M8**, **M9**, **M10**, **M11**, **M12**, **M13**
-- Sprint: **S016 — Editable local project generation**
+- Code-complete milestones: **M7**, **M8**, **M9**, **M10**, **M11**, **M12**, **M13**, **M14**
+- Sprint: **S017 — Public integration surface**
 - Governance mode: **KPM/KGO PRODUCT CODE BOUNDARY**
-- KPM cycle: `KPM-CYCLE-036`
-- KGO cycle: `KGO-CYCLE-047`
+- KPM cycle: `KPM-CYCLE-037`
+- KGO cycle: `KGO-CYCLE-048`
 - Development package version: `1.2.0.dev0`
 
-## Product objective delivered
-Create one editable local project directory containing a host handler, strict profile, portable launch files and a short local README, with optional immediate launch.
+## M14 objective delivered
+Expose one coherent Python integration surface for handler loading, persistent plugin sessions and AI manifest translation.
 
 ```text
-kyvernex-ai-project DIRECTORY --launch
--> editable handler.py
--> kyvernex.local.json
--> Windows, macOS and Linux launch files
--> existing kyvernex-ai-app
--> loopback KYVERNEX console
+from kyvernex import (
+    KyvernexPluginSession,
+    load_plugin_handler,
+    export_openai_tool,
+)
 ```
 
-## Preserved product code
-M7 through M12 remain `CODE_COMPLETE_UNVERIFIED`. M13 reuses the existing strict profile and desktop app contracts. It creates ordinary source and text files only.
-
-## M13 code delivered
-### M13-W001 — Editable local project generator
+## M14 code delivered
+### M14-W001 — Unified handler loader API
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `src/kyvernex/local_ai_project_cli.py` provides `kyvernex-ai-project`;
-- `pyproject.toml` installs the command;
-- the default output directory is `kyvernex-local-project`;
-- generated `handler.py` exposes `handle(request, authority)` and is intended for direct editing;
-- generated profile references the local handler explicitly as `handler:handle`;
-- generated launch files change into the project directory before invoking `kyvernex-ai-app`;
-- Windows, macOS and Linux start files are included;
-- POSIX files receive executable permission bits;
-- existing scaffold files require `--force` before replacement;
-- the generated profile is validated before success is reported.
+- `load_plugin_handler` remains the canonical strict loader;
+- `load_handler` is now an explicit compatibility alias using the same implementation;
+- command-line products and Python callers no longer depend on two separate loading paths;
+- `PluginHandler` and `PluginHandlerLoadError` are exported from the package root.
 
-### M13-W002 — Immediate scaffold launch
+### M14-W002 — Public session and AI format APIs
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `--launch` starts the generated project only after successful file creation and profile validation;
-- the process changes into the generated project directory before invoking the existing app path;
-- `handler:handle` is therefore resolved from the project itself;
-- the launcher receives the explicit local profile `kyvernex.local.json`;
-- the previous working directory is restored after the local app exits;
-- the app exit code is returned unchanged.
+- `KyvernexPluginSession` is exported from `kyvernex`;
+- its default development version is aligned to `1.2.0.dev0`;
+- dedicated exporters are available for canonical, OpenAI, Anthropic and Gemini shapes;
+- `export_manifest` dispatches through those dedicated exporters;
+- all exporter functions and `AIManifestFormatError` are exported from the package root.
 
-## Current use
+## Public integration example
 
-Create only:
+```python
+from kyvernex import KyvernexPluginSession, load_plugin_handler
 
-```text
-kyvernex-ai-project my-kyvernex-project --principal andrea
-```
-
-Create and launch:
-
-```text
-kyvernex-ai-project my-kyvernex-project --principal andrea --launch
+handler = load_plugin_handler("handler:handle")
+with KyvernexPluginSession(handler, principal="andrea") as session:
+    response = session.execute({"message": "ciao"})
 ```
 
 ## Boundary
-M13 is code-complete but unverified. It creates only an editable local folder and may invoke only the existing loopback application. It does not install dependencies, register operating-system components, create services, expose a public address, access external networks or publish a release. No runtime compatibility, CI or verification claim is made.
+M14 changes only the public Python integration surface and version alignment. It adds no runtime, transport, network access, installer, operating-system registration, verification or release publication. No tests were executed and no compatibility claim is made.
