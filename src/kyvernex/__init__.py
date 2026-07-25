@@ -55,6 +55,14 @@ from .program_manager import (
     WorkItem, WorkStatus,
 )
 from .response_governance import GovernedResponse, ResponseGovernor
+from .rollback import (
+    EvidenceBasedRollbackController,
+    RollbackDecision,
+    RollbackError,
+    RollbackPlan,
+    RollbackPolicy,
+    write_rollback_plan,
+)
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .self_verification import (
     ContinuousSelfVerificationController,
@@ -81,8 +89,8 @@ __all__ = [
     "DecisionDisposition", "DecisionGateError", "DecisionPolicy", "DefinitionOfDone",
     "DeletionJournalError", "DeletionJournalState", "DeletionPolicy", "DeletionRestrictedError",
     "DeletionResult", "DeletionTransactionError", "DevelopmentAction", "DevelopmentPolicy",
-    "DevelopmentStep", "DurableDeletionCoordinator", "EchoAdapter", "ExecutionPolicy",
-    "ExecutionRequest", "ExecutionResult", "ExecutionStatus", "ExplainabilityError",
+    "DevelopmentStep", "DurableDeletionCoordinator", "EchoAdapter", "EvidenceBasedRollbackController",
+    "ExecutionPolicy", "ExecutionRequest", "ExecutionResult", "ExecutionStatus", "ExplainabilityError",
     "FailingAdapter", "FileChange", "GovernanceCheckpoint", "GovernanceMode", "GovernanceState",
     "GovernedDecision", "GovernedExecutionResult", "GovernedResponse", "GraphPersistenceFormatError",
     "InterProcessFileLock", "IsolatedCommitError", "IsolatedCommitPlan", "IsolatedCommitPolicy",
@@ -94,13 +102,14 @@ __all__ = [
     "PersistenceFormatError", "PlannedChange", "Priority", "ProcessLockError",
     "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch", "RecoveryResult",
     "ReferentialIntegrityError", "RelationConflictError", "RelationType", "ResponseGovernor",
-    "Rule", "RuleEngine", "RuleResult", "RuleSeverity", "SafeIsolatedCommitManager",
-    "SelfVerificationResult", "SessionMemory", "SpecificationChangePlanner", "SubprocessCommandRunner",
-    "UnitOfWorkCommitError", "UnitOfWorkError", "UnitOfWorkResult", "UnitOfWorkState",
-    "UnitOfWorkStateError", "ValidationOutcome", "ValidationRecord", "VerificationEvidence",
-    "VerificationStatus", "VersionChangeType", "VersionConflictError", "VersionTransition",
-    "VersioningError", "WorkItem", "WorkStatus", "build_m3_backlog", "default_rules",
-    "execution_clock_assessment", "load_state", "persist_audit", "to_primitive", "write_result",
+    "RollbackDecision", "RollbackError", "RollbackPlan", "RollbackPolicy", "Rule", "RuleEngine",
+    "RuleResult", "RuleSeverity", "SafeIsolatedCommitManager", "SelfVerificationResult",
+    "SessionMemory", "SpecificationChangePlanner", "SubprocessCommandRunner", "UnitOfWorkCommitError",
+    "UnitOfWorkError", "UnitOfWorkResult", "UnitOfWorkState", "UnitOfWorkStateError",
+    "ValidationOutcome", "ValidationRecord", "VerificationEvidence", "VerificationStatus",
+    "VersionChangeType", "VersionConflictError", "VersionTransition", "VersioningError",
+    "WorkItem", "WorkStatus", "build_m3_backlog", "default_rules", "execution_clock_assessment",
+    "load_state", "persist_audit", "to_primitive", "write_result", "write_rollback_plan",
     "write_verification_result",
 ]
 
