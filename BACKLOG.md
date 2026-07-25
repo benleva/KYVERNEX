@@ -4,8 +4,8 @@
 
 - Stable release: `1.0.0`
 - Published stable tag: `v1.0.0`
-- Verified release candidate: `1.1.0rc1`
-- Planned prerelease tag: `v1.1.0-rc.1`
+- Published prerelease: `1.1.0rc1`
+- Published prerelease tag: `v1.1.0-rc.1`
 - Active milestone: none
 - Active sprint: none
 - Maintenance line: `1.0.x`
@@ -52,28 +52,17 @@ Status: `DONE`
 Release `KYVERNEX 1.0.0` is verified, tagged, published and marked Latest.
 
 ### Release Candidate 1.1.0rc1
-Status: `VERIFIED_AWAITING_PUBLICATION`
+Status: `PUBLISHED_PRERELEASE`
 
-Passed gates:
-
-- package and public API versions synchronized to `1.1.0rc1`;
-- targeted M4 tests green;
-- complete repository suite green;
-- source and wheel builds green;
-- clean wheel installation green;
-- installed `kyvernex-governance` smoke test green;
-- KGO v3 current-evidence workflow green on commit `807def6`;
-- release notes present.
+- package and public API versions are `1.1.0rc1`;
+- verification gates passed;
+- tag `v1.1.0-rc.1` exists;
+- GitHub prerelease is published;
+- prerelease is not Latest;
+- `v1.0.0` remains the stable Latest release.
 
 ## Open backlog
 
-No implementation work item is active.
+No implementation or publication work item is active.
 
-Remaining external release action:
-
-1. create tag `v1.1.0-rc.1`;
-2. publish `KYVERNEX 1.1.0-rc.1` as a GitHub prerelease;
-3. do not mark it Latest;
-4. preserve `v1.0.0` as the stable release.
-
-New feature work requires a separately authorized milestone. Observations do not become active work automatically.
+New work requires a documented defect, explicit release-candidate feedback, an approved promotion plan to stable `1.1.0`, or a separately authorized milestone. The anti-infinite rule applies.
