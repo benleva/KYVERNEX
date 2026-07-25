@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "PRODUCT_CODE_BOUNDARY",
-  "state": "SAFE_STOP",
+  "mode": "AUTONOMOUS_PRODUCT_CODE",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -27,50 +27,60 @@
     {"id": "M14", "title": "Public API Hardening", "status": "CODE_COMPLETE_PARTIALLY_VERIFIED"},
     {"id": "M15", "title": "Canonical Tool Call Envelope", "status": "LOCAL_HTTP_SMOKE_VERIFIED"}
   ],
-  "sprint": {
-    "id": "S018",
-    "title": "Host-shaped invocation",
-    "status": "LOCAL_HTTP_SMOKE_VERIFIED"
+  "milestone": {
+    "id": "M16",
+    "title": "Local Verification Report",
+    "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-051",
-  "kpm_cycle": "KPM-CYCLE-040",
-  "completed_code_tasks": ["M15-W001", "M15-W002", "M15-W003"],
-  "completion_qualifier": "LOCAL_APP_SMOKE_VERIFIED",
-  "active_task": null,
+  "sprint": {
+    "id": "S019",
+    "title": "Repeatable local verification",
+    "status": "ACTIVE"
+  },
+  "cycle": "KGO-CYCLE-052",
+  "kpm_cycle": "KPM-CYCLE-041",
+  "completed_code_tasks": ["M16-W001"],
+  "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
+  "active_task": {
+    "id": "M16-W002",
+    "title": "Execute the expanded local verification command and save its JSON report",
+    "status": "READY_FOR_OPERATOR_RUN",
+    "priority": "P0"
+  },
   "runtime_evidence": {
     "document": "RUNTIME_SMOKE_EVIDENCE.md",
     "environment": "GitHub Codespaces",
-    "python": "3.12",
     "operator_executed": true,
-    "editable_install_succeeded": true,
-    "smoke_command_executed": true,
-    "generated_project": "prova-kyvernex",
-    "app_ready": true,
-    "bind_host": "127.0.0.1",
-    "port": 8765,
-    "codespaces_forwarding": "PRIVATE",
-    "browser_console_loaded": true,
-    "adapter_health": "HEALTHY",
-    "governed_execute_succeeded": true,
-    "observed_principal": "andrea",
-    "observed_handler": "local-project",
-    "observed_error": null
+    "existing_local_app_smoke_verified": true,
+    "expanded_m16_command_executed": false
+  },
+  "m16_code_evidence": {
+    "verification_command": "src/kyvernex/local_ai_smoke_cli.py",
+    "latest_code_commit": "a464c7af38461010f427c82f48cc821ea6a550c6",
+    "optional_report_output": true,
+    "replace_requires_force": true,
+    "health_check": true,
+    "provider_manifest_checks": ["canonical", "openai", "anthropic", "gemini"],
+    "openapi_route_check": true,
+    "direct_http_invocation": true,
+    "tool_call_http_invocation": true,
+    "correlation_id_check": true
   },
   "verification_boundary": {
+    "expanded_m16_run": false,
     "full_test_suite": false,
     "clean_install_outside_codespaces": false,
     "cross_platform_launchers": false,
     "jsonl_cli": false,
-    "all_provider_manifests": false,
-    "failure_paths": false,
+    "failure_timeout_size_paths": false,
     "concurrency_load_recovery": false,
     "release_qualified": false
   },
-  "autonomous_continuation": false,
-  "requires_user_proceed": true,
-  "resume_rule": "Continue with a named verification or product milestone. Preserve the successful Codespaces smoke evidence without expanding it into a full-suite, cross-platform or release-readiness claim.",
+  "autonomous_continuation": true,
+  "requires_user_proceed": false,
+  "resume_rule": "Continue only after operator evidence from the expanded kyvernex-ai-smoke command. Preserve the earlier Codespaces smoke evidence and do not infer full-suite, cross-platform or release qualification.",
   "stop_conditions": [
-    "PRODUCT_TARGET_NOT_DEFINED",
+    "OPERATOR_RUN_REQUIRED",
     "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
     "UNSUPPORTED_VERIFICATION_CLAIM",
