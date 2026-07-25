@@ -30,18 +30,28 @@
     "status": "ACTIVE"
   },
   "sprint": {
-    "id": "S004",
-    "title": "Freeze the plugin contract",
+    "id": "S005",
+    "title": "Implement the core plugin runtime",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-024",
-  "kpm_cycle": "KPM-CYCLE-013",
-  "completed_tasks": [],
+  "cycle": "KGO-CYCLE-025",
+  "kpm_cycle": "KPM-CYCLE-014",
+  "completed_tasks": [
+    "M6-W001"
+  ],
   "active_task": {
-    "id": "M6-W001",
-    "title": "Freeze the plugin contract, lifecycle, schemas and authority boundaries",
+    "id": "M6-W002",
+    "title": "Implement the core plugin runtime and lifecycle state machine",
     "status": "IN_PROGRESS",
     "priority": "P0"
+  },
+  "plugin_contract": {
+    "specification_id": "KYVERNEX-M6-PLUGIN-CONTRACT",
+    "version": "1.0.0",
+    "status": "FROZEN",
+    "normative_path": "repository/specifications/M6_PLUGIN_RUNTIME_CONTRACT.md",
+    "schema_path": "repository/specifications/m6-plugin-contract.schema.json",
+    "unresolved_p0_authority_ambiguity": false
   },
   "plugin_scope": {
     "lifecycle": [
@@ -51,6 +61,14 @@
       "status",
       "shutdown"
     ],
+    "states": [
+      "CREATED",
+      "INITIALIZED",
+      "READY",
+      "EXECUTING",
+      "DEGRADED",
+      "SHUTDOWN"
+    ],
     "target_version": "1.2.0",
     "strategic_roadmap_modified": false,
     "independent_implementation_in_scope": false,
@@ -58,9 +76,10 @@
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Complete M6 work items in dependency order, beginning with the frozen plugin contract and authority boundaries.",
+  "resume_rule": "Implement M6-W002 strictly against the frozen plugin contract, add targeted lifecycle tests and obtain current regression evidence before advancing.",
   "stop_conditions": [
     "CURRENT_VERIFICATION_FAILURE",
+    "CONTRACT_CONTRADICTION",
     "UNRESOLVED_P0_SECURITY_BOUNDARY",
     "EXTERNAL_PUBLICATION_BOUNDARY",
     "MILESTONE_DONE"
