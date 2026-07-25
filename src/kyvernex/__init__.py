@@ -14,6 +14,13 @@ from .autonomous_development import (
     DevelopmentStep,
     build_m3_backlog,
 )
+from .change_manifest import (
+    ChangeKind,
+    ChangeManifest,
+    ChangeManifestError,
+    PlannedChange,
+    SpecificationChangePlanner,
+)
 from .confidence import CognitiveConfidenceEngine, ConfidenceAssessment, ConfidenceCycleError, ConfidenceError
 from .core import AET, ContinuousValidator, KyvernexEngine
 from .decision_gate import CognitiveDecisionGate, DecisionDisposition, DecisionGateError, DecisionPolicy, GovernedDecision
@@ -48,6 +55,7 @@ __all__ = [
     "AET", "AIAdapter", "AdapterExecutionError", "AdapterRequest", "AdapterResponse",
     "AuditEvent", "AuditSink", "AuditTraceError", "AuditTraceReader", "AuditTraceRecord",
     "AutonomousCyclePlan", "AutonomousDevelopmentEngine", "AutonomousDevelopmentError",
+    "ChangeKind", "ChangeManifest", "ChangeManifestError",
     "CognitiveCategory", "CognitiveConfidenceEngine", "CognitiveDecisionDossier",
     "CognitiveDecisionExplainer", "CognitiveDecisionGate", "CognitiveDeletionCoordinator",
     "CognitiveGraph", "CognitiveObject", "CognitiveRelation", "CognitiveState",
@@ -63,14 +71,15 @@ __all__ = [
     "JsonSessionMemory", "KEXError", "KEXExecutionResult", "KGOError", "KPMError", "KPMReport",
     "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
     "KyvernexOrchestrator", "KyvernexProgramManager", "KyvernexUnitOfWork", "MemoryConflictError",
-    "Milestone", "MultiTransactionDeletionCoordinator", "PersistenceFormatError", "Priority",
-    "ProcessLockError", "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch",
+    "Milestone", "MultiTransactionDeletionCoordinator", "PersistenceFormatError", "PlannedChange",
+    "Priority", "ProcessLockError", "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch",
     "RecoveryResult", "ReferentialIntegrityError", "RelationConflictError", "RelationType",
     "ResponseGovernor", "Rule", "RuleEngine", "RuleResult", "RuleSeverity", "SessionMemory",
-    "SubprocessCommandRunner", "UnitOfWorkCommitError", "UnitOfWorkError", "UnitOfWorkResult",
-    "UnitOfWorkState", "UnitOfWorkStateError", "ValidationOutcome", "ValidationRecord",
-    "VersionChangeType", "VersionConflictError", "VersionTransition", "VersioningError",
-    "WorkItem", "WorkStatus", "build_m3_backlog", "default_rules", "persist_audit", "to_primitive",
+    "SpecificationChangePlanner", "SubprocessCommandRunner", "UnitOfWorkCommitError", "UnitOfWorkError",
+    "UnitOfWorkResult", "UnitOfWorkState", "UnitOfWorkStateError", "ValidationOutcome",
+    "ValidationRecord", "VersionChangeType", "VersionConflictError", "VersionTransition",
+    "VersioningError", "WorkItem", "WorkStatus", "build_m3_backlog", "default_rules",
+    "persist_audit", "to_primitive",
 ]
 
 __version__ = "0.1.0.dev0"
