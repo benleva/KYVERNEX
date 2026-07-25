@@ -1,4 +1,4 @@
-name: KYVERNEX KGO v2
+name: KYVERNEX KGO v3
 
 on:
   workflow_dispatch:
@@ -29,7 +29,7 @@ env:
 
 jobs:
   kgo:
-    name: KGO v2 governed verification
+    name: KGO v3 governed autonomous loop
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -59,21 +59,31 @@ jobs:
 
       - name: Build KGO v1 governed backlog
         if: always()
-        shell: bash
         run: |
           python -m kyvernex.kgo_ci artifacts/pytest-output.txt --output-dir artifacts
           cat artifacts/KGO_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Build KGO v2 root-cause and patch plan
+      - name: Build KGO v2 root-cause plan
         if: always()
-        shell: bash
         run: |
           python -m kyvernex.kgo_v2 artifacts/pytest-output.txt --output-dir artifacts
           cat artifacts/KGO_V2_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Evaluate KGO v3 current-evidence loop
+        if: always()
+        env:
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+        run: |
+          python -m kyvernex.kgo_v3 artifacts/pytest-output.txt \
+            --state artifacts/KGO_STATE.json \
+            --output-dir artifacts \
+            --test-outcome "$TEST_OUTCOME" \
+            --commit "$GITHUB_SHA" \
+            --work-item "M3-W003"
+          cat artifacts/KGO_V3_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+
       - name: Plan next M3 autonomous development cycle
         if: steps.tests.outcome == 'success' && (github.event.inputs.mode || 'autonomous') == 'autonomous'
-        shell: bash
         run: |
           python -m kyvernex.ade_cli --artifact-directory artifacts
           echo "## M3 autonomous development" >> "$GITHUB_STEP_SUMMARY"
@@ -81,7 +91,6 @@ jobs:
 
       - name: Produce CI evidence record
         if: always()
-        shell: bash
         env:
           KGO_MODE: ${{ github.event.inputs.mode || 'autonomous' }}
           TEST_OUTCOME: ${{ steps.tests.outcome }}
@@ -93,7 +102,7 @@ jobs:
           from pathlib import Path
 
           evidence = {
-              "schema": "kyvernex.kgo.evidence.v3",
+              "schema": "kyvernex.kgo.evidence.v4",
               "mode": os.environ.get("KGO_MODE", "autonomous"),
               "repository": os.environ.get("GITHUB_REPOSITORY"),
               "commit": os.environ.get("GITHUB_SHA"),
@@ -102,7 +111,7 @@ jobs:
               "test_outcome": os.environ.get("TEST_OUTCOME", "unknown"),
               "verified_at": datetime.now(timezone.utc).isoformat(),
               "ci_provider": "github-actions",
-              "governance_engine": "KGO_V2_ADE_M3",
+              "governance_engine": "KGO_V3_ADE_M3",
           }
           Path("artifacts/KGO_EVIDENCE.json").write_text(
               json.dumps(evidence, indent=2, sort_keys=True) + "\n",
@@ -112,36 +121,34 @@ jobs:
 
       - name: Create or update governed blocker issue
         if: always() && steps.tests.outcome != 'success' && (github.event.inputs.mode || 'autonomous') == 'autonomous'
-        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          title="KGO v2 blocker: governed root-cause plan"
-          body_file="artifacts/KGO_V2_SUMMARY.md"
-          issue_number="$(gh issue list --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "KGO v2 blocker: governed root-cause plan") | .number' | head -n 1)"
+          title="KGO v3 blocker: current governed evidence"
+          body_file="artifacts/KGO_V3_SUMMARY.md"
+          issue_number="$(gh issue list --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "KGO v3 blocker: current governed evidence") | .number' | head -n 1)"
           if [ -n "$issue_number" ]; then
             gh issue comment "$issue_number" --body-file "$body_file"
           else
             gh issue create --title "$title" --body-file "$body_file"
           fi
 
-      - name: Upload KGO v2 and M3 governance evidence
+      - name: Upload KGO v3 governance evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: kgo-v2-evidence-${{ github.run_id }}
+          name: kgo-v3-evidence-${{ github.run_id }}
           path: artifacts/
           if-no-files-found: error
           retention-days: 30
 
       - name: Enforce governed result
         if: always()
-        shell: bash
         env:
           TEST_OUTCOME: ${{ steps.tests.outcome }}
         run: |
           if [ "$TEST_OUTCOME" != "success" ]; then
-            echo "KGO_V2_BLOCKED: root causes and patch plans produced; merge remains prohibited."
+            echo "KGO_V3_BLOCKED: current evidence recorded; repair only supported current failures."
             exit 1
           fi
-          echo "KGO_V2_VERIFIED: complete test suite passed for commit $GITHUB_SHA."
+          echo "KGO_V3_VERIFIED: complete test suite passed for commit $GITHUB_SHA."
