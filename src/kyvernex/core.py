@@ -4,6 +4,7 @@ from dataclasses import replace
 from typing import Any
 from uuid import uuid4
 
+from .memory import SessionMemory
 from .models import (
     AuditEvent,
     CognitiveCategory,
@@ -77,12 +78,21 @@ class ContinuousValidator:
 
 
 class KyvernexEngine:
-    """Reference Prototype 0.1: acquisition, AET, rules, validation, audit, restitution."""
+    """Reference Prototype 0.1 executable vertical slice."""
 
-    def __init__(self, rule_engine: RuleEngine | None = None) -> None:
+    def __init__(
+        self,
+        rule_engine: RuleEngine | None = None,
+        memory: SessionMemory | None = None,
+    ) -> None:
         self._aet = AET()
         self._rule_engine = rule_engine or RuleEngine()
         self._validator = ContinuousValidator(self._rule_engine)
+        self._memory = memory or SessionMemory()
+
+    @property
+    def memory(self) -> SessionMemory:
+        return self._memory
 
     def execute(self, content: Any, *, source: str, session_id: str | None = None) -> ExecutionResult:
         session = session_id or str(uuid4())
@@ -145,6 +155,18 @@ class KyvernexEngine:
                 },
             )
         )
+
+        self._memory.store(session, obj)
+        audit.append(
+            AuditEvent.create(
+                session_id=session,
+                component="MEMORY",
+                event_type="OGGETTO_MEMORIZZATO",
+                object_id=obj.object_id,
+                details={"session_object_count": self._memory.count(session)},
+            )
+        )
+
         audit.append(
             AuditEvent.create(
                 session_id=session,
