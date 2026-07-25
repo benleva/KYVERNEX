@@ -28,9 +28,15 @@ def evaluate(controller, result, *, approved="fingerprint", current="fingerprint
 def test_current_failure_evidence_approves_deterministic_rollback():
     controller = EvidenceBasedRollbackController()
     result = verification(
-        targeted_output="1 failed in 0.10s",
+        targeted_output=(
+            "FAILED tests/test_target.py::test_target - AssertionError\n"
+            "1 failed in 0.10s\n"
+        ),
         targeted_outcome="failure",
-        complete_output="1 failed, 20 passed in 0.40s",
+        complete_output=(
+            "FAILED tests/test_target.py::test_target - AssertionError\n"
+            "1 failed, 20 passed in 0.40s\n"
+        ),
         complete_outcome="failure",
     )
 
