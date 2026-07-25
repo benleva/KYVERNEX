@@ -17,11 +17,16 @@ on:
     paths:
       - "src/**"
       - "tests/**"
+      - "repository/specifications/**"
       - "pyproject.toml"
       - "LICENSE"
       - "README.md"
       - "CHANGELOG.md"
       - "PROJECT_STATUS.md"
+      - "BACKLOG.md"
+      - "SPRINT.md"
+      - "QUALITY.md"
+      - "KGO_CHECKPOINT.json"
       - ".github/workflows/kgo.yml"
 
 permissions:
@@ -52,14 +57,14 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[test]"
 
-      - name: Run M3 targeted tests
+      - name: Run M4 governance CLI targeted tests
         id: targeted_tests
         continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
           mkdir -p artifacts
-          python -m pytest -q tests/test_self_verification.py tests/test_isolated_commit.py tests/test_rollback.py tests/test_execution_clock.py 2>&1 | tee artifacts/targeted-pytest-output.txt
+          python -m pytest -q tests/test_governance_cli.py tests/test_program_manager.py tests/test_kgo_v3.py 2>&1 | tee artifacts/targeted-pytest-output.txt
 
       - name: Run complete test suite
         id: tests
@@ -82,7 +87,7 @@ jobs:
           from kyvernex.self_verification import ContinuousSelfVerificationController, write_verification_result
 
           result = ContinuousSelfVerificationController().evaluate(
-              work_item_id="M3-W006",
+              work_item_id="M4-W005",
               targeted_output=Path("artifacts/targeted-pytest-output.txt").read_text(encoding="utf-8", errors="replace"),
               targeted_outcome=os.environ.get("TARGETED_OUTCOME", "unknown"),
               complete_output=Path("artifacts/pytest-output.txt").read_text(encoding="utf-8", errors="replace"),
@@ -123,15 +128,8 @@ jobs:
             --output-dir artifacts \
             --test-outcome "$TEST_OUTCOME" \
             --commit "$GITHUB_SHA" \
-            --work-item "M3-W006"
+            --work-item "M4-W005"
           cat artifacts/KGO_V3_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Plan next M3 autonomous development cycle
-        if: steps.targeted_tests.outcome == 'success' && steps.tests.outcome == 'success' && (github.event.inputs.mode || 'autonomous') == 'autonomous'
-        run: |
-          python -m kyvernex.ade_cli --artifact-directory artifacts
-          echo "## M3 autonomous development" >> "$GITHUB_STEP_SUMMARY"
-          echo "The next policy-bounded development cycle is available in ADE_CYCLE_PLAN.json." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Build release distributions
         id: package_build
@@ -140,7 +138,7 @@ jobs:
           python -m pip install build
           python -m build
 
-      - name: Verify clean wheel installation
+      - name: Verify clean wheel installation and governance CLI
         id: clean_install
         continue-on-error: true
         shell: bash
@@ -156,6 +154,48 @@ jobs:
           assert version("kyvernex") == expected
           assert kyvernex.__version__ == expected
           print(f"KYVERNEX clean installation verified: {expected}")
+          PY
+          cat > /tmp/kyvernex-governance-plan.json <<'JSON'
+          {
+            "target_version": "1.1.0",
+            "milestones": [
+              {
+                "milestone_id": "M4",
+                "title": "Governed post-release evolution",
+                "target_version": "1.1.0",
+                "closed": false
+              }
+            ],
+            "items": [
+              {
+                "item_id": "M4-SMOKE-001",
+                "title": "Installed CLI smoke test",
+                "milestone_id": "M4",
+                "priority": "P0",
+                "story_points": 1,
+                "status": "READY",
+                "dependencies": [],
+                "done": {}
+              }
+            ]
+          }
+          JSON
+          .release-venv/bin/kyvernex-governance start \
+            --plan /tmp/kyvernex-governance-plan.json \
+            --checkpoint /tmp/kyvernex-governance-checkpoint.json \
+            > /tmp/kyvernex-governance-output.json
+          .release-venv/bin/python - <<'PY'
+          import json
+          from pathlib import Path
+
+          output = json.loads(Path("/tmp/kyvernex-governance-output.json").read_text(encoding="utf-8"))
+          checkpoint = json.loads(Path("/tmp/kyvernex-governance-checkpoint.json").read_text(encoding="utf-8"))
+          assert output["current_item_id"] == "M4-SMOKE-001"
+          assert output["state"] == "RUNNING"
+          assert checkpoint == output
+          assert "tests_passed" not in output
+          assert "repository_written" not in output
+          print("KYVERNEX governance console script verified")
           PY
 
       - name: Produce CI evidence record
@@ -174,19 +214,20 @@ jobs:
           from pathlib import Path
 
           evidence = {
-              "schema": "kyvernex.kgo.evidence.v6",
+              "schema": "kyvernex.kgo.evidence.v7",
               "mode": os.environ.get("KGO_MODE", "autonomous"),
               "repository": os.environ.get("GITHUB_REPOSITORY"),
               "commit": os.environ.get("GITHUB_SHA"),
               "run_id": os.environ.get("GITHUB_RUN_ID"),
               "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+              "work_item": "M4-W005",
               "targeted_test_outcome": os.environ.get("TARGETED_OUTCOME", "unknown"),
               "test_outcome": os.environ.get("TEST_OUTCOME", "unknown"),
               "package_build_outcome": os.environ.get("PACKAGE_BUILD_OUTCOME", "unknown"),
               "clean_install_outcome": os.environ.get("CLEAN_INSTALL_OUTCOME", "unknown"),
               "verified_at": datetime.now(timezone.utc).isoformat(),
               "ci_provider": "github-actions",
-              "governance_engine": "KGO_V3_ADE_M3_SELF_VERIFICATION_RELEASE_1_0",
+              "governance_engine": "KGO_V3_M4_GOVERNANCE_CONTROL_CLI",
           }
           Path("artifacts/KGO_EVIDENCE.json").write_text(
               json.dumps(evidence, indent=2, sort_keys=True) + "\n",
@@ -228,7 +269,7 @@ jobs:
           CLEAN_INSTALL_OUTCOME: ${{ steps.clean_install.outcome }}
         run: |
           if [ "$TARGETED_OUTCOME" != "success" ] || [ "$TEST_OUTCOME" != "success" ] || [ "$PACKAGE_BUILD_OUTCOME" != "success" ] || [ "$CLEAN_INSTALL_OUTCOME" != "success" ]; then
-            echo "KGO_V3_BLOCKED: current test or release evidence recorded."
+            echo "KGO_V3_BLOCKED: current M4 test, package or installed CLI evidence recorded."
             exit 1
           fi
-          echo "KGO_V3_VERIFIED: tests, package build and clean installation passed for commit $GITHUB_SHA."
+          echo "KGO_V3_VERIFIED: M4 governance CLI, complete suite, package build and clean installation passed for commit $GITHUB_SHA."
