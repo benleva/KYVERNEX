@@ -64,8 +64,9 @@ class CognitiveDecisionGate:
         confidence = dossier.confidence.propagated_confidence
         reasons: list[str] = []
         reservations = list(dossier.reservations)
+        audit_evidence_verified = dossier.audit_integrity_verified and bool(dossier.audit_records)
 
-        if self.policy.require_verified_audit and not dossier.audit_integrity_verified:
+        if self.policy.require_verified_audit and not audit_evidence_verified:
             disposition = DecisionDisposition.BLOCKED
             reasons.append("AUDIT_NON_VERIFICATO")
         elif self.policy.block_on_contradictions and dossier.confidence.contradicting_object_ids:
@@ -87,7 +88,7 @@ class CognitiveDecisionGate:
 
         if dossier.confidence.contradicting_object_ids:
             reasons.append("CONTRADDIZIONI_PRESENTI")
-        if not dossier.audit_integrity_verified:
+        if not audit_evidence_verified:
             reservations.append("AUDIT_NON_VERIFICATO")
 
         decision = GovernedDecision(
