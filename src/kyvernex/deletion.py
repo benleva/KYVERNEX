@@ -57,11 +57,14 @@ class CognitiveDeletionCoordinator:
         if obj is None:
             raise KeyError("OBJECT_NOT_FOUND")
 
-        linked = tuple(
-            dict.fromkeys(
-                (*self._graph.outgoing(session_id, object_id), *self._graph.incoming(session_id, object_id))
+        linked_by_id = {
+            relation.relation_id: relation
+            for relation in (
+                *self._graph.outgoing(session_id, object_id),
+                *self._graph.incoming(session_id, object_id),
             )
-        )
+        }
+        linked = tuple(linked_by_id.values())
         if linked and policy == DeletionPolicy.RESTRICT:
             raise DeletionRestrictedError("OBJECT_HAS_COGNITIVE_RELATIONS")
 
