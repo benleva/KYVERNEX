@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "PRODUCT_CODE_BOUNDARY",
-  "state": "SAFE_STOP",
+  "mode": "AUTONOMOUS_PRODUCT_CODE",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -24,38 +24,46 @@
     {"id": "M11", "title": "Local Setup Bootstrap", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M12", "title": "Portable Local Launchers", "status": "CODE_COMPLETE_UNVERIFIED"}
   ],
+  "milestone": {
+    "id": "M13",
+    "title": "Local Project Scaffold",
+    "status": "ACTIVE"
+  },
   "sprint": {
-    "id": "S015",
-    "title": "Cross-platform local start files",
-    "status": "CODE_COMPLETE_UNVERIFIED"
+    "id": "S016",
+    "title": "Editable local project generation",
+    "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-045",
-  "kpm_cycle": "KPM-CYCLE-034",
-  "completed_code_tasks": ["M12-W001", "M12-W002"],
+  "cycle": "KGO-CYCLE-046",
+  "kpm_cycle": "KPM-CYCLE-035",
+  "completed_code_tasks": ["M13-W001"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
-  "active_task": null,
-  "code_evidence": {
-    "portable_launcher_command": "src/kyvernex/local_ai_shortcut_cli.py",
-    "integrated_setup_command": "src/kyvernex/local_ai_setup_cli.py",
-    "package_entry_point": "kyvernex-ai-shortcut",
-    "latest_code_commit": "23030120ee03917694f6ec18fcc4b47ffb970d2e"
+  "active_task": {
+    "id": "M13-W002",
+    "title": "Add optional immediate launch after scaffold creation",
+    "status": "IN_PROGRESS",
+    "priority": "P1"
   },
-  "launcher_boundary": {
+  "code_evidence": {
+    "project_scaffold_command": "src/kyvernex/local_ai_project_cli.py",
+    "package_entry_point": "kyvernex-ai-project",
+    "latest_code_commit": "7681f1410618ef2525f3fef6ba6d75c589672662"
+  },
+  "scaffold_boundary": {
+    "editable_handler": true,
     "explicit_profile": true,
+    "portable_launchers": true,
+    "project_readme": true,
     "profile_validation": true,
-    "setup_integration": true,
-    "supported_platforms": ["windows", "macos", "linux"],
-    "portable_files_only": true,
+    "package_installation": false,
     "operating_system_registration": false,
     "automatic_startup": false,
-    "background_service": false,
     "network_access": false
   },
-  "autonomous_continuation": false,
-  "requires_user_proceed": true,
-  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve explicit local profiles and portable-file-only launch behavior. Do not infer installers, operating-system registration, services, verification or release publication.",
+  "autonomous_continuation": true,
+  "requires_user_proceed": false,
+  "resume_rule": "Continue only by adding optional immediate launch through the existing kyvernex-ai-app path after successful scaffold creation. Do not add package installation, operating-system registration, services, network access or publication.",
   "stop_conditions": [
-    "PRODUCT_TARGET_NOT_DEFINED",
     "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
     "NETWORK_ACCESS_INTRODUCED",
