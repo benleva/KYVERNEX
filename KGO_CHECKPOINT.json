@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "RUNNING",
+  "state": "EXTERNAL_PUBLICATION_BOUNDARY",
   "target_release": "1.1.0",
   "release_candidate": "1.1.0rc1",
   "stable_baseline": {
@@ -27,31 +27,34 @@
     "title": "Verify and publish stable 1.1.0",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-021",
-  "kpm_cycle": "KPM-CYCLE-010",
-  "completed_tasks": [],
+  "cycle": "KGO-CYCLE-022",
+  "kpm_cycle": "KPM-CYCLE-011",
+  "completed_tasks": [
+    "M5-W001",
+    "M5-W002"
+  ],
   "active_task": {
-    "id": "M5-W001",
-    "title": "Synchronize stable 1.1.0 version and obtain fresh release evidence",
-    "status": "IN_VERIFICATION",
+    "id": "M5-W003",
+    "title": "Publish v1.1.0, mark it Latest and close M5/S003",
+    "status": "EXTERNAL_BOUNDARY",
     "priority": "P0"
   },
   "promotion_scope": "Version, release documentation and verification only; no new functional capability.",
   "stable_promotion_verification": {
-    "targeted_tests": "FRESH_RUN_PENDING",
-    "complete_suite": "FRESH_RUN_PENDING",
-    "package_build": "FRESH_RUN_PENDING",
-    "clean_install": "FRESH_RUN_PENDING",
-    "installed_cli_smoke_test": "FRESH_RUN_PENDING",
+    "commit": "56bd8da",
+    "targeted_tests": "GREEN",
+    "complete_suite": "GREEN",
+    "package_build": "GREEN",
+    "clean_install": "GREEN",
+    "installed_cli_smoke_test": "GREEN",
     "version": "1.1.0"
   },
-  "autonomous_continuation": true,
-  "requires_user_proceed": false,
-  "resume_rule": "Read current 1.1.0 CI evidence. On green, close M5-W001, finalize stable release materials and stop at the tag and GitHub Release publication boundary. On failure, record the current failure before repair.",
+  "autonomous_continuation": false,
+  "requires_user_proceed": true,
+  "resume_rule": "Publish the verified stable v1.1.0 GitHub Release, mark it Latest, preserve v1.1.0-rc.1 as prerelease, then close M5 and S003.",
   "stop_conditions": [
-    "CURRENT_VERIFICATION_FAILURE",
-    "UNRESOLVABLE_P0_BLOCKER",
     "EXTERNAL_PUBLICATION_BOUNDARY",
+    "PUBLICATION_FAILURE",
     "MILESTONE_DONE"
   ]
 }
