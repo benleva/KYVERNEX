@@ -6,7 +6,7 @@
 - Current milestone: **M2 — Governance consolidation**
 - Current sprint: **S001 — Establish measurable baseline**
 - Project completion: **NOT YET CALCULATED**
-- CI status: **WORKFLOW CREATED — RUN NOT YET VERIFIED**
+- CI status: **BLOCKED — FIRST RUN REPORTED 84 PASSED / 10 FAILED**
 - Latest locally confirmed test run: `4 passed in 0.06s` from an earlier prototype state; it does not verify later modules.
 
 ## Current objective
@@ -16,42 +16,50 @@ Create a trustworthy baseline of every existing feature, its specification, test
 - KPM: `ACTIVE`
 - KGO: `AUTONOMOUS_RUNNING`
 - KEX: `IMPLEMENTED_NOT_VERIFIED`
+- KGO CI analyzer: `IMPLEMENTED_NOT_VERIFIED`
 - GitHub Actions workflow: `.github/workflows/kgo.yml`
 - Start channel: manual `workflow_dispatch` or qualifying push to `main`
 - Governance module boundary: `src/kyvernex/program_manager.py`
+- CI analysis boundary: `src/kyvernex/kgo_ci.py`
 - Execution module boundary: `src/kyvernex/execution_engine.py`
 - Target release: `1.0`
-- Checkpoint: `KGO_CHECKPOINT.json`
+- Checkpoint artifact: `KGO_CHECKPOINT.json`
 - User confirmation between tasks: `NOT REQUIRED`
 
+## First observed GitHub Actions run
+A manually triggered run on commit prefix `42d920d` was reported through GitHub screenshots as completed in failure with `84 passed, 10 failed in 0.45s`. Installation completed, pytest failed, evidence upload completed and the final governance gate correctly blocked the run. This evidence applies to that earlier commit only, not to the later backlog-orchestration changes.
+
 ## GitHub Actions execution boundary
-The KGO workflow provisions Python 3.11, installs KYVERNEX and test dependencies, runs the complete pytest suite, captures output, writes a structured `KGO_EVIDENCE.json` record and uploads the evidence as an artifact. The workflow uses read-only repository permissions and fails when tests do not pass. Its existence does not prove CI success; a completed successful run is required.
+The KGO workflow provisions Python 3.11, installs KYVERNEX and test dependencies, runs the complete pytest suite and preserves its output. It now classifies failures, calculates the observed success percentage, selects the next priority-valid task and writes `KGO_EVIDENCE.json`, `KGO_BACKLOG.json`, `KGO_CHECKPOINT.json` and `KGO_SUMMARY.md`. In autonomous mode it creates or updates a GitHub blocker issue. The workflow still fails when unresolved tests remain.
+
+## Autonomous repair boundary
+KGO currently analyzes, prioritizes, persists and reports defects. It does not yet generate or commit source-code patches. That capability requires a separately authorized coding agent, isolated branches, bounded permissions, review controls and fresh verification.
 
 ## KEX execution boundary
-KEX now provides deny-first command validation, authorized working roots, timeout enforcement, injectable runners, captured execution evidence and ordered stop-on-failure behavior. It does not itself close tasks or milestones. Complete tests and CI are still unverified.
+KEX provides deny-first command validation, authorized working roots, timeout enforcement, injectable runners, captured execution evidence and ordered stop-on-failure behavior. It does not itself close tasks or milestones.
 
 ## Current governance cycle
 - Cycle: `KGO-CYCLE-001`
-- Status: `IN_PROGRESS`
-- Autonomous continuation: `ENABLED`
-- Active task: `KPM-S001-T01 — Repository inventory and evidence baseline`
-- Priority: `P0`
-- Completion rule: the task remains open until modules, specifications, tests and CI evidence are reconciled.
+- Status: `BLOCKED_BY_TEST_FAILURES`
+- Autonomous continuation: `ENABLED_WITHIN_CI_BOUNDARY`
+- Active task: selected from the generated P0/P1 failure backlog after the next run
+- Priority: `P0` expected for runtime defects
+- Completion rule: the task remains open until implementations, specifications, tests and CI evidence are reconciled.
 
 ## Required first governance cycle
 1. Inventory repository modules and specifications. **IN PROGRESS**
 2. Classify each feature by milestone and lifecycle state. **PENDING**
 3. Reconcile tests with implementations. **PENDING**
-4. Inspect or run the complete test suite. **WORKFLOW READY, RESULT PENDING**
-5. Record CI evidence without assumptions. **WORKFLOW READY, RESULT PENDING**
-6. Calculate real completion percentages. **PENDING**
-7. Select the next dependency-valid P0/P1 task. **PENDING**
+4. Inspect or run the complete test suite. **DONE FOR COMMIT 42d920d; NEW COMMIT PENDING**
+5. Record CI evidence without assumptions. **DONE FOR COMMIT 42d920d; STRUCTURED ANALYSIS UPDATE PENDING**
+6. Calculate real completion percentages. **PARTIAL — TEST SUCCESS 89.36% FOR COMMIT 42d920d**
+7. Select the next dependency-valid P0/P1 task. **AUTOMATION IMPLEMENTED, NEW RUN PENDING**
 
 ## Autonomous stop conditions
-KGO stops only when the milestone is complete, an unresolvable P0 blocker is found, external authorization is required, or the platform reaches an execution boundary. At the next activation it resumes from `KGO_CHECKPOINT.json` without asking for `Procedi`.
+KGO stops only when the milestone is complete, an unresolvable P0 blocker is found, external authorization is required, or the platform reaches an execution boundary. At the next activation it resumes from its generated checkpoint without asking for `Procedi`.
 
 ## Anti-infinite rule
 Closed milestones are immutable. New ideas are routed to the backlog of a later version.
 
 ## Verification note
-The integrated KGO and KEX implementations, their tests and the GitHub Actions workflow are committed. The complete suite and CI outcome have not yet been freshly verified.
+The first workflow run is reported as failed with 84 passing and 10 failing tests. The new deterministic analyzer, its tests and the upgraded workflow are committed but have not yet been freshly executed and verified.
