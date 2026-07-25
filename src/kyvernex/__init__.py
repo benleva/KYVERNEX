@@ -15,6 +15,11 @@ from .graph import (
     RelationConflictError,
     RelationType,
 )
+from .graph_persistence import (
+    GraphPersistenceFormatError,
+    JsonCognitiveGraph,
+    ReferentialIntegrityError,
+)
 from .memory import MemoryConflictError, SessionMemory
 from .models import (
     AuditEvent,
@@ -49,11 +54,14 @@ __all__ = [
     "FailingAdapter",
     "GovernedExecutionResult",
     "GovernedResponse",
+    "GraphPersistenceFormatError",
+    "JsonCognitiveGraph",
     "JsonSessionMemory",
     "KyvernexEngine",
     "KyvernexOrchestrator",
     "MemoryConflictError",
     "PersistenceFormatError",
+    "ReferentialIntegrityError",
     "RelationConflictError",
     "RelationType",
     "ResponseGovernor",
