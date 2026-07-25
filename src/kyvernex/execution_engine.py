@@ -25,7 +25,7 @@ class ExecutionRequest:
     command: tuple[str, ...]
     working_directory: str | Path
     purpose: str
-    timeout_seconds: float = 300.0
+    timeout_seconds: float = 60.0
     environment: Mapping[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
