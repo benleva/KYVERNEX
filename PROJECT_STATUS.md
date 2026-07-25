@@ -8,52 +8,55 @@
 - Published prerelease record: `1.1.0rc1` with immutable tag `v1.1.0-rc.1`
 - Completed milestones: **M2 — Governance consolidation; M3 — Autonomous Development; M4 — Governed post-release evolution; M5 — Promote 1.1 release candidate to stable**
 - Active milestone: **M6 — KYVERNEX Plugin Runtime**
-- Completed sprints: **S004 — Freeze the plugin contract; S005 — Implement the core plugin runtime**
-- Active sprint: **S006 — Govern host contracts**
-- Governance mode: **AUTONOMOUS VERIFICATION**
-- KPM cycle: `KPM-CYCLE-015`
-- KGO cycle: `KGO-CYCLE-026`
+- Completed sprints: **S004 — Freeze the plugin contract; S005 — Implement the core plugin runtime; S006 — Govern host contracts**
+- Active sprint: **S007 — Fail-closed plugin configuration**
+- Governance mode: **AUTONOMOUS**
+- KPM cycle: `KPM-CYCLE-016`
+- KGO cycle: `KGO-CYCLE-027`
 - Target version: `1.2.0`
 
 ## Current objective
-Verify the governed host request, response and error contracts implemented over the deterministic plugin runtime, without modifying the strategic roadmap or the immutable `v1.1.0` release.
+Implement structured plugin configuration loading, validation and fail-closed defaults without modifying the strategic roadmap or the immutable `v1.1.0` release.
 
 ## Active governance state
-- KPM: `VERIFYING`
-- KGO v3 autonomous loop: `VERIFYING`
+- KPM: `RUNNING`
+- KGO v3 autonomous loop: `RUNNING`
 - M6-W001 plugin contract and lifecycle specification: `DONE`
 - M6-W002 core plugin runtime and lifecycle state machine: `DONE`
-- M6-W003 governed host request, response and error contracts: `IN_VERIFICATION`
-- Active work item: `M6-W003`
+- M6-W003 governed host request, response and error contracts: `DONE`
+- M6-W005 configuration loading, validation and fail-closed defaults: `IN_PROGRESS`
+- Active work item: `M6-W005`
 - Checkpoint: `KGO_CHECKPOINT.json`
 
-## M6-W003 implementation evidence
-The repository now contains:
+## M6-W003 verified evidence
+The repository contains:
 
 - `src/kyvernex/plugin_contracts.py`;
 - governed integration in `src/kyvernex/plugin_runtime.py`;
 - targeted contract and lifecycle tests in `tests/test_plugin_runtime.py`;
 - public contract exports in `src/kyvernex/__init__.py`.
 
-The implementation provides:
+User-observed GitHub Actions evidence confirms green results on commit `83ce3a3` for:
 
-- strict request-field validation and unknown-field rejection;
-- explicit authorization principal and grants;
-- capability intersection enforcement;
-- duplicate request-ID rejection;
-- configured timeout and output-limit validation;
-- structured `SUCCEEDED`, `BLOCKED` and `FAILED` responses;
-- machine-readable governed errors;
-- separate decision, execution and evidence fields;
-- no adapter invocation for blocked requests.
+- KYVERNEX Test Suite;
+- KYVERNEX Reference Prototype Tests;
+- KYVERNEX KGO v3;
+- GitHub Pages deployment.
 
-## Verification gate
-M6-W003 remains open until current evidence confirms:
+The verified contracts provide strict request validation, explicit principal and grants, capability intersection, duplicate request rejection, bounded limits, structured `SUCCEEDED`, `BLOCKED` and `FAILED` outcomes, machine-readable errors and separation of decision, execution and evidence. Blocked requests do not invoke the adapter.
 
-1. targeted governed-contract tests pass;
-2. the complete repository suite passes;
-3. existing stable behavior remains unbroken;
-4. no filesystem, network, process or repository authority expansion was introduced.
+## Next dependency-valid work
+KPM selected `M6-W005` before `M6-W004` because it is priority `P0`, already dependency-valid from M6-W002, and establishes the fail-closed configuration boundary required by later security integration tests.
+
+M6-W005 covers:
+
+- structured configuration loading;
+- unknown-field rejection;
+- zero-authority defaults;
+- normalized filesystem roots;
+- explicit network and process controls;
+- immutable effective configuration after initialization;
+- prevention of silent authority expansion.
 
 ## Stable release protection
 - `v1.1.0` remains immutable and Latest;
@@ -62,7 +65,7 @@ M6-W003 remains open until current evidence confirms:
 - no M6 prerelease or stable release is claimed before fresh verification.
 
 ## Continuation rule
-Read current CI evidence for the exact M6-W003 implementation state. On green, close M6-W003 and activate the next dependency-valid work item. On failure, record the failure before repair.
+Implement M6-W005 strictly against the frozen contract and verified runtime. Stop on current verification failure, contract contradiction, unresolved P0 authority ambiguity, external publication boundary or milestone completion.
 
 ## Verification note
-M6-W002 is complete with green evidence on commit `691c769`. M6-W003 code and targeted tests exist; current verification is pending and completion is not yet claimed.
+M6-W003 is complete with green evidence on commit `83ce3a3`. M6-W005 is active; configuration implementation is not yet claimed.
