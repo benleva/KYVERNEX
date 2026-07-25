@@ -54,6 +54,17 @@ from .memory import MemoryConflictError, SessionMemory
 from .models import AuditEvent, CognitiveCategory, CognitiveObject, CognitiveState, ExecutionResult, ValidationOutcome, ValidationRecord
 from .orchestrator import GovernedExecutionResult, KyvernexOrchestrator
 from .persistence import JsonSessionMemory, PersistenceFormatError
+from .plugin_contracts import (
+    GovernedPluginError,
+    PluginAuthorization,
+    PluginContractError,
+    PluginDecision,
+    PluginEvidence,
+    PluginLimits,
+    PluginRequest,
+    PluginResponse,
+    PluginResponseStatus,
+)
 from .plugin_runtime import (
     PLUGIN_API_VERSION,
     PLUGIN_ID,
@@ -110,15 +121,17 @@ __all__ = [
     "ExecutionClockError", "ExecutionMetrics", "ExecutionPerformanceClock", "ExecutionPolicy",
     "ExecutionRequest", "ExecutionResult", "ExecutionSample", "ExecutionStatus", "ExplainabilityError",
     "FailingAdapter", "FileChange", "GovernanceCheckpoint", "GovernanceMode", "GovernanceState",
-    "GovernedDecision", "GovernedExecutionResult", "GovernedResponse", "GraphPersistenceFormatError",
-    "InterProcessFileLock", "IsolatedCommitError", "IsolatedCommitPlan", "IsolatedCommitPolicy",
-    "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory", "KEXError", "KEXExecutionResult",
-    "KGOError", "KGOState", "KGOV3Loop", "KPMError", "KPMFeatureAssessment", "KPMReport",
-    "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
+    "GovernedDecision", "GovernedExecutionResult", "GovernedPluginError", "GovernedResponse",
+    "GraphPersistenceFormatError", "InterProcessFileLock", "IsolatedCommitError", "IsolatedCommitPlan",
+    "IsolatedCommitPolicy", "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory", "KEXError",
+    "KEXExecutionResult", "KGOError", "KGOState", "KGOV3Loop", "KPMError", "KPMFeatureAssessment",
+    "KPMReport", "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
     "KyvernexOrchestrator", "KyvernexPluginRuntime", "KyvernexProgramManager", "KyvernexUnitOfWork",
     "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone", "MultiTransactionDeletionCoordinator",
-    "PLUGIN_API_VERSION", "PLUGIN_ID", "PersistenceFormatError", "PlannedChange", "PluginErrorCategory",
-    "PluginHostAdapter", "PluginIdentity", "PluginRuntimeError", "PluginState", "Priority", "ProcessLockError",
+    "PLUGIN_API_VERSION", "PLUGIN_ID", "PersistenceFormatError", "PlannedChange", "PluginAuthorization",
+    "PluginContractError", "PluginDecision", "PluginErrorCategory", "PluginEvidence", "PluginHostAdapter",
+    "PluginIdentity", "PluginLimits", "PluginRequest", "PluginResponse", "PluginResponseStatus",
+    "PluginRuntimeError", "PluginState", "Priority", "ProcessLockError",
     "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch", "RecoveryResult",
     "ReferentialIntegrityError", "RelationConflictError", "RelationType", "ResponseGovernor",
     "RollbackDecision", "RollbackError", "RollbackPlan", "RollbackPolicy", "Rule", "RuleEngine",
