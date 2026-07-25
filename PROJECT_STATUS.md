@@ -5,26 +5,48 @@
 - Immutable stable tag: `v1.1.0`
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
 - Code-complete milestones: **M7** through **M15**
+- Runtime evidence: **LOCAL_APP_SMOKE_VERIFIED**
 - Sprint: **S018 — Host-shaped invocation**
 - Governance mode: **KPM/KGO PRODUCT CODE BOUNDARY**
-- KPM cycle: `KPM-CYCLE-039`
-- KGO cycle: `KGO-CYCLE-050`
+- KPM cycle: `KPM-CYCLE-040`
+- KGO cycle: `KGO-CYCLE-051`
 - Development package version: `1.2.0.dev0`
 
-## Product objective delivered
-Accept real AI host calls shaped as a named tool plus arguments through Python, JSON/JSONL and the existing loopback HTTP server, while preserving the direct canonical argument form.
+## Verified local product path
+
+On 26 July 2026 the operator executed the development package in GitHub Codespaces and supplied terminal and browser evidence for this path:
 
 ```text
-{name, arguments, optional id}
--> KyvernexAIBridge.invoke_tool_call
--> existing invoke(arguments)
--> governed plugin runtime
+editable install
+-> kyvernex-ai-smoke
+-> generated local project
+-> explicit profile
+-> loopback app on 127.0.0.1:8765
+-> private Codespaces port forwarding
+-> browser console
+-> governed execute
+-> generated local handler
+-> SUCCEEDED response
 ```
+
+Observed runtime facts:
+
+- editable installation reported `Successfully installed kyvernex-1.2.0.dev0`;
+- the app reported `status: READY`;
+- the browser console loaded;
+- adapter status was `HEALTHY`;
+- capability `governed.execute` was active;
+- network and process authority remained disabled;
+- repository authority remained `FORBIDDEN`;
+- the browser invocation returned `status: SUCCEEDED` and `error: null`;
+- principal `andrea`, handler marker `local-project` and the submitted input were preserved.
+
+Detailed evidence and limits are recorded in `RUNTIME_SMOKE_EVIDENCE.md`.
 
 ## M15 delivered code
 
 ### M15-W001 — Canonical tool-call envelope
-Status: `CODE_COMPLETE_UNVERIFIED`
+Status: `CODE_COMPLETE_SMOKE_COVERED`
 
 - `KyvernexAIBridge.invoke_tool_call()` accepts only `name`, `arguments` and optional `id`;
 - the tool name must equal `kyvernex_execute`;
@@ -33,46 +55,22 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 - unknown or mixed fields fail closed.
 
 ### M15-W002 — CLI envelope routing
-Status: `CODE_COMPLETE_UNVERIFIED`
+Status: `CODE_COMPLETE_PARTIALLY_VERIFIED`
 
 - `kyvernex-ai-plugin` accepts either direct canonical arguments or the canonical tool-call envelope;
 - the same behavior applies to single JSON and persistent JSONL modes;
 - payloads mixing envelope and direct fields are rejected;
-- no provider-specific runtime or duplicated execution path is introduced.
+- JSONL and all CLI failure branches were not exercised in the recorded run.
 
 ### M15-W003 — Loopback HTTP envelope route
-Status: `CODE_COMPLETE_UNVERIFIED`
+Status: `LOCAL_HTTP_SMOKE_VERIFIED`
 
-- `POST /tool-call` accepts the same strict canonical envelope;
-- the route delegates only to `KyvernexAIBridge.invoke_tool_call()`;
+- `POST /tool-call` delegates to `KyvernexAIBridge.invoke_tool_call()`;
 - `POST /invoke` remains available for direct canonical arguments;
-- both routes retain the existing 1 MiB request-body limit and structured JSON errors;
-- `src/kyvernex/local_ai_openapi.py` documents the envelope with OpenAPI 3.1;
-- the server remains bound exclusively to `127.0.0.1`.
+- `kyvernex-ai-smoke` was executed by the operator and exercises both routes;
+- the browser console independently verified the direct governed invocation path;
+- the server remained bound to `127.0.0.1` and was forwarded privately by Codespaces.
 
-## Current HTTP routes
+## Verification boundary
 
-```text
-GET  /
-GET  /console
-GET  /health
-GET  /manifest
-GET  /openapi.json
-POST /invoke
-POST /tool-call
-```
-
-## Example
-
-```json
-{
-  "id": "call-001",
-  "name": "kyvernex_execute",
-  "arguments": {
-    "input": {"message": "hello"}
-  }
-}
-```
-
-## Boundary
-M15 is code-complete but unverified. It changes only local invocation shape and routing. It adds no public bind, provider runtime, account, database, verification claim, tag or release publication.
+This is a successful local smoke verification, not a full release qualification. Automated suite success, clean installations on separate Windows/macOS/Linux machines, portable launcher compatibility, JSONL coverage, every provider manifest, concurrency, load, security and recovery testing remain unverified. No tag or release was created.
