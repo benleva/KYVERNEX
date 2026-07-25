@@ -48,6 +48,15 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[test]"
 
+      - name: Run M3-W003 targeted tests
+        id: targeted_tests
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p artifacts
+          python -m pytest -q tests/test_self_verification.py 2>&1 | tee artifacts/targeted-pytest-output.txt
+
       - name: Run complete test suite
         id: tests
         continue-on-error: true
@@ -56,6 +65,37 @@ jobs:
           set -o pipefail
           mkdir -p artifacts
           python -m pytest -q 2>&1 | tee artifacts/pytest-output.txt
+
+      - name: Evaluate continuous self-verification
+        if: always()
+        env:
+          TARGETED_OUTCOME: ${{ steps.targeted_tests.outcome }}
+          COMPLETE_OUTCOME: ${{ steps.tests.outcome }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from kyvernex.self_verification import ContinuousSelfVerificationController, write_verification_result
+
+          result = ContinuousSelfVerificationController().evaluate(
+              work_item_id="M3-W003",
+              targeted_output=Path("artifacts/targeted-pytest-output.txt").read_text(encoding="utf-8", errors="replace"),
+              targeted_outcome=os.environ.get("TARGETED_OUTCOME", "unknown"),
+              complete_output=Path("artifacts/pytest-output.txt").read_text(encoding="utf-8", errors="replace"),
+              complete_outcome=os.environ.get("COMPLETE_OUTCOME", "unknown"),
+          )
+          write_verification_result(result, "artifacts/SELF_VERIFICATION.json")
+          summary = [
+              "## Continuous self-verification",
+              "",
+              f"- Work item: `{result.work_item_id}`",
+              f"- Status: **{result.status}**",
+              f"- Reason: `{result.reason}`",
+              f"- Next action: {result.next_action}",
+          ]
+          Path("artifacts/SELF_VERIFICATION_SUMMARY.md").write_text("\n".join(summary) + "\n", encoding="utf-8")
+          PY
+          cat artifacts/SELF_VERIFICATION_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Build KGO v1 governed backlog
         if: always()
@@ -83,7 +123,7 @@ jobs:
           cat artifacts/KGO_V3_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Plan next M3 autonomous development cycle
-        if: steps.tests.outcome == 'success' && (github.event.inputs.mode || 'autonomous') == 'autonomous'
+        if: steps.targeted_tests.outcome == 'success' && steps.tests.outcome == 'success' && (github.event.inputs.mode || 'autonomous') == 'autonomous'
         run: |
           python -m kyvernex.ade_cli --artifact-directory artifacts
           echo "## M3 autonomous development" >> "$GITHUB_STEP_SUMMARY"
@@ -93,6 +133,7 @@ jobs:
         if: always()
         env:
           KGO_MODE: ${{ github.event.inputs.mode || 'autonomous' }}
+          TARGETED_OUTCOME: ${{ steps.targeted_tests.outcome }}
           TEST_OUTCOME: ${{ steps.tests.outcome }}
         run: |
           python - <<'PY'
@@ -102,16 +143,17 @@ jobs:
           from pathlib import Path
 
           evidence = {
-              "schema": "kyvernex.kgo.evidence.v4",
+              "schema": "kyvernex.kgo.evidence.v5",
               "mode": os.environ.get("KGO_MODE", "autonomous"),
               "repository": os.environ.get("GITHUB_REPOSITORY"),
               "commit": os.environ.get("GITHUB_SHA"),
               "run_id": os.environ.get("GITHUB_RUN_ID"),
               "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+              "targeted_test_outcome": os.environ.get("TARGETED_OUTCOME", "unknown"),
               "test_outcome": os.environ.get("TEST_OUTCOME", "unknown"),
               "verified_at": datetime.now(timezone.utc).isoformat(),
               "ci_provider": "github-actions",
-              "governance_engine": "KGO_V3_ADE_M3",
+              "governance_engine": "KGO_V3_ADE_M3_SELF_VERIFICATION",
           }
           Path("artifacts/KGO_EVIDENCE.json").write_text(
               json.dumps(evidence, indent=2, sort_keys=True) + "\n",
@@ -120,12 +162,12 @@ jobs:
           PY
 
       - name: Create or update governed blocker issue
-        if: always() && steps.tests.outcome != 'success' && (github.event.inputs.mode || 'autonomous') == 'autonomous'
+        if: always() && (steps.targeted_tests.outcome != 'success' || steps.tests.outcome != 'success') && (github.event.inputs.mode || 'autonomous') == 'autonomous'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           title="KGO v3 blocker: current governed evidence"
-          body_file="artifacts/KGO_V3_SUMMARY.md"
+          body_file="artifacts/SELF_VERIFICATION_SUMMARY.md"
           issue_number="$(gh issue list --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "KGO v3 blocker: current governed evidence") | .number' | head -n 1)"
           if [ -n "$issue_number" ]; then
             gh issue comment "$issue_number" --body-file "$body_file"
@@ -145,10 +187,11 @@ jobs:
       - name: Enforce governed result
         if: always()
         env:
+          TARGETED_OUTCOME: ${{ steps.targeted_tests.outcome }}
           TEST_OUTCOME: ${{ steps.tests.outcome }}
         run: |
-          if [ "$TEST_OUTCOME" != "success" ]; then
-            echo "KGO_V3_BLOCKED: current evidence recorded; repair only supported current failures."
+          if [ "$TARGETED_OUTCOME" != "success" ] || [ "$TEST_OUTCOME" != "success" ]; then
+            echo "KGO_V3_BLOCKED: current verification evidence recorded."
             exit 1
           fi
-          echo "KGO_V3_VERIFIED: complete test suite passed for commit $GITHUB_SHA."
+          echo "KGO_V3_VERIFIED: targeted and complete suites passed for commit $GITHUB_SHA."
