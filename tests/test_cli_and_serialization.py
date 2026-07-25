@@ -6,6 +6,16 @@ from kyvernex import KyvernexEngine, ValidationOutcome, to_primitive
 from kyvernex.cli import main
 
 
+_REQUIRED_ENGINE_AUDIT_EVENTS = {
+    "INPUT_ACQUISITO",
+    "OGGETTO_NORMALIZZATO",
+    "REGOLE_APPLICATE",
+    "VALIDAZIONE_COMPLETATA",
+    "OGGETTO_MEMORIZZATO",
+    "RISULTATO_RESTITUITO",
+}
+
+
 def test_execution_result_is_json_serializable() -> None:
     result = KyvernexEngine().execute(
         "contenuto verificabile",
@@ -15,11 +25,12 @@ def test_execution_result_is_json_serializable() -> None:
 
     payload = to_primitive(result)
     encoded = json.dumps(payload, ensure_ascii=False)
+    event_types = {event["event_type"] for event in payload["audit"]}
 
     assert payload["session_id"] == "session-json"
     assert payload["validation"]["outcome"] == ValidationOutcome.VALIDATED.value
     assert "contenuto verificabile" in encoded
-    assert len(payload["audit"]) == 4
+    assert _REQUIRED_ENGINE_AUDIT_EVENTS <= event_types
 
 
 def test_cli_returns_json_and_success(capsys) -> None:
