@@ -3,14 +3,15 @@
 ## Control
 - Governance system: KDP + KPM + KGO v1/v2/v3 + KEX + M3 Autonomous Development Engine
 - Repository version: `1.0.0`
-- Completed milestone: **M3 — Autonomous Development**
-- Current phase: **Release 1.0 Completed**
+- Completed milestones: **M2 — Governance consolidation; M3 — Autonomous Development**
+- Completed sprint: **S001 — Establish measurable baseline**
+- Current phase: **Release 1.0 Completed / Stable Maintenance**
 - Release status: **PUBLISHED — GitHub Release `KYVERNEX 1.0.0`, tag `v1.0.0`, marked Latest**
 - CI status: **VERIFIED — GitHub Actions run #58 green**
 - Historical red runs remain immutable records of earlier commits and do not override the latest verified evidence.
 
 ## Current objective
-Maintain the stable `1.0.x` line. Do not expand KGO or KPM in the released baseline. Permit only verified blocking fixes or explicitly authorized maintenance work.
+Maintain the stable `1.0.x` line. Do not expand KGO or KPM in the released baseline. Permit only verified blocking fixes, explicitly authorized maintenance work or a separately approved future milestone.
 
 ## Governance activation state
 - KPM: `FROZEN_EXCEPT_BUG_FIXES`
@@ -31,7 +32,16 @@ Maintain the stable `1.0.x` line. Do not expand KGO or KPM in the released basel
 - Verification evidence: user-observed GitHub Actions run `#58`, green, on commit `1c5c0aef855b876c3c79fd20808689066e35b5e1`.
 - Publication evidence: user-observed repository page showing one published Release, `KYVERNEX 1.0.0`, marked `Latest`.
 
-## M3 completion
+## Milestone completion
+
+### M2 — Governance consolidation
+Status: `DONE`
+
+Historical sprint S001 is closed with all seven baseline tasks recorded as complete. Repository inventory, lifecycle classification, implementation/test reconciliation, CI evidence, completion metrics and synchronized baseline records are present in `SPRINT.md`, `BACKLOG.md` and `QUALITY.md`.
+
+### M3 — Autonomous Development
+Status: `DONE`
+
 The frozen M3 backlog is complete:
 
 1. `M3-W001` Autonomous task scheduler.
@@ -41,11 +51,13 @@ The frozen M3 backlog is complete:
 5. `M3-W005` Evidence-based rollback controller.
 6. `M3-W006` Execution performance clock and improvement metrics.
 
+Completion: `6/6`, `100%`.
+
 ## Release 1.0 contents
 - package metadata synchronized to `1.0.0`;
 - public API `kyvernex.__version__` synchronized to `1.0.0`;
 - proprietary root license present and referenced by package metadata;
-- root `README.md`, `CHANGELOG.md` and `RELEASE_NOTES_1.0.0.md` present;
+- root `README.md`, `CHANGELOG.md`, `RELEASE_NOTES_1.0.0.md`, `BACKLOG.md` and `QUALITY.md` present;
 - CI builds source and wheel distributions;
 - CI installs the generated wheel in a clean virtual environment;
 - CI verifies installed metadata and public API version;
@@ -70,11 +82,13 @@ The frozen M3 backlog is complete:
 ## Release 1.0 audit gates
 
 ### Passed
-- frozen M3 backlog implemented and verified;
+- M2 governance consolidation completed;
+- historical sprint S001 closed, 7/7 tasks done;
+- frozen M3 backlog implemented and verified, 6/6 work items done;
 - package and public API versions synchronized to `1.0.0`;
 - proprietary root `LICENSE` present;
 - package metadata references the root license;
-- root changelog and release notes present;
+- root changelog, release notes, backlog and quality baseline present;
 - README synchronized with the stable release;
 - targeted and complete test suites green;
 - source and wheel builds green;
@@ -96,10 +110,10 @@ The frozen M3 backlog is complete:
 KGO v3 governs decisions and state. Repository writes, maintenance releases, rollback execution and future publication remain subject to the authorized executor and available permissions. Performance measurements do not authorize execution.
 
 ## Autonomous stop conditions
-The Release 1.0 cycle is complete. Resume only for a documented blocking defect, explicitly authorized maintenance work or a separately approved future milestone.
+The M2, M3 and Release 1.0 cycles are complete. Resume only for a documented blocking defect, explicitly authorized maintenance work or a separately approved future milestone.
 
 ## Anti-infinite rule
-The released 1.0 baseline is frozen. New observations are deferred and do not reopen the completed Release 1.0 cycle.
+The released 1.0 baseline is frozen. New observations are deferred and do not reopen completed milestones or the Release 1.0 cycle.
 
 ## Verification note
-KYVERNEX `1.0.0` is implemented, verified, tagged and published. GitHub Release `KYVERNEX 1.0.0` is visible as the latest release.
+KYVERNEX `1.0.0` is implemented, verified, tagged and published. M2, S001 and M3 are formally closed. GitHub Release `KYVERNEX 1.0.0` is visible as the latest release.
