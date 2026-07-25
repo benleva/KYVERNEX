@@ -6,18 +6,17 @@
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
 - Code-complete milestone: **M7 — Plugin Product Interface**
 - Code-complete milestone: **M8 — Universal AI Plugin Bridge**
-- Active milestone: **M9 — Local AI Tool Server**
-- Active sprint: **S012 — Loopback HTTP access**
-- Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
-- KPM cycle: `KPM-CYCLE-027`
-- KGO cycle: `KGO-CYCLE-038`
+- Code-complete milestone: **M9 — Local AI Tool Server**
+- Sprint: **S012 — Loopback HTTP access**
+- Governance mode: **KPM/KGO PRODUCT CODE BOUNDARY**
+- KPM cycle: `KPM-CYCLE-028`
+- KGO cycle: `KGO-CYCLE-039`
 - Development package version: `1.2.0.dev0`
 
-## Product objective
-Expose the existing canonical AI bridge through one localhost-only HTTP server that desktop agents and local AI hosts can call without embedding Python.
+## Product path
 
 ```text
-local AI host
+local AI host or browser
 -> http://127.0.0.1:8765
 -> KyvernexLocalAIServer
 -> KyvernexAIBridge
@@ -26,7 +25,8 @@ local AI host
 -> bounded host callable
 ```
 
-## M9 delivered code
+## M9 code delivered
+
 ### M9-W001 — Localhost HTTP server
 Status: `CODE_COMPLETE_UNVERIFIED`
 
@@ -38,30 +38,49 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 ### M9-W002 — Installed local server command
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `src/kyvernex/local_ai_server_cli.py` provides the process entry point;
-- `pyproject.toml` installs `kyvernex-ai-server`;
-- one explicit `module:attribute` handler is used.
+- `src/kyvernex/local_ai_server_cli.py` provides `kyvernex-ai-server`;
+- one explicit `module:attribute` handler is used;
+- the port is selectable while the host remains loopback-only.
 
 ### M9-W003 — Generated local OpenAPI document
 Status: `CODE_COMPLETE_UNVERIFIED`
 
 - `src/kyvernex/local_ai_openapi.py` generates OpenAPI `3.1.0`;
-- the document describes `/health`, `/manifest`, `/invoke` and itself;
-- the server URL is generated from the actual loopback address and bound port;
 - `GET /openapi.json` serves the document;
-- the invocation schema accepts only `input`, optional `context` and optional `request_id`.
+- the server URL reflects the actual loopback port.
+
+### M9-W004 — Local invocation console
+Status: `CODE_COMPLETE_UNVERIFIED`
+
+- `src/kyvernex/local_ai_page.py` provides one self-contained HTML page;
+- `GET /` and `GET /console` serve the page from the existing process;
+- the page reads `/health` and `/manifest`;
+- the page sends governed requests only to `/invoke`;
+- no external script, stylesheet, backend, account, database or remote service is used;
+- a content-security policy restricts resources and connections to the same local origin.
 
 ## Current routes
 
 ```text
+GET  /
+GET  /console
 GET  /health
 GET  /manifest?format=canonical|openai|anthropic|gemini
 GET  /openapi.json
 POST /invoke
 ```
 
-## Active work
-- M9-W004 minimal local invocation page using only the existing HTTP routes: `IN_PROGRESS`.
+## Current use
+
+```text
+kyvernex-ai-server --handler examples.plugin_handler:handle --principal andrea --port 8765
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8765/
+```
 
 ## Boundary
-M9 remains loopback-only. It does not expose `0.0.0.0`, TLS termination, authentication services, public hosting, databases, accounts or billing. The planned local page may call only this same server and may not introduce another backend. No verification or release claim is made.
+M9 is code-complete but unverified. It remains loopback-only and introduces no public bind, TLS service, authentication system, hosting platform, database, account or billing component. No clean-install, CI, publication or release claim is made.
