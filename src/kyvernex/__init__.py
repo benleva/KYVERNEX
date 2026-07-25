@@ -4,6 +4,14 @@ from .adapters import (
     AIAdapter, AdapterExecutionError, AdapterRequest, AdapterResponse, EchoAdapter, FailingAdapter,
 )
 from .ai_bridge import KyvernexAIBridge
+from .ai_formats import (
+    AIManifestFormatError,
+    export_anthropic_tool,
+    export_canonical_tool,
+    export_gemini_tools,
+    export_manifest,
+    export_openai_tool,
+)
 from .audit_sink import AuditSink, persist_audit
 from .audit_trace import AuditTraceError, AuditTraceRecord, JsonAuditTrace
 from .autonomous_development import (
@@ -68,6 +76,12 @@ from .plugin_contracts import (
     PluginResponse,
     PluginResponseStatus,
 )
+from .plugin_loader import (
+    PluginHandler,
+    PluginHandlerLoadError,
+    load_handler,
+    load_plugin_handler,
+)
 from .plugin_runtime import (
     PLUGIN_API_VERSION,
     PLUGIN_ID,
@@ -78,6 +92,7 @@ from .plugin_runtime import (
     PluginRuntimeError,
     PluginState,
 )
+from .plugin_session import KyvernexPluginSession
 from .process_lock import InterProcessFileLock, ProcessLockError
 from .process_safe_journal import ProcessSafeMultiTransactionDeletionCoordinator
 from .program_manager import (
@@ -108,7 +123,7 @@ from .unit_of_work import KyvernexUnitOfWork, UnitOfWorkCommitError, UnitOfWorkE
 from .versioning import CognitiveVersionManager, VersionChangeType, VersionConflictError, VersionTransition, VersioningError
 
 __all__ = [
-    "AET", "AIAdapter", "AdapterExecutionError", "AdapterRequest", "AdapterResponse",
+    "AET", "AIAdapter", "AIManifestFormatError", "AdapterExecutionError", "AdapterRequest", "AdapterResponse",
     "AuditEvent", "AuditSink", "AuditTraceError", "AuditTraceReader", "AuditTraceRecord",
     "AutonomousCyclePlan", "AutonomousDevelopmentEngine", "AutonomousDevelopmentError",
     "ChangeKind", "ChangeManifest", "ChangeManifestError", "ChangeOperation",
@@ -130,23 +145,25 @@ __all__ = [
     "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory", "KEXError", "KEXExecutionResult",
     "KGOError", "KGOState", "KGOV3Loop", "KPMError", "KPMFeatureAssessment", "KPMReport",
     "KyvernexAIBridge", "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
-    "KyvernexOrchestrator", "KyvernexPlugin", "KyvernexPluginRuntime", "KyvernexProgramManager",
-    "KyvernexUnitOfWork", "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone",
+    "KyvernexOrchestrator", "KyvernexPlugin", "KyvernexPluginRuntime", "KyvernexPluginSession",
+    "KyvernexProgramManager", "KyvernexUnitOfWork", "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone",
     "MultiTransactionDeletionCoordinator", "PLUGIN_API_VERSION", "PLUGIN_ID", "PersistenceFormatError",
     "PlannedChange", "PluginAuthorization", "PluginContractError", "PluginDecision", "PluginErrorCategory",
-    "PluginEvidence", "PluginHostAdapter", "PluginIdentity", "PluginLimits", "PluginRequest",
-    "PluginResponse", "PluginResponseStatus", "PluginRuntimeError", "PluginState", "Priority",
-    "ProcessLockError", "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch", "RecoveryResult",
-    "ReferentialIntegrityError", "RelationConflictError", "RelationType", "ResponseGovernor",
-    "RollbackDecision", "RollbackError", "RollbackPlan", "RollbackPolicy", "Rule", "RuleEngine",
-    "RuleResult", "RuleSeverity", "SafeIsolatedCommitManager", "SelfVerificationResult",
+    "PluginEvidence", "PluginHandler", "PluginHandlerLoadError", "PluginHostAdapter", "PluginIdentity",
+    "PluginLimits", "PluginRequest", "PluginResponse", "PluginResponseStatus", "PluginRuntimeError",
+    "PluginState", "Priority", "ProcessLockError", "ProcessSafeMultiTransactionDeletionCoordinator",
+    "RecoveryBatch", "RecoveryResult", "ReferentialIntegrityError", "RelationConflictError", "RelationType",
+    "ResponseGovernor", "RollbackDecision", "RollbackError", "RollbackPlan", "RollbackPolicy", "Rule",
+    "RuleEngine", "RuleResult", "RuleSeverity", "SafeIsolatedCommitManager", "SelfVerificationResult",
     "SessionMemory", "SpecificationChangePlanner", "SubprocessCommandRunner", "UnitOfWorkCommitError",
     "UnitOfWorkError", "UnitOfWorkResult", "UnitOfWorkState", "UnitOfWorkStateError",
     "ValidationOutcome", "ValidationRecord", "VerificationEvidence", "VerificationStatus",
     "VersionChangeType", "VersionConflictError", "VersionTransition", "VersioningError",
     "WorkItem", "WorkStatus", "build_m3_backlog", "default_rules", "execution_clock_assessment",
-    "load_state", "persist_audit", "to_primitive", "write_execution_metrics", "write_result",
-    "write_rollback_plan", "write_verification_result",
+    "export_anthropic_tool", "export_canonical_tool", "export_gemini_tools", "export_manifest",
+    "export_openai_tool", "load_handler", "load_plugin_handler", "load_state", "persist_audit",
+    "to_primitive", "write_execution_metrics", "write_result", "write_rollback_plan",
+    "write_verification_result",
 ]
 
 __version__ = "1.2.0.dev0"
