@@ -14,15 +14,16 @@ Create a trustworthy baseline of every existing feature, its specification, test
 
 ## Governance activation state
 - KPM: `ACTIVE`
-- KGO: `AUTONOMOUS_ACTIVE`
+- KGO: `AUTONOMOUS_RUNNING`
+- Start command: `KGO START`
 - Module boundary: `src/kyvernex/program_manager.py`
 - Target release: `1.0`
-- Checkpoint policy: persist after every orchestration transition when a checkpoint path is configured.
+- Checkpoint: `KGO_CHECKPOINT.json`
+- User confirmation between tasks: `NOT REQUIRED`
 
 ## Current governance cycle
-- Cycle: `KPM-CYCLE-001`
+- Cycle: `KGO-CYCLE-001`
 - Status: `IN_PROGRESS`
-- Started by command: `KPM START`
 - Autonomous continuation: `ENABLED`
 - Active task: `KPM-S001-T01 — Repository inventory and evidence baseline`
 - Priority: `P0`
@@ -36,6 +37,9 @@ Create a trustworthy baseline of every existing feature, its specification, test
 5. Record CI evidence without assumptions. **PENDING**
 6. Calculate real completion percentages. **PENDING**
 7. Select the next dependency-valid P0/P1 task. **PENDING**
+
+## Autonomous stop conditions
+KGO stops only when the milestone is complete, an unresolvable P0 blocker is found, external authorization is required, or the platform reaches an execution boundary. At the next activation it resumes from `KGO_CHECKPOINT.json` without asking for `Procedi`.
 
 ## Anti-infinite rule
 Closed milestones are immutable. New ideas are routed to the backlog of a later version.
