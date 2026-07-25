@@ -4,16 +4,15 @@
 - Stable published release: `1.1.0`
 - Immutable stable tag: `v1.1.0`
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
-- Code-complete milestones: **M7** through **M14**
-- Active milestone: **M15 — Canonical Tool Call Envelope**
-- Active sprint: **S018 — Host-shaped invocation**
-- Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
-- KPM cycle: `KPM-CYCLE-038`
-- KGO cycle: `KGO-CYCLE-049`
+- Code-complete milestones: **M7** through **M15**
+- Sprint: **S018 — Host-shaped invocation**
+- Governance mode: **KPM/KGO PRODUCT CODE BOUNDARY**
+- KPM cycle: `KPM-CYCLE-039`
+- KGO cycle: `KGO-CYCLE-050`
 - Development package version: `1.2.0.dev0`
 
-## Product objective
-Accept real AI host calls shaped as a named tool plus arguments while preserving the existing direct canonical argument form.
+## Product objective delivered
+Accept real AI host calls shaped as a named tool plus arguments through Python, JSON/JSONL and the existing loopback HTTP server, while preserving the direct canonical argument form.
 
 ```text
 {name, arguments, optional id}
@@ -41,6 +40,28 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 - payloads mixing envelope and direct fields are rejected;
 - no provider-specific runtime or duplicated execution path is introduced.
 
+### M15-W003 — Loopback HTTP envelope route
+Status: `CODE_COMPLETE_UNVERIFIED`
+
+- `POST /tool-call` accepts the same strict canonical envelope;
+- the route delegates only to `KyvernexAIBridge.invoke_tool_call()`;
+- `POST /invoke` remains available for direct canonical arguments;
+- both routes retain the existing 1 MiB request-body limit and structured JSON errors;
+- `src/kyvernex/local_ai_openapi.py` documents the envelope with OpenAPI 3.1;
+- the server remains bound exclusively to `127.0.0.1`.
+
+## Current HTTP routes
+
+```text
+GET  /
+GET  /console
+GET  /health
+GET  /manifest
+GET  /openapi.json
+POST /invoke
+POST /tool-call
+```
+
 ## Example
 
 ```json
@@ -54,4 +75,4 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 ```
 
 ## Boundary
-M15 changes only local invocation shape and routing. It adds no network service, provider runtime, account, database, verification claim, tag or release publication.
+M15 is code-complete but unverified. It changes only local invocation shape and routing. It adds no public bind, provider runtime, account, database, verification claim, tag or release publication.
