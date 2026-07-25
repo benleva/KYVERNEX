@@ -22,6 +22,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 env:
   PYTHON_VERSION: "3.11"
@@ -49,13 +50,21 @@ jobs:
 
       - name: Run complete test suite
         id: tests
+        continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
           mkdir -p artifacts
           python -m pytest -q 2>&1 | tee artifacts/pytest-output.txt
 
-      - name: Produce KGO evidence record
+      - name: Analyze evidence and build governed backlog
+        if: always()
+        shell: bash
+        run: |
+          python -m kyvernex.kgo_ci artifacts/pytest-output.txt --output-dir artifacts
+          cat artifacts/KGO_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Produce CI evidence record
         if: always()
         shell: bash
         env:
@@ -79,14 +88,28 @@ jobs:
               "verified_at": datetime.now(timezone.utc).isoformat(),
               "ci_provider": "github-actions",
           }
-          Path("artifacts").mkdir(exist_ok=True)
           Path("artifacts/KGO_EVIDENCE.json").write_text(
               json.dumps(evidence, indent=2, sort_keys=True) + "\n",
               encoding="utf-8",
           )
           PY
 
-      - name: Upload KGO evidence
+      - name: Create or update governed blocker issue
+        if: always() && steps.tests.outcome != 'success' && (github.event.inputs.mode || 'autonomous') == 'autonomous'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="KGO blocker: test suite failures"
+          body_file="artifacts/KGO_SUMMARY.md"
+          issue_number="$(gh issue list --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "KGO blocker: test suite failures") | .number' | head -n 1)"
+          if [ -n "$issue_number" ]; then
+            gh issue comment "$issue_number" --body-file "$body_file"
+          else
+            gh issue create --title "$title" --body-file "$body_file"
+          fi
+
+      - name: Upload KGO governance evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -102,7 +125,7 @@ jobs:
           TEST_OUTCOME: ${{ steps.tests.outcome }}
         run: |
           if [ "$TEST_OUTCOME" != "success" ]; then
-            echo "KGO_BLOCKED: complete test suite did not pass."
+            echo "KGO_BLOCKED: failures classified; backlog and checkpoint produced."
             exit 1
           fi
           echo "KGO_VERIFIED: complete test suite passed for commit $GITHUB_SHA."
