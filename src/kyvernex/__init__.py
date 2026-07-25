@@ -121,4 +121,4 @@ __all__ = [
     "write_rollback_plan", "write_verification_result",
 ]
 
-__version__ = "1.1.0rc1"
+__version__ = "1.1.0"
