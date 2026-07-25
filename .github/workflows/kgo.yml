@@ -1,4 +1,4 @@
-name: KYVERNEX KGO
+name: KYVERNEX KGO v2
 
 on:
   workflow_dispatch:
@@ -29,7 +29,7 @@ env:
 
 jobs:
   kgo:
-    name: KGO governed verification
+    name: KGO v2 governed verification
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -57,12 +57,19 @@ jobs:
           mkdir -p artifacts
           python -m pytest -q 2>&1 | tee artifacts/pytest-output.txt
 
-      - name: Analyze evidence and build governed backlog
+      - name: Build KGO v1 governed backlog
         if: always()
         shell: bash
         run: |
           python -m kyvernex.kgo_ci artifacts/pytest-output.txt --output-dir artifacts
           cat artifacts/KGO_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build KGO v2 root-cause and patch plan
+        if: always()
+        shell: bash
+        run: |
+          python -m kyvernex.kgo_v2 artifacts/pytest-output.txt --output-dir artifacts
+          cat artifacts/KGO_V2_SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Produce CI evidence record
         if: always()
@@ -78,7 +85,7 @@ jobs:
           from pathlib import Path
 
           evidence = {
-              "schema": "kyvernex.kgo.evidence.v1",
+              "schema": "kyvernex.kgo.evidence.v2",
               "mode": os.environ.get("KGO_MODE", "autonomous"),
               "repository": os.environ.get("GITHUB_REPOSITORY"),
               "commit": os.environ.get("GITHUB_SHA"),
@@ -87,6 +94,7 @@ jobs:
               "test_outcome": os.environ.get("TEST_OUTCOME", "unknown"),
               "verified_at": datetime.now(timezone.utc).isoformat(),
               "ci_provider": "github-actions",
+              "governance_engine": "KGO_V2",
           }
           Path("artifacts/KGO_EVIDENCE.json").write_text(
               json.dumps(evidence, indent=2, sort_keys=True) + "\n",
@@ -100,20 +108,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          title="KGO blocker: test suite failures"
-          body_file="artifacts/KGO_SUMMARY.md"
-          issue_number="$(gh issue list --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "KGO blocker: test suite failures") | .number' | head -n 1)"
+          title="KGO v2 blocker: governed root-cause plan"
+          body_file="artifacts/KGO_V2_SUMMARY.md"
+          issue_number="$(gh issue list --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "KGO v2 blocker: governed root-cause plan") | .number' | head -n 1)"
           if [ -n "$issue_number" ]; then
             gh issue comment "$issue_number" --body-file "$body_file"
           else
             gh issue create --title "$title" --body-file "$body_file"
           fi
 
-      - name: Upload KGO governance evidence
+      - name: Upload KGO v2 governance evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: kgo-evidence-${{ github.run_id }}
+          name: kgo-v2-evidence-${{ github.run_id }}
           path: artifacts/
           if-no-files-found: error
           retention-days: 30
@@ -125,7 +133,7 @@ jobs:
           TEST_OUTCOME: ${{ steps.tests.outcome }}
         run: |
           if [ "$TEST_OUTCOME" != "success" ]; then
-            echo "KGO_BLOCKED: failures classified; backlog and checkpoint produced."
+            echo "KGO_V2_BLOCKED: root causes and patch plans produced; merge remains prohibited."
             exit 1
           fi
-          echo "KGO_VERIFIED: complete test suite passed for commit $GITHUB_SHA."
+          echo "KGO_V2_VERIFIED: complete test suite passed for commit $GITHUB_SHA."
