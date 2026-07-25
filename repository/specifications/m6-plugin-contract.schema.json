@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kyvernex.local/specifications/m6-plugin-contract.schema.json",
+  "title": "KYVERNEX M6 Plugin Contract",
+  "type": "object",
+  "$defs": {
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plugin_api_version", "allowed_capabilities", "filesystem", "network", "process", "limits", "audit"],
+      "properties": {
+        "plugin_api_version": {"const": "1.0.0"},
+        "instance_id": {"type": "string", "minLength": 1},
+        "allowed_capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "filesystem": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["read_roots", "write_roots"],
+          "properties": {
+            "read_roots": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+            "write_roots": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+          }
+        },
+        "network": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "allowed_hosts"],
+          "properties": {
+            "enabled": {"type": "boolean", "default": false},
+            "allowed_hosts": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+          }
+        },
+        "process": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "allowed_commands"],
+          "properties": {
+            "enabled": {"type": "boolean", "default": false},
+            "allowed_commands": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+          }
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["timeout_seconds", "max_output_bytes"],
+          "properties": {
+            "timeout_seconds": {"type": "integer", "minimum": 1, "default": 30},
+            "max_output_bytes": {"type": "integer", "minimum": 1, "default": 1048576}
+          }
+        },
+        "audit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["required", "include_request_input"],
+          "properties": {
+            "required": {"const": true},
+            "include_request_input": {"type": "boolean", "default": false}
+          }
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["request_id", "operation", "input", "context", "requested_capabilities", "authorization", "limits"],
+      "properties": {
+        "request_id": {"type": "string", "minLength": 1},
+        "operation": {"const": "governed.execute"},
+        "input": {"type": "object"},
+        "context": {"type": "object"},
+        "requested_capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "authorization": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["principal", "grants"],
+          "properties": {
+            "principal": {"type": "string", "minLength": 1},
+            "grants": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+          }
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["timeout_seconds", "max_output_bytes"],
+          "properties": {
+            "timeout_seconds": {"type": "integer", "minimum": 1},
+            "max_output_bytes": {"type": "integer", "minimum": 1}
+          }
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "category", "retryable", "details", "cause_id"],
+      "properties": {
+        "code": {"type": "string", "minLength": 1},
+        "message": {"type": "string", "minLength": 1},
+        "category": {"enum": ["VALIDATION", "LIFECYCLE", "AUTHORIZATION", "POLICY", "ADAPTER", "EXECUTION", "INTEGRITY", "COMPATIBILITY"]},
+        "retryable": {"type": "boolean"},
+        "details": {"type": "object"},
+        "cause_id": {"type": ["string", "null"]}
+      }
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["request_id", "status", "result", "error", "decision", "evidence", "plugin"],
+      "properties": {
+        "request_id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["SUCCEEDED", "BLOCKED", "FAILED"]},
+        "result": {},
+        "error": {"anyOf": [{"$ref": "#/$defs/error"}, {"type": "null"}]},
+        "decision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["authorized", "reason", "policy_ids"],
+          "properties": {
+            "authorized": {"type": "boolean"},
+            "reason": {"type": "string", "minLength": 1},
+            "policy_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+          }
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["execution_id", "audit_record_ids", "started_at", "completed_at"],
+          "properties": {
+            "execution_id": {"type": ["string", "null"]},
+            "audit_record_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+            "started_at": {"type": "string", "format": "date-time"},
+            "completed_at": {"type": "string", "format": "date-time"}
+          }
+        },
+        "plugin": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["plugin_id", "plugin_api_version", "kyvernex_version"],
+          "properties": {
+            "plugin_id": {"const": "kyvernex.plugin.runtime"},
+            "plugin_api_version": {"const": "1.0.0"},
+            "kyvernex_version": {"type": "string", "minLength": 1}
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "SUCCEEDED"}}},
+          "then": {"properties": {"error": {"type": "null"}}}
+        },
+        {
+          "if": {"properties": {"status": {"const": "FAILED"}}},
+          "then": {"properties": {"error": {"$ref": "#/$defs/error"}}}
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {"$ref": "#/$defs/configuration"},
+    {"$ref": "#/$defs/request"},
+    {"$ref": "#/$defs/response"},
+    {"$ref": "#/$defs/error"}
+  ]
+}
