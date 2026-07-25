@@ -10,51 +10,50 @@
 - Active milestone: **M6 — KYVERNEX Plugin Runtime**
 - Completed sprints: **S004 — Freeze the plugin contract; S005 — Implement the core plugin runtime**
 - Active sprint: **S006 — Govern host contracts**
-- Governance mode: **AUTONOMOUS**
+- Governance mode: **AUTONOMOUS VERIFICATION**
 - KPM cycle: `KPM-CYCLE-015`
 - KGO cycle: `KGO-CYCLE-026`
 - Target version: `1.2.0`
 
 ## Current objective
-Implement governed host request, response and error contracts over the verified deterministic plugin runtime, without modifying the strategic roadmap or the immutable `v1.1.0` release.
+Verify the governed host request, response and error contracts implemented over the deterministic plugin runtime, without modifying the strategic roadmap or the immutable `v1.1.0` release.
 
 ## Active governance state
-- KPM: `RUNNING`
-- KGO v3 autonomous loop: `RUNNING`
+- KPM: `VERIFYING`
+- KGO v3 autonomous loop: `VERIFYING`
 - M6-W001 plugin contract and lifecycle specification: `DONE`
 - M6-W002 core plugin runtime and lifecycle state machine: `DONE`
-- M6-W003 governed host request, response and error contracts: `IN_PROGRESS`
+- M6-W003 governed host request, response and error contracts: `IN_VERIFICATION`
 - Active work item: `M6-W003`
 - Checkpoint: `KGO_CHECKPOINT.json`
 
-## M6-W002 verified evidence
-The repository contains:
+## M6-W003 implementation evidence
+The repository now contains:
 
-- `src/kyvernex/plugin_runtime.py`;
-- `tests/test_plugin_runtime.py`;
-- public runtime exports in `src/kyvernex/__init__.py`.
+- `src/kyvernex/plugin_contracts.py`;
+- governed integration in `src/kyvernex/plugin_runtime.py`;
+- targeted contract and lifecycle tests in `tests/test_plugin_runtime.py`;
+- public contract exports in `src/kyvernex/__init__.py`.
 
-User-observed GitHub Actions evidence confirms green results on commit `691c769` for:
+The implementation provides:
 
-- KYVERNEX Test Suite;
-- KYVERNEX KGO v3;
-- KYVERNEX Reference Prototype Tests;
-- GitHub Pages deployment.
+- strict request-field validation and unknown-field rejection;
+- explicit authorization principal and grants;
+- capability intersection enforcement;
+- duplicate request-ID rejection;
+- configured timeout and output-limit validation;
+- structured `SUCCEEDED`, `BLOCKED` and `FAILED` responses;
+- machine-readable governed errors;
+- separate decision, execution and evidence fields;
+- no adapter invocation for blocked requests.
 
-The verified runtime provides deterministic lifecycle enforcement, adapter protocol validation, capability intersection, single-request execution state handling, non-mutating secret-free status, terminal idempotent shutdown and zero-authority defaults.
+## Verification gate
+M6-W003 remains open until current evidence confirms:
 
-## M6-W003 scope
-The next work item adds:
-
-- structured request validation;
-- structured response construction;
-- governed error envelopes;
-- duplicate request detection;
-- capability and authorization checks;
-- explicit `SUCCEEDED`, `BLOCKED` and `FAILED` outcomes;
-- evidence fields that distinguish decision, execution and observed facts.
-
-M6-W003 must not silently expand filesystem, network, process or repository authority.
+1. targeted governed-contract tests pass;
+2. the complete repository suite passes;
+3. existing stable behavior remains unbroken;
+4. no filesystem, network, process or repository authority expansion was introduced.
 
 ## Stable release protection
 - `v1.1.0` remains immutable and Latest;
@@ -63,7 +62,7 @@ M6-W003 must not silently expand filesystem, network, process or repository auth
 - no M6 prerelease or stable release is claimed before fresh verification.
 
 ## Continuation rule
-Implement M6-W003 strictly against the frozen contract and verified runtime. Stop on current verification failure, contract contradiction, unresolved P0 security boundary, external publication boundary or milestone completion.
+Read current CI evidence for the exact M6-W003 implementation state. On green, close M6-W003 and activate the next dependency-valid work item. On failure, record the failure before repair.
 
 ## Verification note
-M6-W002 is complete with current green evidence on commit `691c769`. M6-W003 is active; governed host contracts are not yet claimed as implemented.
+M6-W002 is complete with green evidence on commit `691c769`. M6-W003 code and targeted tests exist; current verification is pending and completion is not yet claimed.
