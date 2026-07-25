@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "AUTONOMOUS_PRODUCT_CODE",
-  "state": "RUNNING",
+  "mode": "PRODUCT_CODE_BOUNDARY",
+  "state": "SAFE_STOP",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -20,48 +20,43 @@
     {"id": "M7", "title": "Plugin Product Interface", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M8", "title": "Universal AI Plugin Bridge", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M9", "title": "Local AI Tool Server", "status": "CODE_COMPLETE_UNVERIFIED"},
-    {"id": "M10", "title": "Local Desktop Launcher", "status": "CODE_COMPLETE_UNVERIFIED"}
+    {"id": "M10", "title": "Local Desktop Launcher", "status": "CODE_COMPLETE_UNVERIFIED"},
+    {"id": "M11", "title": "Local Setup Bootstrap", "status": "CODE_COMPLETE_UNVERIFIED"}
   ],
-  "milestone": {
-    "id": "M11",
-    "title": "Local Setup Bootstrap",
-    "status": "ACTIVE"
-  },
   "sprint": {
     "id": "S014",
     "title": "Explicit local initialization",
-    "status": "ACTIVE"
+    "status": "CODE_COMPLETE_UNVERIFIED"
   },
-  "cycle": "KGO-CYCLE-042",
-  "kpm_cycle": "KPM-CYCLE-031",
-  "completed_code_tasks": ["M11-W001"],
+  "cycle": "KGO-CYCLE-043",
+  "kpm_cycle": "KPM-CYCLE-032",
+  "completed_code_tasks": ["M11-W001", "M11-W002"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
-  "active_task": {
-    "id": "M11-W002",
-    "title": "Add optional immediate launch after profile creation",
-    "status": "IN_PROGRESS",
-    "priority": "P1"
-  },
+  "active_task": null,
   "code_evidence": {
     "setup_command": "src/kyvernex/local_ai_setup_cli.py",
     "profile_validator": "src/kyvernex/local_ai_profile.py",
+    "desktop_launcher": "src/kyvernex/local_ai_app_cli.py",
     "package_entry_point": "kyvernex-ai-setup",
-    "latest_code_commit": "1f6f1944f88bf345d0c9b7ca371f95d4b14286ed"
+    "latest_code_commit": "b4554684d3115d11280f7a7eb0fcae799dd909c6"
   },
   "setup_boundary": {
     "explicit_output_path": true,
     "default_output": "kyvernex.local.json",
     "replace_requires_force": true,
+    "optional_immediate_launch": true,
+    "launch_uses_existing_app": true,
     "profile_discovery": false,
     "environment_read": false,
     "network_access": false,
     "package_installation": false,
     "operating_system_registration": false
   },
-  "autonomous_continuation": true,
-  "requires_user_proceed": false,
-  "resume_rule": "Continue only with optional immediate launch through the existing kyvernex-ai-app path. Do not add installers, operating-system services, network access, public hosting, accounts or databases.",
+  "autonomous_continuation": false,
+  "requires_user_proceed": true,
+  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve explicit local configuration and loopback-only operation. Do not infer installers, services, public hosting, verification or release publication.",
   "stop_conditions": [
+    "PRODUCT_TARGET_NOT_DEFINED",
     "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
     "NETWORK_ACCESS_INTRODUCED",
