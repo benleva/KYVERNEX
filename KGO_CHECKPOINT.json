@@ -2,14 +2,20 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "MILESTONE_COMPLETE",
+  "state": "RELEASE_COMPLETE",
   "target_release": "1.1.0",
   "release_candidate": "1.1.0rc1",
   "stable_baseline": {
     "version": "1.0.0",
     "tag": "v1.0.0",
     "immutable": true,
-    "verification": "GITHUB_ACTIONS_RUN_58_GREEN"
+    "release_status": "LATEST_STABLE"
+  },
+  "published_prerelease": {
+    "version": "1.1.0rc1",
+    "tag": "v1.1.0-rc.1",
+    "status": "PUBLISHED_PRERELEASE",
+    "latest": false
   },
   "milestone": {
     "id": "M4",
@@ -21,8 +27,8 @@
     "title": "Establish the 1.1 evidence baseline",
     "status": "DONE"
   },
-  "cycle": "KGO-CYCLE-019",
-  "kpm_cycle": "KPM-CYCLE-008",
+  "cycle": "KGO-CYCLE-020",
+  "kpm_cycle": "KPM-CYCLE-009",
   "completed_tasks": [
     "M4-W001",
     "M4-W002",
@@ -34,14 +40,7 @@
   ],
   "active_task": null,
   "selected_capability": "KPM/KGO autonomous control CLI",
-  "implementation_verification": {
-    "commit": "0312f97857dd954b71ad44b07834c545f40a9db1",
-    "kgo_v3": "GREEN",
-    "reference_prototype_tests": "GREEN",
-    "test_suite": "GREEN"
-  },
   "release_candidate_verification": {
-    "commit": "807def60aa3f6e8adce74b94f375ac0bc5b24edb",
     "kgo_v3": "GREEN",
     "reference_prototype_tests": "GREEN",
     "test_suite": "GREEN",
@@ -51,10 +50,10 @@
     "version": "1.1.0rc1"
   },
   "autonomous_continuation": false,
-  "requires_user_proceed": true,
-  "resume_rule": "Publish the separate v1.1.0-rc.1 GitHub prerelease from the verified release candidate. Do not mark it Latest and do not modify v1.0.0.",
+  "requires_user_proceed": false,
+  "resume_rule": "Resume only for documented release-candidate feedback, a verified blocking defect, an explicitly approved promotion plan to stable 1.1.0, or a separately authorized milestone.",
   "stop_conditions": [
-    "MILESTONE_DONE",
-    "EXTERNAL_AUTHORIZATION_REQUIRED"
+    "RELEASE_COMPLETE",
+    "NO_AUTHORIZED_WORK"
   ]
 }
