@@ -44,6 +44,14 @@ from .response_governance import GovernedResponse, ResponseGovernor
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .serialization import to_primitive
 from .transaction_journal import MultiTransactionDeletionCoordinator, RecoveryBatch
+from .unit_of_work import (
+    KyvernexUnitOfWork,
+    UnitOfWorkCommitError,
+    UnitOfWorkError,
+    UnitOfWorkResult,
+    UnitOfWorkState,
+    UnitOfWorkStateError,
+)
 
 __all__ = [
     "AET", "AIAdapter", "AdapterExecutionError", "AdapterRequest", "AdapterResponse",
@@ -54,12 +62,13 @@ __all__ = [
     "DeletionTransactionError", "DurableDeletionCoordinator", "EchoAdapter", "ExecutionResult",
     "FailingAdapter", "GovernedExecutionResult", "GovernedResponse", "GraphPersistenceFormatError",
     "InterProcessFileLock", "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory",
-    "KyvernexEngine", "KyvernexOrchestrator", "MemoryConflictError",
+    "KyvernexEngine", "KyvernexOrchestrator", "KyvernexUnitOfWork", "MemoryConflictError",
     "MultiTransactionDeletionCoordinator", "PersistenceFormatError", "ProcessLockError",
     "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch", "RecoveryResult",
     "ReferentialIntegrityError", "RelationConflictError", "RelationType", "ResponseGovernor",
-    "Rule", "RuleEngine", "RuleResult", "RuleSeverity", "SessionMemory", "ValidationOutcome",
-    "ValidationRecord", "default_rules", "persist_audit", "to_primitive",
+    "Rule", "RuleEngine", "RuleResult", "RuleSeverity", "SessionMemory", "UnitOfWorkCommitError",
+    "UnitOfWorkError", "UnitOfWorkResult", "UnitOfWorkState", "UnitOfWorkStateError",
+    "ValidationOutcome", "ValidationRecord", "default_rules", "persist_audit", "to_primitive",
 ]
 
 __version__ = "0.1.0.dev0"
