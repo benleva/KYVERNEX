@@ -7,7 +7,11 @@ import sys
 from typing import Any, TextIO
 
 from .ai_bridge import KyvernexAIBridge
+from .ai_formats import export_manifest
 from .plugin_loader import load_handler
+
+
+MappingLike = dict[str, Any]
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -18,6 +22,12 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--handler", required=True, help="Host callable as module:attribute")
     parser.add_argument("--principal", default="ai-host")
     parser.add_argument("--manifest", action="store_true", help="Print the tool manifest and exit")
+    parser.add_argument(
+        "--manifest-format",
+        choices=("canonical", "openai", "anthropic", "gemini"),
+        default="canonical",
+        help="Shape used when printing the canonical tool manifest",
+    )
     parser.add_argument(
         "--stream",
         action="store_true",
@@ -31,9 +41,6 @@ def _write_json(stream: TextIO, payload: MappingLike) -> None:
     stream.flush()
 
 
-MappingLike = dict[str, Any]
-
-
 def _load_object(raw: str, *, source: str) -> dict[str, Any]:
     payload: Any = json.loads(raw)
     if not isinstance(payload, dict):
@@ -42,7 +49,6 @@ def _load_object(raw: str, *, source: str) -> dict[str, Any]:
 
 
 def _stream_requests(bridge: KyvernexAIBridge, input_stream: TextIO, output_stream: TextIO) -> int:
-    """Process independent JSONL requests while preserving one bridge instance."""
     had_failure = False
     for line_number, raw_line in enumerate(input_stream, start=1):
         raw = raw_line.strip()
@@ -52,11 +58,7 @@ def _stream_requests(bridge: KyvernexAIBridge, input_stream: TextIO, output_stre
             response = bridge.invoke(_load_object(raw, source=f"line {line_number}"))
         except (TypeError, ValueError, RuntimeError) as exc:
             had_failure = True
-            response = {
-                "status": "FAILED",
-                "error": str(exc),
-                "line": line_number,
-            }
+            response = {"status": "FAILED", "error": str(exc), "line": line_number}
         else:
             if response.get("status") != "SUCCEEDED":
                 had_failure = True
@@ -70,7 +72,7 @@ def main(argv: list[str] | None = None) -> int:
         handler = load_handler(args.handler)
         with KyvernexAIBridge(handler, principal=args.principal) as bridge:
             if args.manifest:
-                _write_json(sys.stdout, bridge.manifest())
+                _write_json(sys.stdout, export_manifest(bridge.manifest(), args.manifest_format))
                 return 0
             if args.stream:
                 return _stream_requests(bridge, sys.stdin, sys.stdout)
