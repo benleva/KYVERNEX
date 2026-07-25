@@ -10,6 +10,7 @@ from .models import (
     ValidationOutcome,
     ValidationRecord,
 )
+from .serialization import to_primitive
 
 __all__ = [
     "AET",
@@ -22,6 +23,7 @@ __all__ = [
     "KyvernexEngine",
     "ValidationOutcome",
     "ValidationRecord",
+    "to_primitive",
 ]
 
 __version__ = "0.1.0.dev0"
