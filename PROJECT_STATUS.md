@@ -5,63 +5,62 @@
 - Immutable stable tag: `v1.1.0`
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
 - Code-complete milestones: **M7**, **M8**, **M9**, **M10**, **M11**, **M12**
-- Sprint: **S015 — Cross-platform local start files**
-- Governance mode: **KPM/KGO PRODUCT CODE BOUNDARY**
-- KPM cycle: `KPM-CYCLE-034`
-- KGO cycle: `KGO-CYCLE-045`
+- Active milestone: **M13 — Local Project Scaffold**
+- Active sprint: **S016 — Editable local project generation**
+- Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
+- KPM cycle: `KPM-CYCLE-035`
+- KGO cycle: `KGO-CYCLE-046`
 - Development package version: `1.2.0.dev0`
 
-## Product objective delivered
-Generate readable Windows, macOS and Linux launch files from one validated local profile, either directly or during initial setup.
+## Product objective
+Create one editable local project directory containing a host handler, strict profile, portable launch files and a short local README.
 
 ```text
-kyvernex-ai-setup --launchers
--> strict JSON profile
--> portable launch files
--> optional immediate app launch
+kyvernex-ai-project
+-> editable handler.py
+-> kyvernex.local.json
+-> Windows, macOS and Linux launch files
+-> existing kyvernex-ai-app
 -> loopback KYVERNEX console
 ```
 
 ## Preserved product code
-M7 through M11 remain `CODE_COMPLETE_UNVERIFIED`. M12 reuses the same profile validator, setup command and desktop launcher. No installer, system registration or background service is introduced.
+M7 through M12 remain `CODE_COMPLETE_UNVERIFIED`. M13 reuses the existing strict profile and desktop app contracts. It creates ordinary source and text files only.
 
-## M12 code delivered
-### M12-W001 — Portable launcher generator
+## M13 delivered code
+### M13-W001 — Editable local project generator
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `src/kyvernex/local_ai_shortcut_cli.py` provides `kyvernex-ai-shortcut`;
+- `src/kyvernex/local_ai_project_cli.py` provides `kyvernex-ai-project`;
 - `pyproject.toml` installs the command;
-- one explicit profile is resolved and validated before generation;
-- Windows output is `start-kyvernex.cmd`;
-- macOS output is `start-kyvernex.command`;
-- Linux output is `start-kyvernex.sh`;
+- the default output directory is `kyvernex-local-project`;
+- generated `handler.py` exposes `handle(request, authority)` and is intended for direct editing;
+- generated profile references the local handler explicitly as `handler:handle`;
+- generated launch files change into the project directory before invoking `kyvernex-ai-app`;
+- Windows, macOS and Linux start files are included;
 - POSIX files receive executable permission bits;
-- existing files require `--force` before replacement;
-- every file invokes only `kyvernex-ai-app --profile <absolute path>`.
-
-### M12-W002 — Launcher generation during setup
-Status: `CODE_COMPLETE_UNVERIFIED`
-
-- `kyvernex-ai-setup --launchers` invokes the existing portable launcher generator after profile validation;
-- `--launcher-platform all|windows|macos|linux` selects generated formats;
-- `--launcher-dir` selects the output directory;
-- `--force` applies consistently to the profile and generated launcher files;
-- launcher generation failure stops the setup flow before optional app launch;
-- `--launch` may still start the existing loopback app after successful generation.
+- existing scaffold files require `--force` before replacement;
+- the generated profile is validated before success is reported.
 
 ## Current use
 
-Create profile and all portable launchers:
-
 ```text
-kyvernex-ai-setup --handler examples.plugin_handler:handle --principal andrea --launchers
+kyvernex-ai-project my-kyvernex-project --principal andrea
 ```
 
-Create Windows launcher and start the app:
+Generated files:
 
 ```text
-kyvernex-ai-setup --handler examples.plugin_handler:handle --principal andrea --launchers --launcher-platform windows --launch
+my-kyvernex-project/handler.py
+my-kyvernex-project/kyvernex.local.json
+my-kyvernex-project/start-kyvernex.cmd
+my-kyvernex-project/start-kyvernex.command
+my-kyvernex-project/start-kyvernex.sh
+my-kyvernex-project/README.md
 ```
+
+## Active work
+- M13-W002 optional immediate launch of the generated project through the existing app path: `IN_PROGRESS`.
 
 ## Boundary
-M12 is code-complete but unverified. It creates portable text files only. It does not create installers, Start-menu entries, desktop registrations, login items, system services, automatic startup, public binding, network access or release publication. No CI, clean-install or runtime compatibility claim is made.
+M13 creates only an editable local folder. It does not install dependencies, register operating-system components, create services, expose a public address, access the network or publish a release. No runtime compatibility or verification claim is made.
