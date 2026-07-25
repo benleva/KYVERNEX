@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kyvernex.dev/schemas/execution-result.schema.json",
+  "title": "KYVERNEX Execution Result",
+  "type": "object",
+  "required": ["session_id", "cognitive_object", "validation", "audit"],
+  "properties": {
+    "session_id": {"type": "string", "minLength": 1},
+    "cognitive_object": {
+      "type": "object",
+      "required": ["original_content", "source", "category", "state", "object_id", "version", "transformations", "applied_rules", "limitations", "metadata"],
+      "properties": {
+        "original_content": {},
+        "source": {"type": "string"},
+        "category": {"type": "string"},
+        "state": {"type": "string"},
+        "object_id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "transformations": {"type": "array", "items": {"type": "string"}},
+        "applied_rules": {"type": "array", "items": {"type": "string"}},
+        "limitations": {"type": "array", "items": {"type": "string"}},
+        "metadata": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "required": ["outcome", "checks", "errors", "reservations"],
+      "properties": {
+        "outcome": {"enum": ["VALIDATO", "VALIDATO_CON_RISERVA", "NON_VERIFICABILE", "INCOMPLETO", "INCOMPATIBILE", "RIFIUTATO", "ERRORE"]},
+        "checks": {"type": "array", "items": {"type": "string"}},
+        "errors": {"type": "array", "items": {"type": "string"}},
+        "reservations": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "audit": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["session_id", "operation_id", "component", "event_type", "timestamp", "object_id", "details"],
+        "properties": {
+          "session_id": {"type": "string", "minLength": 1},
+          "operation_id": {"type": "string", "minLength": 1},
+          "component": {"type": "string", "minLength": 1},
+          "event_type": {"type": "string", "minLength": 1},
+          "timestamp": {"type": "string", "minLength": 1},
+          "object_id": {"type": ["string", "null"]},
+          "details": {"type": "object"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
