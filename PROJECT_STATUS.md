@@ -4,68 +4,58 @@
 - Stable published release: `1.1.0`
 - Immutable stable tag: `v1.1.0`
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
-- Product-code milestone: **M7 — Plugin Product Interface**
-- Sprint: **S010 — Usable plugin API**
-- Governance mode: **KPM/KGO PRODUCT BOUNDARY**
-- KPM cycle: `KPM-CYCLE-022`
-- KGO cycle: `KGO-CYCLE-033`
+- Code-complete milestone: **M7 — Plugin Product Interface**
+- Active milestone: **M8 — Universal AI Plugin Bridge**
+- Active sprint: **S011 — Provider-neutral AI invocation**
+- Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
+- KPM cycle: `KPM-CYCLE-023`
+- KGO cycle: `KGO-CYCLE-034`
 - Development package version: `1.2.0.dev0`
 
-## Direction
-M6 test-only work remains paused by user instruction. No unfinished M6 task is reported as complete.
-
-M7 delivered executable plugin product code. No test, clean-install, publication or stable-release claim is made for the M7 code line.
-
-## M7 product path
+## Product objective
+Deliver one KYVERNEX plugin bridge that AI hosts can invoke through a provider-neutral JSON tool contract.
 
 ```text
-host code or JSON file
--> kyvernex-plugin / KyvernexPluginSession
+AI host
+-> kyvernex-ai-plugin / KyvernexAIBridge
 -> KyvernexPlugin
 -> governed runtime
--> bounded adapter
--> structured response or JSON file
+-> bounded host callable
+-> structured response
 ```
 
-## M7 code delivered
+## M7 preserved code
+M7 remains `CODE_COMPLETE_UNVERIFIED`. It provides the public facade, installed plugin command, explicit handler loading, JSON file workflows, persistent local sessions and the `1.2.0.dev0` development line.
 
-### M7-W001 — Public product interface
+## M8 active code
+### M8-W001 — Provider-neutral AI bridge
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `src/kyvernex/plugin.py` provides `KyvernexPlugin`;
-- `src/kyvernex/plugin_cli.py` provides the installed `kyvernex-plugin` command;
-- `pyproject.toml` registers the command;
-- `src/kyvernex/__init__.py` exports `KyvernexPlugin`.
+- `src/kyvernex/ai_bridge.py` provides `KyvernexAIBridge`;
+- the bridge exposes one tool named `kyvernex_execute`;
+- `manifest()` returns a provider-neutral JSON Schema definition;
+- `invoke()` accepts only `input`, optional `context` and optional `request_id`;
+- unknown fields fail closed;
+- execution remains inside the existing governed plugin path.
 
-### M7-W002 — Practical JSON file input and output
+### M8-W002 — Installed AI bridge command
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-The command supports mutually exclusive inline and file JSON input plus optional JSON response-file output.
+- `src/kyvernex/ai_plugin_cli.py` reads one JSON object from standard input;
+- `--handler module:attribute` selects the explicit host callable;
+- `--manifest` prints the tool definition;
+- `pyproject.toml` installs `kyvernex-ai-plugin`;
+- `src/kyvernex/__init__.py` exports `KyvernexAIBridge`.
 
-### M7-W003 — Persistent local plugin session
-Status: `CODE_COMPLETE_UNVERIFIED`
-
-`src/kyvernex/plugin_session.py` keeps one initialized plugin alive across repeated governed calls.
-
-### M7-W004 — Real host callable loading and example
-Status: `CODE_COMPLETE_UNVERIFIED`
-
-- `src/kyvernex/plugin_loader.py` loads one explicit `module:attribute` callable;
-- `examples/plugin_handler.py` provides a minimal real host handler;
-- no discovery, scanning, environment expansion or fallback loading is performed.
-
-### M7-W005 — Development version line
-Status: `CODE_COMPLETE_UNVERIFIED`
-
-- package metadata: `1.2.0.dev0`;
-- public API `__version__`: `1.2.0.dev0`;
-- `KyvernexPlugin` runtime metadata default: `1.2.0.dev0`.
-
-## Current product use
+## Current use
 
 ```text
-kyvernex-plugin --handler examples.plugin_handler:handle --input-file request.json --output-file response.json --principal andrea
+kyvernex-ai-plugin --handler examples.plugin_handler:handle --manifest
 ```
 
-## Product boundary
-M7 is code-complete but unverified. KPM/KGO stop here because the next milestone needs a concrete host target or product objective. No additional platform, transport, adapter or service is inferred automatically.
+```text
+echo '{"input":{"message":"ciao"}}' | kyvernex-ai-plugin --handler examples.plugin_handler:handle --principal andrea
+```
+
+## Boundary
+M8 builds one AI-neutral bridge. It does not create separate ChatGPT, Claude, Gemini or Copilot plugins, remote transports, accounts, billing, dashboards or external services. No verification or release claim is made yet.
