@@ -5,11 +5,11 @@
 - Repository version: `0.1.0.dev0`
 - Current milestone: **M3 — Autonomous Development**
 - Current sprint: **S002 — Establish policy-bounded autonomous cycles**
-- CI status: **M3-W003 IMPLEMENTED — FRESH RUN PENDING**
+- CI status: **M3-W004 IMPLEMENTED — FRESH RUN PENDING**
 - Last user-observed workflow state: green / `VERIFIED`; historical red runs remain immutable records of earlier commits.
 
 ## Current objective
-Complete the existing M3 code path without expanding KGO or KPM. Verify the continuous self-verification controller, then proceed only to the next dependency-valid implementation required by the frozen milestone backlog.
+Complete the existing M3 code path without expanding KGO or KPM. Verify the safe isolated commit manager, then proceed only to the next dependency-valid implementation required by the frozen milestone backlog.
 
 ## Governance activation state
 - KPM: `FROZEN_EXCEPT_BUG_FIXES`
@@ -21,19 +21,22 @@ Complete the existing M3 code path without expanding KGO or KPM. Verify the cont
 - Specification-to-change manifest: `IMPLEMENTED_NOT_YET_CI_VERIFIED`
 - KPM feature-priority assessment: `IMPLEMENTED_NOT_YET_CI_VERIFIED`
 - Continuous self-verification controller: `IMPLEMENTED_FRESH_CI_PENDING`
+- Safe isolated commit manager: `IMPLEMENTED_FRESH_CI_PENDING`
 - Execution performance clock: `BACKLOG_PRIORITY_ASSIGNED_BY_KPM`
 - Workflow: `.github/workflows/kgo.yml`
 - Start channel: manual `workflow_dispatch` or qualifying push to `main`
 
-## M3-W003 implementation
-The controller in `src/kyvernex/self_verification.py` evaluates current targeted and complete test evidence.
+## M3-W004 implementation
+The manager in `src/kyvernex/isolated_commit.py` creates deterministic authorized commit plans without executing git or GitHub operations internally.
 
-Decisions:
-- `VERIFIED`: both current executions succeed;
-- `REPAIR_REQUIRED`: explicit current test-failure evidence exists;
-- `EXECUTION_BLOCKED`: verification is incomplete without a supported source-code failure.
-
-The workflow runs targeted M3-W003 tests, then the complete suite, persists `SELF_VERIFICATION.json` and advances ADE only after both boundaries succeed.
+Controls:
+- immutable base commit requirement;
+- explicit authorization requirement;
+- allowed and forbidden repository path boundaries;
+- file-count limit;
+- duplicate-path rejection;
+- SHA-256 content hashes;
+- deterministic changeset fingerprint and mutation detection.
 
 ## Persistent artifacts
 - `KGO_STATE.json`
@@ -53,18 +56,17 @@ The workflow runs targeted M3-W003 tests, then the complete suite, persists `SEL
 6. `M3-W006` Execution performance clock and improvement metrics.
 
 ## Current governance cycle
-- Cycle: `KGO-CYCLE-009`
-- Status: `M3_W003_IMPLEMENTED_FRESH_RUN_PENDING`
-- Active task: obtain fresh complete CI evidence for M3-W003.
-- Continuation rule: after successful targeted and complete verification, proceed to `M3-W004` without adding new governance scope.
+- Cycle: `KGO-CYCLE-010`
+- Status: `M3_W004_IMPLEMENTED_FRESH_RUN_PENDING`
+- Active task: obtain fresh complete CI evidence for M3-W003 and M3-W004.
+- Continuation rule: after successful verification, proceed to `M3-W005` without adding new governance scope.
 
-## Definition of Done for M3-W003
-- controller implementation present;
+## Definition of Done for M3-W004
+- isolated commit manager implementation present;
 - public API exported;
-- targeted tests present;
-- complete-suite integration present;
+- authorization and repository-boundary tests present;
+- deterministic fingerprint and mutation detection present;
 - specification present;
-- update record present;
 - project status synchronized;
 - fresh complete CI evidence successful.
 
@@ -78,4 +80,4 @@ Stop only for documented current test failure, invalid dependency state, exceede
 KGO and KPM are frozen for Release 1.0 except for verified blocking defects. New observations are deferred and do not interrupt implementation.
 
 ## Verification note
-M3-W003 implementation and its CI integration are committed. No passing result is claimed until a fresh GitHub Actions run completes successfully.
+M3-W003 and M3-W004 implementations are committed. No passing result is claimed until a fresh GitHub Actions run completes successfully.
