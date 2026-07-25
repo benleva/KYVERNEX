@@ -3,12 +3,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shlex
 import stat
 import subprocess
 import sys
 from pathlib import Path
 
+from .local_ai_app_cli import main as launch_local_ai_app
 from .local_ai_profile import load_local_ai_profile
 
 _HANDLER_SOURCE = '''"""Editable KYVERNEX host handler."""
@@ -38,6 +40,8 @@ This folder is an editable local KYVERNEX project.
 - `start-kyvernex.sh` launches on Linux.
 
 The launch files change into this folder before starting `kyvernex-ai-app`, so the local `handler.py` module can be imported explicitly as `handler:handle`.
+
+The project can also be created and started immediately with `kyvernex-ai-project DIRECTORY --launch`.
 """
 
 
@@ -54,6 +58,11 @@ def _parser() -> argparse.ArgumentParser:
     browser.add_argument("--no-browser", dest="open_browser", action="store_false")
     parser.set_defaults(open_browser=True)
     parser.add_argument("--force", action="store_true", help="Replace scaffold files that already exist")
+    parser.add_argument(
+        "--launch",
+        action="store_true",
+        help="Start the generated local project immediately after successful creation",
+    )
     return parser
 
 
@@ -64,6 +73,15 @@ def _windows_script(project: Path) -> str:
 
 def _posix_script(project: Path) -> str:
     return "#!/bin/sh\nset -eu\ncd " + shlex.quote(str(project)) + "\nexec kyvernex-ai-app --profile kyvernex.local.json\n"
+
+
+def _launch_project(project: Path) -> int:
+    previous = Path.cwd()
+    try:
+        os.chdir(project)
+        return launch_local_ai_app(["--profile", "kyvernex.local.json"])
+    finally:
+        os.chdir(previous)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -102,7 +120,10 @@ def main(argv: list[str] | None = None) -> int:
             "project": str(project),
             "profile": profile,
             "files": [str(path) for path in files],
+            "launch_requested": args.launch,
         }, ensure_ascii=False, sort_keys=True))
+        if args.launch:
+            return _launch_project(project)
         return 0
     except (OSError, TypeError, ValueError) as exc:
         print(json.dumps({"status": "FAILED", "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
