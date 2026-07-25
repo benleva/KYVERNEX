@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "RELEASE_COMPLETE",
+  "state": "RUNNING",
   "target_release": "1.1.0",
   "release_candidate": "1.1.0rc1",
   "stable_baseline": {
@@ -18,42 +18,40 @@
     "latest": false
   },
   "milestone": {
-    "id": "M4",
-    "title": "Governed post-release evolution",
-    "status": "DONE"
+    "id": "M5",
+    "title": "Promote 1.1 release candidate to stable",
+    "status": "ACTIVE"
   },
   "sprint": {
-    "id": "S002",
-    "title": "Establish the 1.1 evidence baseline",
-    "status": "DONE"
+    "id": "S003",
+    "title": "Verify and publish stable 1.1.0",
+    "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-020",
-  "kpm_cycle": "KPM-CYCLE-009",
-  "completed_tasks": [
-    "M4-W001",
-    "M4-W002",
-    "M4-W003",
-    "M4-W004",
-    "M4-W005",
-    "M4-W006",
-    "M4-W007"
-  ],
-  "active_task": null,
-  "selected_capability": "KPM/KGO autonomous control CLI",
-  "release_candidate_verification": {
-    "kgo_v3": "GREEN",
-    "reference_prototype_tests": "GREEN",
-    "test_suite": "GREEN",
-    "package_build": "GREEN",
-    "clean_install": "GREEN",
-    "installed_cli_smoke_test": "GREEN",
-    "version": "1.1.0rc1"
+  "cycle": "KGO-CYCLE-021",
+  "kpm_cycle": "KPM-CYCLE-010",
+  "completed_tasks": [],
+  "active_task": {
+    "id": "M5-W001",
+    "title": "Synchronize stable 1.1.0 version and obtain fresh release evidence",
+    "status": "IN_VERIFICATION",
+    "priority": "P0"
   },
-  "autonomous_continuation": false,
+  "promotion_scope": "Version, release documentation and verification only; no new functional capability.",
+  "stable_promotion_verification": {
+    "targeted_tests": "FRESH_RUN_PENDING",
+    "complete_suite": "FRESH_RUN_PENDING",
+    "package_build": "FRESH_RUN_PENDING",
+    "clean_install": "FRESH_RUN_PENDING",
+    "installed_cli_smoke_test": "FRESH_RUN_PENDING",
+    "version": "1.1.0"
+  },
+  "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Resume only for documented release-candidate feedback, a verified blocking defect, an explicitly approved promotion plan to stable 1.1.0, or a separately authorized milestone.",
+  "resume_rule": "Read current 1.1.0 CI evidence. On green, close M5-W001, finalize stable release materials and stop at the tag and GitHub Release publication boundary. On failure, record the current failure before repair.",
   "stop_conditions": [
-    "RELEASE_COMPLETE",
-    "NO_AUTHORIZED_WORK"
+    "CURRENT_VERIFICATION_FAILURE",
+    "UNRESOLVABLE_P0_BLOCKER",
+    "EXTERNAL_PUBLICATION_BOUNDARY",
+    "MILESTONE_DONE"
   ]
 }
