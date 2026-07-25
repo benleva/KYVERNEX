@@ -1,5 +1,13 @@
 """KYVERNEX Reference Prototype 0.1."""
 
+from .adapters import (
+    AIAdapter,
+    AdapterExecutionError,
+    AdapterRequest,
+    AdapterResponse,
+    EchoAdapter,
+    FailingAdapter,
+)
 from .core import AET, ContinuousValidator, KyvernexEngine
 from .memory import MemoryConflictError, SessionMemory
 from .models import (
@@ -11,20 +19,29 @@ from .models import (
     ValidationOutcome,
     ValidationRecord,
 )
+from .orchestrator import GovernedExecutionResult, KyvernexOrchestrator
 from .persistence import JsonSessionMemory, PersistenceFormatError
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .serialization import to_primitive
 
 __all__ = [
     "AET",
+    "AIAdapter",
+    "AdapterExecutionError",
+    "AdapterRequest",
+    "AdapterResponse",
     "AuditEvent",
     "CognitiveCategory",
     "CognitiveObject",
     "CognitiveState",
     "ContinuousValidator",
+    "EchoAdapter",
     "ExecutionResult",
+    "FailingAdapter",
+    "GovernedExecutionResult",
     "JsonSessionMemory",
     "KyvernexEngine",
+    "KyvernexOrchestrator",
     "MemoryConflictError",
     "PersistenceFormatError",
     "Rule",
