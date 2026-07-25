@@ -54,6 +54,7 @@ from .memory import MemoryConflictError, SessionMemory
 from .models import AuditEvent, CognitiveCategory, CognitiveObject, CognitiveState, ExecutionResult, ValidationOutcome, ValidationRecord
 from .orchestrator import GovernedExecutionResult, KyvernexOrchestrator
 from .persistence import JsonSessionMemory, PersistenceFormatError
+from .plugin_adapter import InProcessAdapterError, InProcessCallableAdapter
 from .plugin_contracts import (
     GovernedPluginError,
     PluginAuthorization,
@@ -122,10 +123,11 @@ __all__ = [
     "ExecutionRequest", "ExecutionResult", "ExecutionSample", "ExecutionStatus", "ExplainabilityError",
     "FailingAdapter", "FileChange", "GovernanceCheckpoint", "GovernanceMode", "GovernanceState",
     "GovernedDecision", "GovernedExecutionResult", "GovernedPluginError", "GovernedResponse",
-    "GraphPersistenceFormatError", "InterProcessFileLock", "IsolatedCommitError", "IsolatedCommitPlan",
-    "IsolatedCommitPolicy", "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory", "KEXError",
-    "KEXExecutionResult", "KGOError", "KGOState", "KGOV3Loop", "KPMError", "KPMFeatureAssessment",
-    "KPMReport", "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
+    "GraphPersistenceFormatError", "InProcessAdapterError", "InProcessCallableAdapter",
+    "InterProcessFileLock", "IsolatedCommitError", "IsolatedCommitPlan", "IsolatedCommitPolicy",
+    "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory", "KEXError", "KEXExecutionResult",
+    "KGOError", "KGOState", "KGOV3Loop", "KPMError", "KPMFeatureAssessment", "KPMReport",
+    "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
     "KyvernexOrchestrator", "KyvernexPluginRuntime", "KyvernexProgramManager", "KyvernexUnitOfWork",
     "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone", "MultiTransactionDeletionCoordinator",
     "PLUGIN_API_VERSION", "PLUGIN_ID", "PersistenceFormatError", "PlannedChange", "PluginAuthorization",
