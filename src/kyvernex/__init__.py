@@ -33,6 +33,7 @@ from .execution_engine import (
 from .explainability import AuditTraceReader, CognitiveDecisionDossier, CognitiveDecisionExplainer, ExplainabilityError
 from .graph import CognitiveGraph, CognitiveRelation, RelationConflictError, RelationType
 from .graph_persistence import GraphPersistenceFormatError, JsonCognitiveGraph, ReferentialIntegrityError
+from .kgo_v3 import KGOState, KGOV3Loop, LoopDecision, LoopResult, load_state, write_result
 from .memory import MemoryConflictError, SessionMemory
 from .models import AuditEvent, CognitiveCategory, CognitiveObject, CognitiveState, ExecutionResult, ValidationOutcome, ValidationRecord
 from .orchestrator import GovernedExecutionResult, KyvernexOrchestrator
@@ -68,18 +69,19 @@ __all__ = [
     "ExplainabilityError", "FailingAdapter", "GovernanceCheckpoint", "GovernanceMode",
     "GovernanceState", "GovernedDecision", "GovernedExecutionResult", "GovernedResponse",
     "GraphPersistenceFormatError", "InterProcessFileLock", "JsonAuditTrace", "JsonCognitiveGraph",
-    "JsonSessionMemory", "KEXError", "KEXExecutionResult", "KGOError", "KPMError", "KPMReport",
-    "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
-    "KyvernexOrchestrator", "KyvernexProgramManager", "KyvernexUnitOfWork", "MemoryConflictError",
-    "Milestone", "MultiTransactionDeletionCoordinator", "PersistenceFormatError", "PlannedChange",
-    "Priority", "ProcessLockError", "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch",
+    "JsonSessionMemory", "KEXError", "KEXExecutionResult", "KGOError", "KGOState", "KGOV3Loop",
+    "KPMError", "KPMReport", "KyvernexEngine", "KyvernexExecutionEngine",
+    "KyvernexGovernanceOrchestrator", "KyvernexOrchestrator", "KyvernexProgramManager",
+    "KyvernexUnitOfWork", "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone",
+    "MultiTransactionDeletionCoordinator", "PersistenceFormatError", "PlannedChange", "Priority",
+    "ProcessLockError", "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch",
     "RecoveryResult", "ReferentialIntegrityError", "RelationConflictError", "RelationType",
     "ResponseGovernor", "Rule", "RuleEngine", "RuleResult", "RuleSeverity", "SessionMemory",
-    "SpecificationChangePlanner", "SubprocessCommandRunner", "UnitOfWorkCommitError", "UnitOfWorkError",
-    "UnitOfWorkResult", "UnitOfWorkState", "UnitOfWorkStateError", "ValidationOutcome",
-    "ValidationRecord", "VersionChangeType", "VersionConflictError", "VersionTransition",
-    "VersioningError", "WorkItem", "WorkStatus", "build_m3_backlog", "default_rules",
-    "persist_audit", "to_primitive",
+    "SpecificationChangePlanner", "SubprocessCommandRunner", "UnitOfWorkCommitError",
+    "UnitOfWorkError", "UnitOfWorkResult", "UnitOfWorkState", "UnitOfWorkStateError",
+    "ValidationOutcome", "ValidationRecord", "VersionChangeType", "VersionConflictError",
+    "VersionTransition", "VersioningError", "WorkItem", "WorkStatus", "build_m3_backlog",
+    "default_rules", "load_state", "persist_audit", "to_primitive", "write_result",
 ]
 
 __version__ = "0.1.0.dev0"
