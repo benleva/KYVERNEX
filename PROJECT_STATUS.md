@@ -9,12 +9,13 @@
 - Active sprint: **S002 — Establish the 1.1 evidence baseline**
 - Target version: `1.1.0`
 - Governance mode: **AUTONOMOUS**
-- KPM cycle: `KPM-CYCLE-002`
-- KGO cycle: `KGO-CYCLE-013`
-- CI baseline: **VERIFIED — GitHub Actions run #58 green**
+- KPM cycle: `KPM-CYCLE-006`
+- KGO cycle: `KGO-CYCLE-017`
+- CI baseline: **Release 1.0 verified in GitHub Actions run #58**
+- Current M4 CI: **FRESH RUN PENDING**
 
 ## Current objective
-Allow KPM and KGO to continue from the published 1.0 baseline. Identify real post-release gaps, rank them, freeze the first valid 1.1 specification, implement only the selected bounded capability, verify it and continue until a documented stop condition is reached.
+Obtain fresh targeted and complete verification for the bounded KPM/KGO autonomous control CLI, including source and wheel builds, clean installation and installed console-script behavior. Do not claim M4 verification before current evidence is green.
 
 ## Active governance state
 - KPM: `RUNNING`
@@ -23,25 +24,45 @@ Allow KPM and KGO to continue from the published 1.0 baseline. Identify real pos
 - KGO v3 autonomous loop: `RUNNING`
 - KEX: `IMPLEMENTED_AND_VERIFIED`
 - M4-W001 control-plane synchronization: `DONE`
-- M4-W002 evidence-backed capability-gap inventory: `IN_DEVELOPMENT`
+- M4-W002 capability-gap inventory: `DONE`
+- M4-W003 capability selection: `DONE`
+- M4-W004 frozen specification and manifest: `DONE`
+- M4-W005 governance CLI implementation: `TEST`
+- M4-W006 verification and clean installation: `IN_DEVELOPMENT`
+- M4-W007 release-candidate synchronization: `BACKLOG`
 - Autonomous continuation: `ENABLED`
-- Repeated user confirmation: `NOT_REQUIRED`
 - Checkpoint: `KGO_CHECKPOINT.json`
 
-## Milestone M4 backlog
-1. `M4-W001` Synchronize the autonomous control plane with the published 1.0 baseline — `DONE`.
-2. `M4-W002` Produce an evidence-backed inventory of post-release capability gaps — `IN_DEVELOPMENT`.
-3. `M4-W003` Rank validated gaps and select the first dependency-valid 1.1 capability — `READY`.
-4. `M4-W004` Write the frozen specification and change manifest — `BACKLOG`.
-5. `M4-W005` Implement the selected capability within the authorized boundary — `BACKLOG`.
-6. `M4-W006` Run targeted and complete verification, build and clean installation — `BACKLOG`.
-7. `M4-W007` Synchronize documentation and prepare the 1.1 release candidate — `BACKLOG`.
+## Implemented M4 capability
 
-## Completed baseline
-- M2 governance consolidation: `DONE`.
-- S001 measurable baseline: `DONE`.
-- M3 autonomous development: `DONE`, `6/6`.
-- Release 1.0: implemented, verified, tagged, published and marked Latest.
+The package now exposes:
+
+```bash
+kyvernex-governance <start|status|advance|resume> --plan <path> --checkpoint <path>
+```
+
+Controls:
+
+- deterministic sorted JSON output;
+- fail-closed plan parsing and enum validation;
+- unknown dependency rejection;
+- closed milestone with incomplete work rejection;
+- existing checkpoint overwrite rejection;
+- no advancement while a current item is active;
+- blocked-state exit code `2`;
+- invalid input or policy error exit code `3`;
+- non-permitted operation exit code `4`;
+- writes limited to the explicitly supplied checkpoint path;
+- no unsupported repository, test, CI or publication claim.
+
+## Verification sequence
+
+1. targeted `test_governance_cli.py`, program-manager and KGO tests;
+2. complete repository suite;
+3. source and wheel build;
+4. clean wheel installation;
+5. installed `kyvernex-governance start` smoke test;
+6. governed evidence upload and result enforcement.
 
 ## Stable-baseline protection
 - `v1.0.0` remains immutable.
@@ -51,17 +72,10 @@ Allow KPM and KGO to continue from the published 1.0 baseline. Identify real pos
 - Performance evidence cannot replace correctness evidence or authorize execution.
 
 ## Autonomous stop conditions
-Stop only for:
-- current targeted or complete verification failure;
-- unresolved P0 blocker;
-- invalid dependency state;
-- exceeded policy boundary;
-- missing external authorization;
-- unavailable execution capability;
-- completed milestone.
+Stop for current targeted or complete verification failure, package or clean-install failure, invalid dependency state, exceeded policy boundary, missing authorization, unavailable executor or completed milestone.
 
 ## Continuation rule
-Read `PROJECT_STATUS.md` and `BACKLOG.md`, execute the first dependency-valid item, verify it, synchronize documentation and checkpoint state, commit the isolated change and continue. Do not ask for `Procedi` between valid cycles.
+After a fresh green workflow, record M4-W005 and M4-W006 as done, synchronize release-candidate documentation and select the next dependency-valid action. If the workflow fails, stop and record the current failure before repair.
 
 ## Verification note
-KPM and KGO have been restarted in autonomous mode for M4. The active work item is `M4-W002`. The published KYVERNEX `1.0.0` baseline remains protected and unchanged.
+The governance CLI implementation, tests, package entry point and CI integration are committed. M4 verification remains pending until a fresh GitHub Actions run completes.
