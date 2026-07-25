@@ -1,32 +1,41 @@
 # KYVERNEX PROJECT STATUS
 
 ## Control
-- Governance system: KDP + integrated KPM/KGO v2 + KEX + M3 Autonomous Development Engine
+- Governance system: KDP + KPM + KGO v1/v2/v3 + KEX + M3 Autonomous Development Engine
 - Repository version: `0.1.0.dev0`
 - Current milestone: **M3 — Autonomous Development**
 - Current sprint: **S002 — Establish policy-bounded autonomous cycles**
-- CI status: **M3-W002 IMPLEMENTATION COMMITTED — FRESH RUN PENDING**
-- Last user-observed workflow state: green / `VERIFIED`; displayed parser counts were `0 passed, 0 failed`, so no numerical full-suite claim is recorded from that screenshot.
+- CI status: **KGO V3 IMPLEMENTATION COMMITTED — FRESH RUN PENDING**
+- Last user-observed workflow state: green / `VERIFIED`; historical red runs remain immutable records of earlier commits.
 
 ## Current objective
-Advance KYVERNEX from governed analysis and patch planning to deterministic autonomous-development cycles that select work, convert specifications into bounded change manifests, require verification evidence and persist checkpoints without inventing blockers.
+Operate a closed governance loop that decides only from current evidence, preserves momentum, persists state and advances to dependency-valid work without reopening historical failures.
 
 ## Governance activation state
 - KPM: `ACTIVE`
 - KGO v1 analyzer: `IMPLEMENTED`
 - KGO v2 planner: `IMPLEMENTED_AND_USER_OBSERVED`
+- KGO v3 autonomous loop: `IMPLEMENTED_NOT_YET_CI_VERIFIED`
 - KEX: `IMPLEMENTED`
 - Autonomous Development Engine: `IMPLEMENTED_NOT_YET_CI_VERIFIED`
 - Specification-to-change manifest: `IMPLEMENTED_NOT_YET_CI_VERIFIED`
 - Workflow: `.github/workflows/kgo.yml`
 - Start channel: manual `workflow_dispatch` or qualifying push to `main`
-- M3 planning boundary: `src/kyvernex/autonomous_development.py`
-- M3 manifest boundary: `src/kyvernex/change_manifest.py`
-- M3 CLI boundary: `src/kyvernex/ade_cli.py`
-- Checkpoint artifacts: `ADE_CYCLE_PLAN.json`, `ADE_CHECKPOINT.json`
 
-## Verified direction
-KGO shall correct documented failures and continue when no supported blocker exists. Governance exists to preserve correctness and momentum, not to manufacture delay.
+## KGO v3 current-evidence rule
+KGO v3 uses only the current execution to decide whether to continue, repair or complete. Historical failed runs are not treated as current defects. Absence of supported source-code failure evidence does not create a blocker.
+
+## KGO v3 decisions
+- `CONTINUE`: current CI succeeds, or no supported code failure is present.
+- `REPAIR`: the current run contains explicit test-failure evidence.
+- `COMPLETE`: the governed milestone has been completed.
+
+## Persistent artifacts
+- `KGO_STATE.json`
+- `KGO_V3_LOOP.json`
+- `KGO_V3_SUMMARY.md`
+- `ADE_CYCLE_PLAN.json`
+- `ADE_CHECKPOINT.json`
 
 ## M3 canonical backlog
 1. `M3-W001` Autonomous task scheduler.
@@ -35,49 +44,30 @@ KGO shall correct documented failures and continue when no supported blocker exi
 4. `M3-W004` Safe isolated commit manager.
 5. `M3-W005` Evidence-based rollback controller.
 
-Dependencies are sequential. KPM selects only dependency-valid work and preserves the anti-infinite rule.
-
-## M3 capability now committed
-The Autonomous Development Engine:
-- selects and starts the next dependency-valid work item;
-- enforces allowed priorities and maximum story points per cycle;
-- creates an ordered specification, implementation, test and checkpoint plan;
-- marks source-writing and merge authorization boundaries explicitly;
-- emits machine-readable cycle and checkpoint artifacts;
-- exposes a CLI for GitHub Actions and local execution.
-
-The Specification-to-Change Manifest:
-- binds one approved work item to its specification;
-- declares CREATE, UPDATE or DELETE changes with rationale;
-- rejects absolute paths and parent-directory traversal;
-- carries targeted and complete-suite verification commands;
-- propagates declared dependencies;
-- serializes deterministically as `kyvernex.change-manifest.v1`.
-
-## Authority boundary
-The engine plans and governs autonomous work. Actual semantic code generation, isolated branch creation, commit, pull request and merge still require an authorized executor. No such action may be reported as complete without repository and CI evidence.
-
 ## Current governance cycle
-- Cycle: `KGO-CYCLE-006`
-- Status: `M3_W002_COMMITTED_RUN_PENDING`
-- Active task: verify the specification-to-change manifest and existing M3 scheduler through the complete workflow
+- Cycle: `KGO-CYCLE-007`
+- Status: `KGO_V3_COMMITTED_RUN_PENDING`
+- Active task: verify KGO v3 current-evidence decisions and workflow integration.
 - Priority: `P0`
-- Continuation rule: after successful CI, advance to `M3-W003` Continuous self-verification controller.
+- Continuation rule: after successful CI, advance the dependency-valid M3 work item.
 
-## Definition of Done for M3-W002
-- specification present;
+## Definition of Done for KGO v3
 - implementation present;
+- specification present;
 - unit tests present;
-- unsafe path rejection covered;
-- deterministic serialization covered;
-- dependency propagation covered;
+- workflow integration present;
+- persistent state artifacts produced;
+- historical failures excluded from current decisions;
 - fresh complete CI evidence successful.
 
+## Authority boundary
+KGO v3 governs decisions and state. Semantic code generation, repository writes, branch creation, pull requests and merge remain subject to the authorized executor and available GitHub permissions.
+
 ## Autonomous stop conditions
-Stop only for a documented test failure, invalid dependency state, exceeded policy boundary, missing external authorization, or completed milestone/release. Absence of an evidenced error is not a blocker.
+Stop only for documented current test failure, invalid dependency state, exceeded policy boundary, missing external authorization, or completed milestone/release. Absence of evidenced error is not a blocker.
 
 ## Anti-infinite rule
 Closed milestones are immutable. New ideas are routed to a later milestone or version.
 
 ## Verification note
-Files and tests for M3-W002 are committed. They have not yet been freshly executed by CI, so no passing result for this implementation is claimed.
+KGO v3 implementation, tests, specification, update record, exports and workflow integration are committed. No passing result is claimed until a fresh GitHub Actions run completes.
