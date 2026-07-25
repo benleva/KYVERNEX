@@ -9,6 +9,12 @@ from .adapters import (
     FailingAdapter,
 )
 from .core import AET, ContinuousValidator, KyvernexEngine
+from .graph import (
+    CognitiveGraph,
+    CognitiveRelation,
+    RelationConflictError,
+    RelationType,
+)
 from .memory import MemoryConflictError, SessionMemory
 from .models import (
     AuditEvent,
@@ -33,7 +39,9 @@ __all__ = [
     "AdapterResponse",
     "AuditEvent",
     "CognitiveCategory",
+    "CognitiveGraph",
     "CognitiveObject",
+    "CognitiveRelation",
     "CognitiveState",
     "ContinuousValidator",
     "EchoAdapter",
@@ -46,6 +54,8 @@ __all__ = [
     "KyvernexOrchestrator",
     "MemoryConflictError",
     "PersistenceFormatError",
+    "RelationConflictError",
+    "RelationType",
     "ResponseGovernor",
     "Rule",
     "RuleEngine",
