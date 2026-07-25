@@ -9,6 +9,13 @@ from .adapters import (
     FailingAdapter,
 )
 from .core import AET, ContinuousValidator, KyvernexEngine
+from .deletion import (
+    CognitiveDeletionCoordinator,
+    DeletionPolicy,
+    DeletionRestrictedError,
+    DeletionResult,
+    DeletionTransactionError,
+)
 from .graph import (
     CognitiveGraph,
     CognitiveRelation,
@@ -44,11 +51,16 @@ __all__ = [
     "AdapterResponse",
     "AuditEvent",
     "CognitiveCategory",
+    "CognitiveDeletionCoordinator",
     "CognitiveGraph",
     "CognitiveObject",
     "CognitiveRelation",
     "CognitiveState",
     "ContinuousValidator",
+    "DeletionPolicy",
+    "DeletionRestrictedError",
+    "DeletionResult",
+    "DeletionTransactionError",
     "EchoAdapter",
     "ExecutionResult",
     "FailingAdapter",
