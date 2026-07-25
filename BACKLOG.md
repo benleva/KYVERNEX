@@ -39,7 +39,7 @@ Scope: build the installable product plugin layer over the existing KYVERNEX eng
 |---|---|---:|---:|---|---|
 | M6-W001 | Freeze the plugin contract, lifecycle, schemas and authority boundaries | P0 | 5 | DONE | Stable `v1.1.0` baseline |
 | M6-W002 | Implement the core plugin runtime and lifecycle state machine | P0 | 8 | DONE | M6-W001 |
-| M6-W003 | Implement governed host request, response and error contracts | P0 | 8 | IN_PROGRESS | M6-W002 |
+| M6-W003 | Implement governed host request, response and error contracts | P0 | 8 | IN_VERIFICATION | M6-W002 |
 | M6-W004 | Add host adapter boundary and reference in-process adapter | P1 | 8 | BACKLOG | M6-W003 |
 | M6-W005 | Add configuration loading, validation and fail-closed defaults | P0 | 5 | BACKLOG | M6-W002 |
 | M6-W006 | Add security-boundary and lifecycle integration tests | P0 | 8 | BACKLOG | M6-W003, M6-W004, M6-W005 |
@@ -47,26 +47,15 @@ Scope: build the installable product plugin layer over the existing KYVERNEX eng
 | M6-W008 | Run complete verification, build, clean installation and plugin smoke test | P0 | 8 | BACKLOG | M6-W007 |
 | M6-W009 | Prepare the first `1.2.0` prerelease package and release evidence | P1 | 3 | BACKLOG | M6-W008 |
 
-Progress: `2/9` work items, `13/58` story points.
+Progress: `2/9` work items, `13/58` story points. M6-W003 remains open until fresh CI is green.
 
-## Verified evidence
+## M6-W003 current implementation
 
-### M6-W001
-
-Frozen contract:
-
-- `repository/specifications/M6_PLUGIN_RUNTIME_CONTRACT.md`;
-- `repository/specifications/m6-plugin-contract.schema.json`.
-
-### M6-W002
-
-Verified implementation:
-
-- `src/kyvernex/plugin_runtime.py`;
-- `tests/test_plugin_runtime.py`;
-- public exports in `src/kyvernex/__init__.py`.
-
-GitHub Actions is green on commit `691c769` for the Test Suite, KGO v3, Reference Prototype Tests and Pages deployment.
+- `src/kyvernex/plugin_contracts.py` defines immutable request, response, decision, evidence and error envelopes.
+- `src/kyvernex/plugin_runtime.py` validates and authorizes requests before adapter invocation.
+- `tests/test_plugin_runtime.py` covers success, blocked, failed, duplicate-ID, unknown-field, limit and lifecycle behavior.
+- blocked requests do not reach the adapter;
+- no ambient filesystem, network, process or repository authority is added.
 
 ## Definition of M6 Done
 
@@ -92,4 +81,4 @@ M6 is complete only when:
 
 ## Continuation policy
 
-KPM/KGO execute M6 in dependency order. M6-W003 must conform to the frozen contract and verified runtime. They stop for current verification failure, contract contradiction, unresolved P0 security boundary, external publication boundary or milestone completion.
+Read current CI evidence for M6-W003. On green, close it and activate the next dependency-valid work item. On failure, record the exact failure before repair.
