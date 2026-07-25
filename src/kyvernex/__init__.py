@@ -54,6 +54,7 @@ from .memory import MemoryConflictError, SessionMemory
 from .models import AuditEvent, CognitiveCategory, CognitiveObject, CognitiveState, ExecutionResult, ValidationOutcome, ValidationRecord
 from .orchestrator import GovernedExecutionResult, KyvernexOrchestrator
 from .persistence import JsonSessionMemory, PersistenceFormatError
+from .plugin import KyvernexPlugin
 from .plugin_adapter import InProcessAdapterError, InProcessCallableAdapter
 from .plugin_contracts import (
     GovernedPluginError,
@@ -128,13 +129,13 @@ __all__ = [
     "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory", "KEXError", "KEXExecutionResult",
     "KGOError", "KGOState", "KGOV3Loop", "KPMError", "KPMFeatureAssessment", "KPMReport",
     "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
-    "KyvernexOrchestrator", "KyvernexPluginRuntime", "KyvernexProgramManager", "KyvernexUnitOfWork",
-    "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone", "MultiTransactionDeletionCoordinator",
-    "PLUGIN_API_VERSION", "PLUGIN_ID", "PersistenceFormatError", "PlannedChange", "PluginAuthorization",
-    "PluginContractError", "PluginDecision", "PluginErrorCategory", "PluginEvidence", "PluginHostAdapter",
-    "PluginIdentity", "PluginLimits", "PluginRequest", "PluginResponse", "PluginResponseStatus",
-    "PluginRuntimeError", "PluginState", "Priority", "ProcessLockError",
-    "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch", "RecoveryResult",
+    "KyvernexOrchestrator", "KyvernexPlugin", "KyvernexPluginRuntime", "KyvernexProgramManager",
+    "KyvernexUnitOfWork", "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone",
+    "MultiTransactionDeletionCoordinator", "PLUGIN_API_VERSION", "PLUGIN_ID", "PersistenceFormatError",
+    "PlannedChange", "PluginAuthorization", "PluginContractError", "PluginDecision", "PluginErrorCategory",
+    "PluginEvidence", "PluginHostAdapter", "PluginIdentity", "PluginLimits", "PluginRequest",
+    "PluginResponse", "PluginResponseStatus", "PluginRuntimeError", "PluginState", "Priority",
+    "ProcessLockError", "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch", "RecoveryResult",
     "ReferentialIntegrityError", "RelationConflictError", "RelationType", "ResponseGovernor",
     "RollbackDecision", "RollbackError", "RollbackPlan", "RollbackPolicy", "Rule", "RuleEngine",
     "RuleResult", "RuleSeverity", "SafeIsolatedCommitManager", "SelfVerificationResult",
