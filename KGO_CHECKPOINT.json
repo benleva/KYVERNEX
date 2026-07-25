@@ -27,30 +27,42 @@
     "title": "Usable plugin API",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-031",
-  "kpm_cycle": "KPM-CYCLE-020",
+  "cycle": "KGO-CYCLE-032",
+  "kpm_cycle": "KPM-CYCLE-021",
+  "completed_code_tasks": [
+    "M7-W001",
+    "M7-W002",
+    "M7-W003",
+    "M7-W004"
+  ],
+  "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
   "active_task": {
-    "id": "M7-W001",
-    "title": "Create public plugin facade and installed command",
-    "status": "CODE_COMPLETE_UNVERIFIED",
-    "priority": "P0"
+    "id": "M7-W005",
+    "title": "Move package metadata to the 1.2.0 development line",
+    "status": "IN_PROGRESS",
+    "priority": "P1"
   },
   "code_evidence": {
     "facade": "src/kyvernex/plugin.py",
     "command": "src/kyvernex/plugin_cli.py",
+    "handler_loader": "src/kyvernex/plugin_loader.py",
+    "persistent_session": "src/kyvernex/plugin_session.py",
+    "example_handler": "examples/plugin_handler.py",
     "package_entry_point": "kyvernex-plugin",
-    "public_export": "KyvernexPlugin",
-    "latest_code_commit": "8afc7d522916e085674bf087c052e95659f5fe79"
+    "latest_code_commit": "a9a6f364c2ac22c3165c6b4839eba4a41314f6b9"
   },
-  "next_product_work": [
-    "M7-W002",
-    "M7-W003",
-    "M7-W004",
-    "M7-W005"
-  ],
+  "product_capabilities": {
+    "inline_json_input": true,
+    "file_json_input": true,
+    "file_json_output": true,
+    "explicit_module_attribute_handler": true,
+    "persistent_local_session": true,
+    "dynamic_discovery": false,
+    "remote_transport": false
+  },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Continue with executable plugin product code. Do not substitute tests, governance prose or roadmap expansion for code delivery.",
+  "resume_rule": "Continue with executable packaging and product code. Do not substitute tests, governance prose or roadmap expansion for code delivery.",
   "stop_conditions": [
     "PRODUCT_DIRECTION_CONTRADICTION",
     "AUTHORITY_EXPANSION",
