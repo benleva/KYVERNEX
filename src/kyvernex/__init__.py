@@ -59,6 +59,16 @@ from .orchestrator import GovernedExecutionResult, KyvernexOrchestrator
 from .persistence import JsonSessionMemory, PersistenceFormatError
 from .process_lock import InterProcessFileLock, ProcessLockError
 from .process_safe_journal import ProcessSafeMultiTransactionDeletionCoordinator
+from .program_manager import (
+    DefinitionOfDone,
+    KPMError,
+    KPMReport,
+    KyvernexProgramManager,
+    Milestone,
+    Priority,
+    WorkItem,
+    WorkStatus,
+)
 from .response_governance import GovernedResponse, ResponseGovernor
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .serialization import to_primitive
@@ -87,19 +97,21 @@ __all__ = [
     "CognitiveGraph", "CognitiveObject", "CognitiveRelation", "CognitiveState",
     "CognitiveVersionManager", "ConfidenceAssessment", "ConfidenceCycleError", "ConfidenceError",
     "ContinuousValidator", "DecisionDisposition", "DecisionGateError", "DecisionPolicy",
-    "DeletionJournalError", "DeletionJournalState", "DeletionPolicy", "DeletionRestrictedError",
-    "DeletionResult", "DeletionTransactionError", "DurableDeletionCoordinator", "EchoAdapter",
-    "ExecutionResult", "ExplainabilityError", "FailingAdapter", "GovernedDecision",
-    "GovernedExecutionResult", "GovernedResponse", "GraphPersistenceFormatError",
-    "InterProcessFileLock", "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory",
-    "KyvernexEngine", "KyvernexOrchestrator", "KyvernexUnitOfWork", "MemoryConflictError",
-    "MultiTransactionDeletionCoordinator", "PersistenceFormatError", "ProcessLockError",
+    "DefinitionOfDone", "DeletionJournalError", "DeletionJournalState", "DeletionPolicy",
+    "DeletionRestrictedError", "DeletionResult", "DeletionTransactionError",
+    "DurableDeletionCoordinator", "EchoAdapter", "ExecutionResult", "ExplainabilityError",
+    "FailingAdapter", "GovernedDecision", "GovernedExecutionResult", "GovernedResponse",
+    "GraphPersistenceFormatError", "InterProcessFileLock", "JsonAuditTrace", "JsonCognitiveGraph",
+    "JsonSessionMemory", "KPMError", "KPMReport", "KyvernexEngine", "KyvernexOrchestrator",
+    "KyvernexProgramManager", "KyvernexUnitOfWork", "MemoryConflictError", "Milestone",
+    "MultiTransactionDeletionCoordinator", "PersistenceFormatError", "Priority", "ProcessLockError",
     "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch", "RecoveryResult",
     "ReferentialIntegrityError", "RelationConflictError", "RelationType", "ResponseGovernor",
     "Rule", "RuleEngine", "RuleResult", "RuleSeverity", "SessionMemory", "UnitOfWorkCommitError",
     "UnitOfWorkError", "UnitOfWorkResult", "UnitOfWorkState", "UnitOfWorkStateError",
     "ValidationOutcome", "ValidationRecord", "VersionChangeType", "VersionConflictError",
-    "VersionTransition", "VersioningError", "default_rules", "persist_audit", "to_primitive",
+    "VersionTransition", "VersioningError", "WorkItem", "WorkStatus", "default_rules",
+    "persist_audit", "to_primitive",
 ]
 
 __version__ = "0.1.0.dev0"
