@@ -38,6 +38,18 @@ class JsonCognitiveGraph(CognitiveGraph):
         super().add(relation)
         self._persist()
 
+    def remove(self, session_id: str, relation_id: str) -> CognitiveRelation | None:
+        removed = super().remove(session_id, relation_id)
+        if removed is not None:
+            self._persist()
+        return removed
+
+    def remove_for_object(self, session_id: str, object_id: str) -> tuple[CognitiveRelation, ...]:
+        removed = super().remove_for_object(session_id, object_id)
+        if removed:
+            self._persist()
+        return removed
+
     def clear(self, session_id: str) -> int:
         removed = super().clear(session_id)
         if removed:
@@ -62,13 +74,11 @@ class JsonCognitiveGraph(CognitiveGraph):
             payload = json.loads(self._path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise GraphPersistenceFormatError("GRAPH_JSON_NON_VALIDO") from exc
-
         if payload.get("format_version") != self.FORMAT_VERSION:
             raise GraphPersistenceFormatError("GRAPH_FORMAT_VERSION_NON_SUPPORTATA")
         sessions = payload.get("sessions")
         if not isinstance(sessions, dict):
             raise GraphPersistenceFormatError("GRAPH_SESSIONS_NON_VALIDE")
-
         try:
             for session_id, relations in sessions.items():
                 if not isinstance(relations, list):
@@ -108,12 +118,8 @@ class JsonCognitiveGraph(CognitiveGraph):
         temporary_path: Path | None = None
         try:
             with NamedTemporaryFile(
-                "w",
-                encoding="utf-8",
-                dir=self._path.parent,
-                prefix=f".{self._path.name}.",
-                suffix=".tmp",
-                delete=False,
+                "w", encoding="utf-8", dir=self._path.parent,
+                prefix=f".{self._path.name}.", suffix=".tmp", delete=False,
             ) as handle:
                 handle.write(payload)
                 handle.flush()
