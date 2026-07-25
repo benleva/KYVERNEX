@@ -1,85 +1,63 @@
 # KYVERNEX SPRINT
 
-## Sprint S004 — Freeze the plugin contract
-- Milestone: `M6 — KYVERNEX Plugin Runtime`
-- Status: `DONE`
-- KPM cycle: `KPM-CYCLE-013`
-- KGO cycle: `KGO-CYCLE-024`
-- Target version: `1.2.0`
-- Completion: `1/1` tasks, `5/5` story points, `100%`.
+## Completed M6 sprints
 
-## Sprint S005 — Implement the core plugin runtime
-- Milestone: `M6 — KYVERNEX Plugin Runtime`
-- Status: `DONE`
-- KPM cycle: `KPM-CYCLE-014`
-- KGO cycle: `KGO-CYCLE-025`
-- Verification commit: `691c769`
-- Completion: `1/1` tasks, `8/8` story points, `100%`.
+- S004 — Freeze the plugin contract: `DONE`
+- S005 — Implement the core plugin runtime: `DONE`, verified at `691c769`
+- S006 — Govern host contracts: `DONE`, verified at `83ce3a3`
+- S007 — Fail-closed plugin configuration: `DONE`, verified at `a8e7f36`
 
-## Sprint S006 — Govern host contracts
-- Milestone: `M6 — KYVERNEX Plugin Runtime`
-- Status: `DONE`
-- KPM cycle: `KPM-CYCLE-015`
-- KGO cycle: `KGO-CYCLE-026`
-- Verification commit: `83ce3a3`
-- Completion: `1/1` tasks, `8/8` story points, `100%`.
+## Sprint S008 — Minimum reference adapter
 
-## Sprint S007 — Fail-closed plugin configuration
-- Milestone: `M6 — KYVERNEX Plugin Runtime`
-- Status: `DONE`
-- KPM cycle: `KPM-CYCLE-016`
-- KGO cycle: `KGO-CYCLE-027`
-- Target version: `1.2.0`
-- Verification commit: `a8e7f36`
-
-### Completed backlog
-
-| ID | Task | Priority | Story points | Status |
-|---|---|---:|---:|---|
-| M6-W005 | Add configuration loading, validation and fail-closed defaults | P0 | 5 | DONE |
-
-Completion: `1/1` tasks, `5/5` story points, `100%`.
-
-### Closure evidence
-- unknown top-level and nested fields fail closed;
-- absent permissions resolve to zero authority;
-- filesystem roots are absolute and normalized;
-- network and process access are disabled by default;
-- allowlists require explicit enablement;
-- wildcard hosts are rejected;
-- audit remains mandatory;
-- configuration is immutable after initialization;
-- a stale historical test assertion caused the first red run on `9c4fc7e`;
-- the assertion was aligned with the structured frozen-contract authority output;
-- Test Suite, Reference Prototype Tests, KGO v3 and Pages are green on `a8e7f36`.
-
-## Sprint S008 — Reference host adapter
 - Milestone: `M6 — KYVERNEX Plugin Runtime`
 - Status: `ACTIVE`
-- KPM cycle: `KPM-CYCLE-017`
-- KGO cycle: `KGO-CYCLE-028`
+- KPM cycle: `KPM-CYCLE-018`
+- KGO cycle: `KGO-CYCLE-029`
 - Target version: `1.2.0`
-- Stable baseline: `v1.1.0`
-- Sprint goal: implement an explicit host adapter boundary and a bounded reference in-process adapter without transferring governance policy or ambient host authority into the adapter.
+- Scope lock: `repository/specifications/M6_SCOPE_LOCK.md`
+
+### Sprint goal
+Complete exactly one minimal in-process adapter that wraps a host-supplied Python callable and proves the governed plugin path without introducing external integrations or a broader adapter framework.
 
 ### Sprint backlog
 
-| ID | Task | Priority | Story points | Status | Dependencies |
-|---|---|---:|---:|---|---|
-| M6-W004 | Add host adapter boundary and reference in-process adapter | P1 | 8 | IN_PROGRESS | M6-W003 |
+| ID | Task | Priority | Story points | Status |
+|---|---|---:|---:|---|
+| M6-W004 | Implement one bounded in-process callable adapter | P0 | 3 | IN_PROGRESS |
+
+### Allowed implementation
+
+The adapter may only:
+
+- receive a Python callable in its constructor;
+- expose an explicit capability set;
+- invoke the callable after runtime authorization;
+- return a JSON-serializable result;
+- report `HEALTHY` or `SHUTDOWN`;
+- shut down idempotently.
+
+### Forbidden implementation
+
+The adapter must not:
+
+- access the network, filesystem, subprocesses, repositories or environment variables;
+- load modules or plugins dynamically;
+- contact external services;
+- decide governance or authorization;
+- create background work;
+- add a second adapter type;
+- introduce a registry, marketplace, SDK family or remote protocol.
 
 ### Definition of Sprint Done
+
 S008 is complete only when:
 
-- a concrete reference adapter implements the frozen protocol;
-- capability declarations are deterministic and immutable;
-- the adapter executes only requests already authorized by the runtime;
-- request content, environment variables and ambient host privileges cannot expand authority;
-- adapter results are structured and validated;
-- health output is bounded and secret-free;
-- shutdown is idempotent;
-- targeted adapter tests pass;
-- complete-suite regression evidence is recorded before M6-W004 closes.
+1. one concrete callable adapter exists;
+2. the adapter conforms to the frozen host protocol;
+3. unauthorized requests still never reach the callable;
+4. non-JSON results fail with a governed adapter error;
+5. health and idempotent shutdown are tested;
+6. targeted and complete repository tests are green.
 
-## Continuation decision
-Complete M6-W004 before activating M6-W006. Stop on adapter authority expansion, contract contradiction, current test failure or unresolved P0 security ambiguity.
+### Continuation decision
+After S008, proceed directly to M6-W006 integration tests. Reject any feature proposal that does not move the single clean-install plugin path toward its smoke test.
