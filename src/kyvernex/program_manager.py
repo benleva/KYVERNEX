@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from enum import StrEnum
 from typing import Iterable
 
@@ -41,7 +41,7 @@ class DefinitionOfDone:
     review: bool = False
 
     def missing(self) -> tuple[str, ...]:
-        return tuple(name for name, value in self.__dict__.items() if not value)
+        return tuple(item.name for item in fields(self) if not getattr(self, item.name))
 
     @property
     def complete(self) -> bool:
@@ -89,9 +89,13 @@ class KyvernexProgramManager:
     """Deterministic development governor implementing the KDP anti-infinite rule."""
 
     def __init__(self, *, milestones: Iterable[Milestone], items: Iterable[WorkItem]) -> None:
-        self.milestones = {m.milestone_id: m for m in milestones}
-        self.items = {item.item_id: item for item in items}
-        if len(self.items) != len(tuple(items)):
+        milestone_list = tuple(milestones)
+        item_list = tuple(items)
+        self.milestones = {m.milestone_id: m for m in milestone_list}
+        self.items = {item.item_id: item for item in item_list}
+        if len(self.milestones) != len(milestone_list):
+            raise KPMError("MILESTONE_DUPLICATE")
+        if len(self.items) != len(item_list):
             raise KPMError("TASK_DUPLICATI")
         self._validate_references()
 
@@ -112,7 +116,11 @@ class KyvernexProgramManager:
         if item.item_id in self.items:
             raise KPMError("TASK_GIA_ESISTENTE")
         self.items[item.item_id] = item
-        self._validate_references()
+        try:
+            self._validate_references()
+        except Exception:
+            del self.items[item.item_id]
+            raise
 
     def dependencies_complete(self, item: WorkItem) -> bool:
         return all(self.items[dep].status == WorkStatus.DONE for dep in item.dependencies)
