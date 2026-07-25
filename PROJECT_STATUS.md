@@ -4,12 +4,12 @@
 - Governance system: KDP + KPM + KGO v1/v2/v3 + KEX + M3 Autonomous Development Engine
 - Repository version: `1.0.0`
 - Completed milestone: **M3 — Autonomous Development**
-- Current phase: **Release 1.0 Candidate Verification**
-- CI status: **RELEASE CANDIDATE IMPLEMENTED — FRESH CI RUN PENDING**
-- Last verified evidence remains GitHub Actions run `#53`, green, for the completed M3 implementation.
+- Current phase: **Release 1.0 Finalization**
+- CI status: **RELEASE CANDIDATE VERIFIED — GitHub Actions run #58 green**
+- Historical red runs remain immutable records of earlier commits and do not override the latest verified evidence.
 
 ## Current objective
-Obtain fresh complete CI evidence for the synchronized `1.0.0` package, including targeted tests, the complete test suite, source and wheel builds, and installation of the wheel in a clean virtual environment. Do not create the `v1.0.0` tag until this evidence is green.
+Prepare the immutable `v1.0.0` tag and GitHub Release from the verified release candidate without adding new governance scope or changing frozen KGO/KPM behavior.
 
 ## Governance activation state
 - KPM: `FROZEN_EXCEPT_BUG_FIXES`
@@ -24,9 +24,10 @@ Obtain fresh complete CI evidence for the synchronized `1.0.0` package, includin
 - Safe isolated commit manager: `IMPLEMENTED_AND_VERIFIED`
 - Evidence-based rollback controller: `IMPLEMENTED_AND_VERIFIED`
 - Execution performance clock: `IMPLEMENTED_AND_VERIFIED`
-- Release build verification: `IMPLEMENTED_FRESH_CI_PENDING`
-- Clean wheel installation verification: `IMPLEMENTED_FRESH_CI_PENDING`
+- Release build verification: `IMPLEMENTED_AND_VERIFIED`
+- Clean wheel installation verification: `IMPLEMENTED_AND_VERIFIED`
 - Workflow: `.github/workflows/kgo.yml`
+- Verification evidence: user-observed GitHub Actions run `#58`, green, on commit `1c5c0aef855b876c3c79fd20808689066e35b5e1`.
 
 ## M3 completion
 The frozen M3 backlog is complete:
@@ -47,7 +48,8 @@ The frozen M3 backlog is complete:
 - CI installs the generated wheel in a clean virtual environment;
 - CI verifies both installed metadata and public API version;
 - release build and clean-install outcomes are included in the governed evidence record;
-- distribution files are uploaded with the CI evidence artifact.
+- distribution files are uploaded with the CI evidence artifact;
+- fresh release-candidate verification completed successfully in run `#58`.
 
 ## Persistent artifacts
 - `KGO_STATE.json`
@@ -64,21 +66,24 @@ The frozen M3 backlog is complete:
 ## Release 1.0 audit gates
 
 ### Passed
-- frozen M3 backlog implemented and previously verified;
+- frozen M3 backlog implemented and verified;
 - package and public API versions synchronized to `1.0.0`;
 - proprietary root `LICENSE` present;
 - package metadata references the root license;
 - root `CHANGELOG.md` present;
 - `README.md` synchronized with M3;
-- release build and clean-install verification integrated into CI.
+- targeted and complete test suites green;
+- source and wheel builds green;
+- clean wheel installation green;
+- installed metadata and public API version checks green;
+- release-candidate CI evidence green in GitHub Actions run `#58`.
 
-### Open blockers
-1. Fresh CI evidence for tests, package build and clean wheel installation is pending.
-2. The proprietary license text is an operational repository notice and has not been independently reviewed by legal counsel.
-3. No `v1.0.0` tag or GitHub Release may be created before the technical verification gate passes.
+### Remaining release action
+1. Create the immutable `v1.0.0` tag and GitHub Release from the verified commit.
+2. Independent legal review of the proprietary license remains recommended but is not a technical release blocker.
 
 ## Release continuation rule
-After a fresh green workflow run, record the successful evidence, then prepare the immutable `v1.0.0` tag and GitHub Release without adding new governance scope.
+Create the `v1.0.0` tag and GitHub Release from the verified release candidate without introducing new code or governance scope. After publication, record the release as completed.
 
 ## Authority boundary
 KGO v3 governs decisions and state. Repository writes, release tagging and publication remain subject to the authorized executor and available GitHub permissions. Performance measurements do not authorize execution.
@@ -90,4 +95,4 @@ Stop only for documented current test failure, package build failure, clean-inst
 KGO and KPM are frozen for Release 1.0 except for verified blocking defects. New observations are deferred and do not interrupt release consolidation.
 
 ## Verification note
-M3 remains complete and verified. KYVERNEX `1.0.0` is now a release candidate awaiting fresh GitHub Actions evidence and is not yet tagged or certified.
+M3 and the KYVERNEX `1.0.0` release candidate are verified. GitHub Actions run `#58` is green. The only remaining technical release action is publication of the immutable `v1.0.0` tag and GitHub Release.
