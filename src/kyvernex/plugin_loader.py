@@ -44,3 +44,12 @@ def load_plugin_handler(reference: str) -> PluginHandler:
     if not callable(handler):
         raise PluginHandlerLoadError("loaded handler attribute is not callable")
     return handler
+
+
+def load_handler(reference: str) -> PluginHandler:
+    """Compatibility name for :func:`load_plugin_handler`.
+
+    All command-line products use the same strict loader implementation. This
+    alias preserves the shorter name without creating a second loading path.
+    """
+    return load_plugin_handler(reference)
