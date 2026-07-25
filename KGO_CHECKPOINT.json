@@ -20,22 +20,26 @@
     "title": "Establish the 1.1 evidence baseline",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-013",
-  "kpm_cycle": "KPM-CYCLE-002",
-  "completed_task": {
-    "id": "M4-W001",
-    "title": "Synchronize the autonomous control plane with the published 1.0 baseline",
-    "status": "DONE"
-  },
+  "cycle": "KGO-CYCLE-016",
+  "kpm_cycle": "KPM-CYCLE-005",
+  "completed_tasks": [
+    "M4-W001",
+    "M4-W002",
+    "M4-W003",
+    "M4-W004"
+  ],
   "active_task": {
-    "id": "M4-W002",
-    "title": "Produce an evidence-backed inventory of post-release capability gaps",
+    "id": "M4-W005",
+    "title": "Implement the KPM/KGO autonomous control CLI",
     "status": "IN_DEVELOPMENT",
-    "priority": "P0"
+    "priority": "P1"
   },
+  "selected_capability": "KPM/KGO autonomous control CLI",
+  "specification": "repository/specifications/KPM_KGO_AUTONOMOUS_CONTROL_CLI_SPEC_v0.1.md",
+  "change_manifest": "repository/specifications/M4_W004_CHANGE_MANIFEST_v0.1.md",
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Read PROJECT_STATUS.md and BACKLOG.md, execute the first dependency-valid work item, verify it, synchronize governance records and continue until a stop condition is reached.",
+  "resume_rule": "Implement only the frozen change manifest, run targeted and complete verification, synchronize evidence and continue until a stop condition is reached.",
   "stop_conditions": [
     "MILESTONE_DONE",
     "CURRENT_VERIFICATION_FAILURE",
