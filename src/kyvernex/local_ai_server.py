@@ -8,6 +8,7 @@ from urllib.parse import parse_qs, urlparse
 
 from .ai_bridge import KyvernexAIBridge
 from .local_ai_openapi import build_local_ai_openapi
+from .local_ai_page import build_local_ai_page
 
 
 class KyvernexLocalAIServer:
@@ -24,6 +25,7 @@ class KyvernexLocalAIServer:
             host=str(host),
             port=int(bound_port),
         )
+        handler_type.console_page = build_local_ai_page()
 
     @property
     def address(self) -> tuple[str, int]:
@@ -43,6 +45,7 @@ class KyvernexLocalAIServer:
         class Handler(BaseHTTPRequestHandler):
             server_version = "KYVERNEXLocalAI/1.0"
             openapi_document: dict[str, Any] = {}
+            console_page: bytes = b""
 
             def _write_json(self, status: int, payload: Any) -> None:
                 body = json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
@@ -53,8 +56,20 @@ class KyvernexLocalAIServer:
                 self.end_headers()
                 self.wfile.write(body)
 
+            def _write_html(self, body: bytes) -> None:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.send_header("Cache-Control", "no-store")
+                self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'")
+                self.end_headers()
+                self.wfile.write(body)
+
             def do_GET(self) -> None:
                 parsed = urlparse(self.path)
+                if parsed.path in {"/", "/console"}:
+                    self._write_html(self.console_page)
+                    return
                 if parsed.path == "/health":
                     self._write_json(200, dict(bridge.status()))
                     return
