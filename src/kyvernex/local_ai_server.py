@@ -15,8 +15,8 @@ class KyvernexLocalAIServer:
     """Serve one KYVERNEX AI bridge on the loopback interface only."""
 
     def __init__(self, bridge: KyvernexAIBridge, *, port: int = 8765) -> None:
-        if not isinstance(port, int) or not 1 <= port <= 65535:
-            raise ValueError("port must be an integer between 1 and 65535")
+        if not isinstance(port, int) or isinstance(port, bool) or not 0 <= port <= 65535:
+            raise ValueError("port must be an integer between 0 and 65535")
         self._bridge = bridge
         handler_type = self._build_handler(bridge)
         self._server = ThreadingHTTPServer(("127.0.0.1", port), handler_type)
