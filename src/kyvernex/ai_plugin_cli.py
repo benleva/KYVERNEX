@@ -48,6 +48,16 @@ def _load_object(raw: str, *, source: str) -> dict[str, Any]:
     return payload
 
 
+def _invoke_payload(bridge: KyvernexAIBridge, payload: dict[str, Any]) -> dict[str, Any]:
+    envelope_keys = {"name", "arguments", "id"}
+    if "name" in payload or "arguments" in payload:
+        unknown = set(payload) - envelope_keys
+        if unknown:
+            raise ValueError(f"mixed or unknown tool-call fields: {', '.join(sorted(unknown))}")
+        return bridge.invoke_tool_call(payload)
+    return bridge.invoke(payload)
+
+
 def _stream_requests(bridge: KyvernexAIBridge, input_stream: TextIO, output_stream: TextIO) -> int:
     had_failure = False
     for line_number, raw_line in enumerate(input_stream, start=1):
@@ -55,7 +65,7 @@ def _stream_requests(bridge: KyvernexAIBridge, input_stream: TextIO, output_stre
         if not raw:
             continue
         try:
-            response = bridge.invoke(_load_object(raw, source=f"line {line_number}"))
+            response = _invoke_payload(bridge, _load_object(raw, source=f"line {line_number}"))
         except (TypeError, ValueError, RuntimeError) as exc:
             had_failure = True
             response = {"status": "FAILED", "error": str(exc), "line": line_number}
@@ -77,7 +87,7 @@ def main(argv: list[str] | None = None) -> int:
             if args.stream:
                 return _stream_requests(bridge, sys.stdin, sys.stdout)
             payload = _load_object(sys.stdin.read(), source="stdin")
-            response = bridge.invoke(payload)
+            response = _invoke_payload(bridge, payload)
             _write_json(sys.stdout, response)
             return 0 if response.get("status") == "SUCCEEDED" else 2
     except (ImportError, AttributeError, TypeError, ValueError, RuntimeError) as exc:
