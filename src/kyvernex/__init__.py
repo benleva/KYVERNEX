@@ -8,6 +8,7 @@ from .adapters import (
     EchoAdapter,
     FailingAdapter,
 )
+from .audit_trace import AuditTraceError, AuditTraceRecord, JsonAuditTrace
 from .core import AET, ContinuousValidator, KyvernexEngine
 from .deletion import (
     CognitiveDeletionCoordinator,
@@ -50,10 +51,7 @@ from .process_safe_journal import ProcessSafeMultiTransactionDeletionCoordinator
 from .response_governance import GovernedResponse, ResponseGovernor
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .serialization import to_primitive
-from .transaction_journal import (
-    MultiTransactionDeletionCoordinator,
-    RecoveryBatch,
-)
+from .transaction_journal import MultiTransactionDeletionCoordinator, RecoveryBatch
 
 __all__ = [
     "AET",
@@ -62,6 +60,8 @@ __all__ = [
     "AdapterRequest",
     "AdapterResponse",
     "AuditEvent",
+    "AuditTraceError",
+    "AuditTraceRecord",
     "CognitiveCategory",
     "CognitiveDeletionCoordinator",
     "CognitiveGraph",
@@ -83,6 +83,7 @@ __all__ = [
     "GovernedResponse",
     "GraphPersistenceFormatError",
     "InterProcessFileLock",
+    "JsonAuditTrace",
     "JsonCognitiveGraph",
     "JsonSessionMemory",
     "KyvernexEngine",
