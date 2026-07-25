@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .adapters import AIAdapter, AdapterExecutionError, AdapterRequest, AdapterResponse
+from .audit_sink import persist_audit
 from .core import KyvernexEngine
 from .graph import CognitiveGraph
 from .models import AuditEvent, ExecutionResult, ValidationOutcome
@@ -49,6 +50,10 @@ class KyvernexOrchestrator:
     def graph(self) -> CognitiveGraph:
         return self._graph
 
+    def _finish(self, result: GovernedExecutionResult) -> GovernedExecutionResult:
+        persist_audit(self._engine.audit_sink, result.adapter_audit)
+        return result
+
     def execute(
         self,
         content: object,
@@ -75,13 +80,13 @@ class KyvernexOrchestrator:
                     details={"validation": governance.validation.outcome.value},
                 )
             )
-            return GovernedExecutionResult(
+            return self._finish(GovernedExecutionResult(
                 governance=governance,
                 adapter_response=None,
                 adapter_audit=tuple(audit),
                 blocked=True,
                 error="ADAPTER_INVOCATION_BLOCKED_BY_GOVERNANCE",
-            )
+            ))
 
         request = AdapterRequest(
             session_id=governance.session_id,
@@ -117,14 +122,14 @@ class KyvernexOrchestrator:
                     details={"adapter": self._adapter.name, "error": str(exc)},
                 )
             )
-            return GovernedExecutionResult(
+            return self._finish(GovernedExecutionResult(
                 governance=governance,
                 adapter_response=None,
                 adapter_audit=tuple(audit),
                 blocked=False,
                 error=str(exc),
-            )
-        except Exception as exc:  # defensive boundary for third-party adapters
+            ))
+        except Exception as exc:
             audit.append(
                 AuditEvent.create(
                     session_id=governance.session_id,
@@ -134,13 +139,13 @@ class KyvernexOrchestrator:
                     details={"adapter": self._adapter.name, "error_type": type(exc).__name__},
                 )
             )
-            return GovernedExecutionResult(
+            return self._finish(GovernedExecutionResult(
                 governance=governance,
                 adapter_response=None,
                 adapter_audit=tuple(audit),
                 blocked=False,
                 error="ADAPTER_UNEXPECTED_ERROR",
-            )
+            ))
 
         audit.append(
             AuditEvent.create(
@@ -148,10 +153,7 @@ class KyvernexOrchestrator:
                 component="AI_ADAPTER",
                 event_type="RISPOSTA_ADAPTER_RICEVUTA",
                 object_id=obj.object_id,
-                details={
-                    "adapter": response.adapter_name,
-                    "model": response.model,
-                },
+                details={"adapter": response.adapter_name, "model": response.model},
             )
         )
 
@@ -162,10 +164,10 @@ class KyvernexOrchestrator:
         )
         audit.extend(governed_response.audit)
 
-        return GovernedExecutionResult(
+        return self._finish(GovernedExecutionResult(
             governance=governance,
             adapter_response=response,
             adapter_audit=tuple(audit),
             blocked=False,
             response_governance=governed_response,
-        )
+        ))
