@@ -4,20 +4,17 @@
 
 - Stable release: `1.0.0`
 - Published tag: `v1.0.0`
-- Active milestone: none
-- Active sprint: none
+- Active milestone: `M4 — Governed post-release evolution`
+- Active sprint: `S002 — Establish the 1.1 evidence baseline`
+- Target version: `1.1.0`
 - Maintenance line: `1.0.x`
 
 ## Completed milestones
 
 ### M2 — Governance consolidation
-
 Status: `DONE`
 
-The measurable baseline, lifecycle classification, test reconciliation, CI evidence and synchronized governance records are complete. Historical sprint S001 is closed.
-
 ### M3 — Autonomous Development
-
 Status: `DONE`
 
 | Work item | Capability | Status |
@@ -29,32 +26,31 @@ Status: `DONE`
 | M3-W005 | Evidence-based rollback controller | DONE |
 | M3-W006 | Execution performance clock and improvement metrics | DONE |
 
-Completion: `6/6` work items, `100%`.
-
 ## Release 1.0
 
 Status: `DONE`
 
-Passed gates:
+Release `KYVERNEX 1.0.0` is verified, tagged, published and marked Latest.
 
-- package and public API version synchronized to `1.0.0`;
-- proprietary license recorded;
-- README, changelog and release notes present;
-- targeted and complete tests green;
-- source and wheel builds green;
-- clean wheel installation green;
-- GitHub Actions run `#58` green;
-- tag `v1.0.0` created;
-- GitHub Release `KYVERNEX 1.0.0` published and marked Latest.
+## Active milestone
 
-## Open backlog
+### M4 — Governed post-release evolution
 
-No active work item is authorized.
+Status: `ACTIVE`
+Target: `1.1.0`
 
-Permitted future entries:
+Goal: allow KPM and KGO to resume autonomous, evidence-bounded progression after Release 1.0 without altering the immutable `v1.0.0` baseline or inventing unsupported features.
 
-1. verified blocking defects for a `1.0.x` maintenance release;
-2. explicitly authorized maintenance work;
-3. a separately approved future milestone for new capabilities.
+| Work item | Capability | Priority | Status | Dependencies |
+|---|---|---:|---|---|
+| M4-W001 | Synchronize the autonomous control plane with the published 1.0 baseline | P0 | DONE | None |
+| M4-W002 | Produce an evidence-backed inventory of post-release capability gaps | P0 | IN_DEVELOPMENT | M4-W001 |
+| M4-W003 | Rank validated gaps and select the first dependency-valid 1.1 capability | P0 | READY | M4-W002 |
+| M4-W004 | Write the frozen specification and change manifest for the selected capability | P1 | BACKLOG | M4-W003 |
+| M4-W005 | Implement the selected capability within the authorized boundary | P1 | BACKLOG | M4-W004 |
+| M4-W006 | Run targeted and complete verification, build and clean installation | P0 | BACKLOG | M4-W005 |
+| M4-W007 | Synchronize documentation and prepare the 1.1 release candidate | P1 | BACKLOG | M4-W006 |
 
-Observations and feature ideas do not become active work until explicitly authorized.
+## Continuation policy
+
+KPM selects the next dependency-valid item by priority. KGO advances only from current repository evidence. It must stop for a documented blocker, missing authorization, failed verification or completed milestone. New observations do not bypass the ordered backlog.
