@@ -1,4 +1,4 @@
-"""Create one explicit local KYVERNEX launch profile."""
+"""Create one explicit local KYVERNEX launch profile and optionally run it."""
 from __future__ import annotations
 
 import argparse
@@ -6,6 +6,7 @@ import json
 import sys
 from pathlib import Path
 
+from .local_ai_app_cli import main as launch_local_ai_app
 from .local_ai_profile import load_local_ai_profile
 
 
@@ -23,6 +24,11 @@ def _parser() -> argparse.ArgumentParser:
     browser.add_argument("--no-browser", dest="open_browser", action="store_false")
     parser.set_defaults(open_browser=True)
     parser.add_argument("--force", action="store_true", help="Replace an existing output file")
+    parser.add_argument(
+        "--launch",
+        action="store_true",
+        help="Start kyvernex-ai-app immediately with the profile just created",
+    )
     return parser
 
 
@@ -41,7 +47,20 @@ def main(argv: list[str] | None = None) -> int:
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         validated = load_local_ai_profile(output)
-        print(json.dumps({"status": "CREATED", "profile": str(output), "configuration": validated}, ensure_ascii=False, sort_keys=True))
+        print(
+            json.dumps(
+                {
+                    "status": "CREATED",
+                    "profile": str(output),
+                    "configuration": validated,
+                    "launch_requested": args.launch,
+                },
+                ensure_ascii=False,
+                sort_keys=True,
+            )
+        )
+        if args.launch:
+            return launch_local_ai_app(["--profile", str(output)])
         return 0
     except (OSError, TypeError, ValueError) as exc:
         print(json.dumps({"status": "FAILED", "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
