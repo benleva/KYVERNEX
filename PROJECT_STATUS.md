@@ -3,59 +3,55 @@
 ## Control
 - Stable published release: `1.1.0`
 - Immutable stable tag: `v1.1.0`
-- Active milestone: **M6 — KYVERNEX Plugin Runtime**
-- Completed sprint: **S008 — Minimum reference adapter**
-- Active sprint: **S009 — Focused plugin integration verification**
-- Governance mode: **AUTONOMOUS, SCOPE-LOCKED**
-- KPM cycle: `KPM-CYCLE-019`
-- KGO cycle: `KGO-CYCLE-030`
+- Paused milestone: **M6 — KYVERNEX Plugin Runtime**
+- Active milestone: **M7 — Plugin Product Interface**
+- Active sprint: **S010 — Usable plugin API**
+- Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
+- KPM cycle: `KPM-CYCLE-020`
+- KGO cycle: `KGO-CYCLE-031`
 - Target version: `1.2.0`
-- Canonical scope lock: `repository/specifications/M6_SCOPE_LOCK.md`
 
-## Product objective
-Deliver one installable Python in-process plugin path:
+## Direction change authorized by user
+M6 test-only work is paused. No claim is made that M6-W006, M6-W007, M6-W008 or M6-W009 are complete.
+
+KPM and KGO now prioritize executable product code over additional governance and test expansion.
+
+## M7 objective
+Expose KYVERNEX as a directly usable Python plugin with a compact host-facing API and an installed command.
+
+The first product path is:
 
 ```text
-Python host -> KyvernexPluginRuntime -> governed decision -> bounded callable adapter -> structured response
+host handler -> KyvernexPlugin -> governed runtime -> bounded adapter -> structured response
 ```
 
-M6 is not a general integration platform. It ends after this path is installable, demonstrated and verified.
+## Active implementation
+- M7-W001 usable Python facade and installed command: `CODE_COMPLETE_UNVERIFIED`
 
-## Completed work
-- M6-W001 plugin contract: `DONE`
-- M6-W002 core runtime: `DONE`
-- M6-W003 governed host contracts: `DONE`
-- M6-W004 minimum reference in-process callable adapter: `DONE`
-- M6-W005 fail-closed configuration: `DONE`
+Repository code added:
+- `src/kyvernex/plugin.py` with public `KyvernexPlugin` facade;
+- `src/kyvernex/plugin_cli.py` with `kyvernex-plugin` command;
+- `pyproject.toml` entry point `kyvernex-plugin`;
+- public package export from `src/kyvernex/__init__.py`.
 
-Verified green baselines:
-- lifecycle runtime: `691c769`;
-- host contracts: `83ce3a3`;
-- configuration boundary: `a8e7f36`;
-- minimum callable adapter: `b138134`.
+The facade owns initialization, validation, governed execution, status and shutdown. It accepts one host-supplied callable and converts compact host arguments into the existing structured request contract.
 
-User-observed GitHub Actions evidence confirms green results on commit `b138134` for the Test Suite, KGO v3, Reference Prototype Tests and Pages deployment.
+## Current product use
+Python:
 
-## Active work
-- M6-W006 focused lifecycle and authority integration tests: `IN_PROGRESS`
+```python
+from kyvernex import KyvernexPlugin
 
-M6-W006 is limited to tests of the existing minimum path. It may not add capabilities, adapters, external systems or new product behavior.
+plugin = KyvernexPlugin(handler)
+response = plugin.execute({"message": "ciao"}, principal="andrea")
+plugin.shutdown()
+```
 
-Required integration evidence:
-1. authorized host request reaches the callable and returns a structured success response;
-2. blocked request never reaches the callable;
-3. zero-authority defaults remain intact;
-4. lifecycle initialize, validate, execute, status and shutdown remains deterministic;
-5. shutdown remains terminal and idempotent;
-6. no network, filesystem, process, repository or environment authority appears.
+Installed command:
 
-## Remaining direct path
-1. M6-W006: focused lifecycle and authority integration tests;
-2. M6-W007: one minimal installable example and package entry point;
-3. M6-W008: complete suite, build, clean install and smoke test;
-4. M6-W009: prerelease evidence for `1.2.0`.
-
-No additional feature work may be inserted into M6.
+```text
+kyvernex-plugin '{"message":"ciao"}' --principal andrea
+```
 
 ## Continuation rule
-Implement only focused end-to-end tests for the frozen minimum plugin path. Stop on scope expansion, current test failure, authority expansion, contract contradiction, external publication boundary or milestone completion.
+Continue M7 with product code that makes the plugin easier to install and use. Do not return to test-only work unless explicitly requested. Do not claim verification or release evidence that has not been observed.
