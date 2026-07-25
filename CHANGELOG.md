@@ -2,9 +2,13 @@
 
 All notable changes to KYVERNEX are documented in this file.
 
-The project follows semantic versioning after the first stable release. Until Release 1.0 is certified, changes remain under the `Unreleased` section.
+The project follows semantic versioning from Release 1.0 onward.
 
 ## [Unreleased]
+
+No unreleased changes.
+
+## [1.0.0] - 2026-07-25
 
 ### Added
 - KGO v1 governed test-output analysis and backlog generation.
@@ -19,11 +23,15 @@ The project follows semantic versioning after the first stable release. Until Re
 - Evidence-based rollback planning with explicit authorization and matching changeset controls.
 - Execution performance clock with deterministic timing, baseline comparison and improvement metrics.
 - GitHub Actions workflow for targeted and complete verification evidence.
+- Source and wheel package builds in CI.
+- Clean-environment wheel installation and version verification.
 - Persistent governance, verification, rollback and performance artifacts.
+- Proprietary repository license.
 
 ### Changed
-- README synchronized with the completed six-item M3 backlog and Release 1.0 audit state.
-- Project governance state advanced from M3 implementation to Release 1.0 audit.
+- Package and public API versions synchronized to `1.0.0`.
+- README synchronized with the completed six-item M3 backlog and Release 1.0 workflow.
+- Project governance state advanced from M3 implementation to Release 1.0 finalization.
 
 ### Fixed
 - Rollback-controller test fixture now includes explicit current failed-test evidence matching the verification parser contract.
@@ -32,14 +40,13 @@ The project follows semantic versioning after the first stable release. Until Re
 - Rollback execution remains outside the controller and requires an authorized executor.
 - Performance evidence cannot replace correctness evidence or authorize execution.
 - Historical failed runs do not override current commit evidence.
+- The source code, specifications and documentation remain proprietary and all rights are reserved.
 
-## Release policy
-
-Release `1.0.0` must not be published until:
-
-- package and public API versions are synchronized;
-- licensing terms are explicitly selected and recorded in a root `LICENSE` file;
-- a clean package build succeeds;
-- installation and tests succeed in a clean environment;
-- the final GitHub Actions verification is green;
-- the `Unreleased` entries are moved into a dated `1.0.0` section.
+### Verification
+- Targeted tests passed.
+- Complete test suite passed.
+- Source distribution built successfully.
+- Wheel distribution built successfully.
+- Generated wheel installed successfully in a clean virtual environment.
+- Installed package metadata and public API both reported version `1.0.0`.
+- GitHub Actions release-candidate run `#58` completed successfully.
