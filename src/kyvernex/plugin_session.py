@@ -18,7 +18,7 @@ class KyvernexPluginSession:
         capabilities: set[str] | frozenset[str] | None = None,
         configuration: Mapping[str, Any] | None = None,
         context: Mapping[str, Any] | None = None,
-        kyvernex_version: str = "1.1.0",
+        kyvernex_version: str = "1.2.0.dev0",
         instance_id: str | None = None,
     ) -> None:
         if not isinstance(principal, str) or not principal:
