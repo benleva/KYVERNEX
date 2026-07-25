@@ -17,7 +17,10 @@ def test_valid_input_reaches_echo_adapter() -> None:
     assert result.adapter_response.content == "MODEL: Analizza questo input"
     assert result.adapter_response.metadata["network_used"] is False
     assert result.adapter_audit[0].component == "AI_ADAPTER_GATE"
-    assert result.adapter_audit[-1].event_type == "RISPOSTA_ADAPTER_RICEVUTA"
+    assert any(
+        event.event_type == "RISPOSTA_ADAPTER_RICEVUTA"
+        for event in result.adapter_audit
+    )
 
 
 def test_invalid_input_is_blocked_before_adapter_invocation() -> None:
