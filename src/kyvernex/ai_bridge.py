@@ -75,6 +75,30 @@ class KyvernexAIBridge:
             request_id=request_id,
         )
 
+    def invoke_tool_call(self, tool_call: Mapping[str, Any]) -> dict[str, Any]:
+        """Invoke a canonical ``name`` plus ``arguments`` AI tool-call envelope."""
+        if not isinstance(tool_call, Mapping):
+            raise TypeError("tool_call must be a mapping")
+        allowed = {"name", "arguments", "id"}
+        unknown = sorted(set(tool_call) - allowed)
+        if unknown:
+            raise ValueError(f"unknown tool-call fields: {', '.join(unknown)}")
+        name = tool_call.get("name")
+        if name != self.tool_name:
+            raise ValueError(f"unsupported tool name: {name!r}")
+        call_id = tool_call.get("id")
+        if call_id is not None and (not isinstance(call_id, str) or not call_id):
+            raise ValueError("tool_call.id must be a non-empty string")
+        arguments = tool_call.get("arguments")
+        if not isinstance(arguments, Mapping):
+            raise ValueError("tool_call.arguments must be an object")
+        response = self.invoke(arguments)
+        if call_id is None:
+            return response
+        wrapped = dict(response)
+        wrapped["tool_call_id"] = call_id
+        return wrapped
+
     def status(self) -> Mapping[str, Any]:
         return self._plugin.status()
 
