@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Mapping
 
+from .ai_formats import export_manifest
 from .plugin import KyvernexPlugin
 
 
@@ -30,7 +31,7 @@ class KyvernexAIBridge:
         )
 
     def manifest(self) -> dict[str, Any]:
-        """Return a provider-neutral JSON Schema tool definition."""
+        """Return the canonical provider-neutral JSON Schema tool definition."""
         return {
             "name": self.tool_name,
             "description": self.tool_description,
@@ -45,6 +46,10 @@ class KyvernexAIBridge:
                 },
             },
         }
+
+    def manifest_for(self, provider: str) -> dict[str, Any]:
+        """Translate the canonical manifest without changing execution behavior."""
+        return export_manifest(self.manifest(), provider)
 
     def invoke(self, arguments: Mapping[str, Any]) -> dict[str, Any]:
         """Invoke the single AI tool with provider-neutral arguments."""
