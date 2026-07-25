@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "VERIFYING",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "stable_release": {
     "version": "1.1.0",
@@ -30,19 +30,20 @@
     "status": "ACTIVE"
   },
   "sprint": {
-    "id": "S005",
-    "title": "Implement the core plugin runtime",
+    "id": "S006",
+    "title": "Govern host contracts",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-025",
-  "kpm_cycle": "KPM-CYCLE-014",
+  "cycle": "KGO-CYCLE-026",
+  "kpm_cycle": "KPM-CYCLE-015",
   "completed_tasks": [
-    "M6-W001"
+    "M6-W001",
+    "M6-W002"
   ],
   "active_task": {
-    "id": "M6-W002",
-    "title": "Implement the core plugin runtime and lifecycle state machine",
-    "status": "IN_VERIFICATION",
+    "id": "M6-W003",
+    "title": "Implement governed host request, response and error contracts",
+    "status": "IN_PROGRESS",
     "priority": "P0"
   },
   "plugin_contract": {
@@ -53,14 +54,16 @@
     "schema_path": "repository/specifications/m6-plugin-contract.schema.json",
     "unresolved_p0_authority_ambiguity": false
   },
-  "implementation": {
+  "verified_runtime": {
     "runtime_path": "src/kyvernex/plugin_runtime.py",
     "targeted_tests_path": "tests/test_plugin_runtime.py",
     "public_exports": "src/kyvernex/__init__.py",
-    "implementation_commit": "d9a8cb7dc2cb837663f0de06de5029a1f0f06241",
-    "targeted_tests": "PENDING",
-    "complete_suite": "PENDING",
-    "authority_review": "PENDING"
+    "verification_commit": "691c769",
+    "test_suite": "GREEN",
+    "kgo_v3": "GREEN",
+    "reference_prototype_tests": "GREEN",
+    "pages_deployment": "GREEN",
+    "authority_review": "GREEN_NO_EXPANSION"
   },
   "plugin_scope": {
     "lifecycle": [
@@ -85,7 +88,7 @@
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Read current CI evidence for M6-W002. On green, close M6-W002 and activate M6-W003. On failure, record the failure before repair.",
+  "resume_rule": "Implement M6-W003 against the frozen contract and verified runtime, add targeted contract tests and obtain current regression evidence before advancing.",
   "stop_conditions": [
     "CURRENT_VERIFICATION_FAILURE",
     "CONTRACT_CONTRADICTION",
