@@ -57,15 +57,17 @@ The final verification run passed after correcting a test fixture so that explic
 - complete repository CI green on the latest observed run;
 - targeted verification integrated into GitHub Actions;
 - governance and execution APIs exported;
-- deterministic tests present for M3-W003 through M3-W006.
+- deterministic tests present for M3-W003 through M3-W006;
+- root `LICENSE` created with proprietary terms authorized by the owner;
+- `pyproject.toml` references the root proprietary license;
+- root `CHANGELOG.md` present;
+- `README.md` synchronized with the completed six-item M3 backlog and release workflow.
 
 ### Open blockers
 1. Package and public API version remain `0.1.0.dev0`; no `1.0.0` version synchronization has been performed.
-2. `pyproject.toml` declares `Proprietary - development draft`, but no root `LICENSE` file exists.
-3. No root `CHANGELOG.md` exists.
-4. `README.md` is not synchronized with the completed six-item M3 backlog and lacks a release-ready installation and quick-start path.
-5. A clean package build and clean-environment installation have not yet been evidenced by CI.
-6. No `v1.0.0` tag or GitHub Release may be created before all preceding gates pass.
+2. A clean package build and clean-environment installation have not yet been evidenced by CI.
+3. The proprietary license text is an operational repository notice and has not been independently reviewed by legal counsel.
+4. No `v1.0.0` tag or GitHub Release may be created before all preceding technical gates pass.
 
 ## Release continuation rule
 Resolve the first open release blocker in order, verify the repository after each relevant change, update this file, and stop before tagging if legal ownership or licensing terms require explicit user authorization.
