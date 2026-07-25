@@ -1,116 +1,47 @@
 # KYVERNEX BACKLOG
 
 ## Baseline status
-
 - Stable published release: `1.1.0`
 - Published stable tag: `v1.1.0`
-- Previous stable tag: `v1.0.0`
-- Published prerelease tag: `v1.1.0-rc.1`
 - Active milestone: `M6 — KYVERNEX Plugin Runtime`
 - Active sprint: `S007 — Fail-closed plugin configuration`
 - Target version: `1.2.0`
-- Maintenance line: `1.1.x`
 
 ## Completed milestones
-
-### M2 — Governance consolidation
-Status: `DONE`
-
-### M3 — Autonomous Development
-Status: `DONE`
-
-### M4 — Governed post-release evolution
-Status: `DONE`
-Completion: `7/7`, `100%`.
-
-### M5 — Promote 1.1 release candidate to stable
-Status: `DONE`
-Completion: `3/3`, `100%`.
+- M2 — Governance consolidation: `DONE`
+- M3 — Autonomous Development: `DONE`
+- M4 — Governed post-release evolution: `DONE`
+- M5 — Promote 1.1 release candidate to stable: `DONE`
 
 ## Active milestone
 
-### M6 — KYVERNEX Plugin Runtime
-
-Status: `ACTIVE`
-Target: `1.2.0`
-Scope: build the installable product plugin layer over the existing KYVERNEX engine. The strategic roadmap is unchanged.
-
 | Work item | Capability | Priority | Story points | Status | Dependencies |
 |---|---|---:|---:|---|---|
-| M6-W001 | Freeze the plugin contract, lifecycle, schemas and authority boundaries | P0 | 5 | DONE | Stable `v1.1.0` baseline |
-| M6-W002 | Implement the core plugin runtime and lifecycle state machine | P0 | 8 | DONE | M6-W001 |
-| M6-W003 | Implement governed host request, response and error contracts | P0 | 8 | DONE | M6-W002 |
-| M6-W004 | Add host adapter boundary and reference in-process adapter | P1 | 8 | BACKLOG | M6-W003 |
-| M6-W005 | Add configuration loading, validation and fail-closed defaults | P0 | 5 | IN_PROGRESS | M6-W002 |
-| M6-W006 | Add security-boundary and lifecycle integration tests | P0 | 8 | BACKLOG | M6-W003, M6-W004, M6-W005 |
-| M6-W007 | Add installable example, developer documentation and package entry point | P1 | 5 | BACKLOG | M6-W006 |
-| M6-W008 | Run complete verification, build, clean installation and plugin smoke test | P0 | 8 | BACKLOG | M6-W007 |
-| M6-W009 | Prepare the first `1.2.0` prerelease package and release evidence | P1 | 3 | BACKLOG | M6-W008 |
+| M6-W001 | Freeze plugin contract and authority boundaries | P0 | 5 | DONE | stable baseline |
+| M6-W002 | Core runtime and lifecycle state machine | P0 | 8 | DONE | M6-W001 |
+| M6-W003 | Governed host request, response and error contracts | P0 | 8 | DONE | M6-W002 |
+| M6-W004 | Host adapter boundary and reference in-process adapter | P1 | 8 | BACKLOG | M6-W003 |
+| M6-W005 | Configuration loading, validation and fail-closed defaults | P0 | 5 | IN_VERIFICATION | M6-W002 |
+| M6-W006 | Security-boundary and lifecycle integration tests | P0 | 8 | BACKLOG | M6-W003, M6-W004, M6-W005 |
+| M6-W007 | Installable example, documentation and package entry point | P1 | 5 | BACKLOG | M6-W006 |
+| M6-W008 | Complete verification, build, clean install and smoke test | P0 | 8 | BACKLOG | M6-W007 |
+| M6-W009 | Prepare first `1.2.0` prerelease evidence | P1 | 3 | BACKLOG | M6-W008 |
 
-Progress: `3/9` work items, `21/58` story points.
+Progress remains `3/9` work items and `21/58` story points until M6-W005 receives fresh green evidence.
 
-## Verified evidence
+## M6-W005 implementation
+- `src/kyvernex/plugin_config.py` defines immutable validated configuration;
+- `src/kyvernex/plugin_runtime.py` consumes only the validated configuration object;
+- `tests/test_plugin_config.py` covers defaults, unknown fields, normalized roots, allowlists, wildcard rejection, mandatory audit and lifecycle immutability;
+- defaults grant no filesystem, network or process authority;
+- repository authority remains forbidden;
+- configuration cannot be replaced after initialization.
 
-### M6-W001
-
-Frozen contract:
-
-- `repository/specifications/M6_PLUGIN_RUNTIME_CONTRACT.md`;
-- `repository/specifications/m6-plugin-contract.schema.json`.
-
-### M6-W002
-
-Verified lifecycle runtime on commit `691c769`:
-
-- `src/kyvernex/plugin_runtime.py`;
-- `tests/test_plugin_runtime.py`;
-- public exports in `src/kyvernex/__init__.py`.
-
-### M6-W003
-
-Verified governed host contracts on commit `83ce3a3`:
-
-- `src/kyvernex/plugin_contracts.py`;
-- governed integration in `src/kyvernex/plugin_runtime.py`;
-- targeted tests in `tests/test_plugin_runtime.py`;
-- public contract exports in `src/kyvernex/__init__.py`.
-
-GitHub Actions is green for the Test Suite, Reference Prototype Tests, KGO v3 and Pages deployment. No filesystem, network, process or repository authority expansion was introduced.
-
-## Current work item
-
-`M6-W005` is selected before the P1 adapter work because it is P0 and already dependency-valid. It must establish:
-
-- strict configuration field validation;
-- zero-authority defaults;
-- normalized filesystem roots;
-- disabled-by-default network and process access;
-- explicit bounded allowlists;
-- immutable effective configuration after initialization;
-- rejection of any silent authority increase.
-
-## Definition of M6 Done
-
-M6 is complete only when:
-
-- the plugin contract and lifecycle are frozen and documented;
-- the runtime is installable and importable;
-- lifecycle transitions are deterministic and fail closed;
-- host requests use structured validated contracts;
-- all execution passes through existing governance and KEX boundaries;
-- configuration cannot expand authority silently;
-- targeted and complete tests are green;
-- source and wheel builds succeed;
-- clean installation and plugin smoke tests pass;
-- release evidence is recorded without unsupported claims.
+## Verification gate
+Close M6-W005 only after targeted and complete tests are green for the exact final commit and no authority expansion is observed.
 
 ## Release states
-
-- `v1.1.0`: published stable release and Latest;
-- `v1.1.0-rc.1`: preserved immutable prerelease record;
-- `v1.0.0`: preserved immutable historical stable release;
-- `1.2.0`: active development target, not yet released.
-
-## Continuation policy
-
-KPM/KGO execute M6 in dependency and priority order. M6-W005 must conform to the frozen contract and verified runtime. Stop for current verification failure, contract contradiction, unresolved P0 security boundary, external publication boundary or milestone completion.
+- `v1.1.0`: stable Latest and immutable;
+- `v1.1.0-rc.1`: historical prerelease;
+- `v1.0.0`: historical stable;
+- `1.2.0`: development target, not released.
