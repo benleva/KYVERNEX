@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "PRODUCT_CODE_BOUNDARY",
-  "state": "SAFE_STOP",
+  "mode": "AUTONOMOUS_PRODUCT_CODE",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -18,53 +18,53 @@
     "completed_tasks": ["M6-W001", "M6-W002", "M6-W003", "M6-W004", "M6-W005"],
     "paused_tasks": ["M6-W006", "M6-W007", "M6-W008", "M6-W009"]
   },
-  "milestone": {
+  "completed_code_milestone": {
     "id": "M7",
     "title": "Plugin Product Interface",
     "status": "CODE_COMPLETE_UNVERIFIED"
   },
-  "sprint": {
-    "id": "S010",
-    "title": "Usable plugin API",
-    "status": "CODE_COMPLETE_UNVERIFIED"
+  "milestone": {
+    "id": "M8",
+    "title": "Universal AI Plugin Bridge",
+    "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-033",
-  "kpm_cycle": "KPM-CYCLE-022",
-  "completed_code_tasks": [
-    "M7-W001",
-    "M7-W002",
-    "M7-W003",
-    "M7-W004",
-    "M7-W005"
-  ],
+  "sprint": {
+    "id": "S011",
+    "title": "Provider-neutral AI invocation",
+    "status": "ACTIVE"
+  },
+  "cycle": "KGO-CYCLE-034",
+  "kpm_cycle": "KPM-CYCLE-023",
+  "completed_code_tasks": ["M8-W001", "M8-W002"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
-  "active_task": null,
+  "active_task": {
+    "id": "M8-W003",
+    "title": "Add streaming multi-request process mode",
+    "status": "IN_PROGRESS",
+    "priority": "P0"
+  },
   "code_evidence": {
-    "facade": "src/kyvernex/plugin.py",
-    "command": "src/kyvernex/plugin_cli.py",
-    "handler_loader": "src/kyvernex/plugin_loader.py",
-    "persistent_session": "src/kyvernex/plugin_session.py",
-    "example_handler": "examples/plugin_handler.py",
-    "package_entry_point": "kyvernex-plugin",
-    "package_version": "1.2.0.dev0",
-    "public_api_version": "1.2.0.dev0",
-    "latest_code_commit": "56139800b5230c70a3bf8850c10a256b0eb65cb3"
+    "ai_bridge": "src/kyvernex/ai_bridge.py",
+    "ai_command": "src/kyvernex/ai_plugin_cli.py",
+    "package_entry_point": "kyvernex-ai-plugin",
+    "public_export": "KyvernexAIBridge",
+    "latest_code_commit": "bf88c9316a3fa61e8e6218d97f547f1446d26164"
   },
   "product_capabilities": {
-    "inline_json_input": true,
-    "file_json_input": true,
-    "file_json_output": true,
+    "canonical_ai_manifest": true,
+    "provider_neutral_invocation": true,
+    "stdin_json_request": true,
     "explicit_module_attribute_handler": true,
-    "persistent_local_session": true,
-    "dynamic_discovery": false,
+    "separate_provider_runtimes": false,
     "remote_transport": false
   },
-  "autonomous_continuation": false,
-  "requires_user_proceed": true,
-  "resume_rule": "Open a new milestone only when a concrete host, platform or product outcome is named. Do not infer a remote transport, adapter or external service.",
+  "autonomous_continuation": true,
+  "requires_user_proceed": false,
+  "resume_rule": "Continue with executable code for one canonical AI bridge. Do not fork governance logic by provider and do not substitute tests or governance prose for code delivery.",
   "stop_conditions": [
-    "PRODUCT_TARGET_NOT_DEFINED",
+    "PRODUCT_DIRECTION_CONTRADICTION",
     "AUTHORITY_EXPANSION",
+    "SEPARATE_PROVIDER_RUNTIME_FORK",
     "EXTERNAL_PUBLICATION_BOUNDARY",
     "MILESTONE_DONE"
   ]
