@@ -1,0 +1,6 @@
+{
+  "handler": "examples.plugin_handler:handle",
+  "principal": "andrea",
+  "port": 8765,
+  "open_browser": true
+}
