@@ -48,6 +48,13 @@ from .program_manager import (
 )
 from .response_governance import GovernedResponse, ResponseGovernor
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
+from .self_verification import (
+    ContinuousSelfVerificationController,
+    SelfVerificationResult,
+    VerificationEvidence,
+    VerificationStatus,
+    write_verification_result,
+)
 from .serialization import to_primitive
 from .transaction_journal import MultiTransactionDeletionCoordinator, RecoveryBatch
 from .unit_of_work import KyvernexUnitOfWork, UnitOfWorkCommitError, UnitOfWorkError, UnitOfWorkResult, UnitOfWorkState, UnitOfWorkStateError
@@ -62,28 +69,29 @@ __all__ = [
     "CognitiveDecisionExplainer", "CognitiveDecisionGate", "CognitiveDeletionCoordinator",
     "CognitiveGraph", "CognitiveObject", "CognitiveRelation", "CognitiveState",
     "CognitiveVersionManager", "CommandRunner", "ConfidenceAssessment", "ConfidenceCycleError",
-    "ConfidenceError", "ContinuousValidator", "DecisionDisposition", "DecisionGateError",
-    "DecisionPolicy", "DefinitionOfDone", "DeletionJournalError", "DeletionJournalState",
-    "DeletionPolicy", "DeletionRestrictedError", "DeletionResult", "DeletionTransactionError",
-    "DevelopmentAction", "DevelopmentPolicy", "DevelopmentStep", "DurableDeletionCoordinator",
-    "EchoAdapter", "ExecutionPolicy", "ExecutionRequest", "ExecutionResult", "ExecutionStatus",
-    "ExplainabilityError", "FailingAdapter", "GovernanceCheckpoint", "GovernanceMode",
-    "GovernanceState", "GovernedDecision", "GovernedExecutionResult", "GovernedResponse",
-    "GraphPersistenceFormatError", "InterProcessFileLock", "JsonAuditTrace", "JsonCognitiveGraph",
-    "JsonSessionMemory", "KEXError", "KEXExecutionResult", "KGOError", "KGOState", "KGOV3Loop",
-    "KPMError", "KPMFeatureAssessment", "KPMReport", "KyvernexEngine", "KyvernexExecutionEngine",
+    "ConfidenceError", "ContinuousSelfVerificationController", "ContinuousValidator",
+    "DecisionDisposition", "DecisionGateError", "DecisionPolicy", "DefinitionOfDone",
+    "DeletionJournalError", "DeletionJournalState", "DeletionPolicy", "DeletionRestrictedError",
+    "DeletionResult", "DeletionTransactionError", "DevelopmentAction", "DevelopmentPolicy",
+    "DevelopmentStep", "DurableDeletionCoordinator", "EchoAdapter", "ExecutionPolicy",
+    "ExecutionRequest", "ExecutionResult", "ExecutionStatus", "ExplainabilityError",
+    "FailingAdapter", "GovernanceCheckpoint", "GovernanceMode", "GovernanceState",
+    "GovernedDecision", "GovernedExecutionResult", "GovernedResponse", "GraphPersistenceFormatError",
+    "InterProcessFileLock", "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory",
+    "KEXError", "KEXExecutionResult", "KGOError", "KGOState", "KGOV3Loop", "KPMError",
+    "KPMFeatureAssessment", "KPMReport", "KyvernexEngine", "KyvernexExecutionEngine",
     "KyvernexGovernanceOrchestrator", "KyvernexOrchestrator", "KyvernexProgramManager",
     "KyvernexUnitOfWork", "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone",
     "MultiTransactionDeletionCoordinator", "PersistenceFormatError", "PlannedChange", "Priority",
     "ProcessLockError", "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch",
     "RecoveryResult", "ReferentialIntegrityError", "RelationConflictError", "RelationType",
-    "ResponseGovernor", "Rule", "RuleEngine", "RuleResult", "RuleSeverity", "SessionMemory",
-    "SpecificationChangePlanner", "SubprocessCommandRunner", "UnitOfWorkCommitError",
+    "ResponseGovernor", "Rule", "RuleEngine", "RuleResult", "RuleSeverity", "SelfVerificationResult",
+    "SessionMemory", "SpecificationChangePlanner", "SubprocessCommandRunner", "UnitOfWorkCommitError",
     "UnitOfWorkError", "UnitOfWorkResult", "UnitOfWorkState", "UnitOfWorkStateError",
-    "ValidationOutcome", "ValidationRecord", "VersionChangeType", "VersionConflictError",
-    "VersionTransition", "VersioningError", "WorkItem", "WorkStatus", "build_m3_backlog",
-    "default_rules", "execution_clock_assessment", "load_state", "persist_audit", "to_primitive",
-    "write_result",
+    "ValidationOutcome", "ValidationRecord", "VerificationEvidence", "VerificationStatus",
+    "VersionChangeType", "VersionConflictError", "VersionTransition", "VersioningError",
+    "WorkItem", "WorkStatus", "build_m3_backlog", "default_rules", "execution_clock_assessment",
+    "load_state", "persist_audit", "to_primitive", "write_result", "write_verification_result",
 ]
 
 __version__ = "0.1.0.dev0"
