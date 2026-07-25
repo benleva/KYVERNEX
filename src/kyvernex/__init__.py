@@ -10,6 +10,7 @@ from .models import (
     ValidationOutcome,
     ValidationRecord,
 )
+from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .serialization import to_primitive
 
 __all__ = [
@@ -21,8 +22,13 @@ __all__ = [
     "ContinuousValidator",
     "ExecutionResult",
     "KyvernexEngine",
+    "Rule",
+    "RuleEngine",
+    "RuleResult",
+    "RuleSeverity",
     "ValidationOutcome",
     "ValidationRecord",
+    "default_rules",
     "to_primitive",
 ]
 
