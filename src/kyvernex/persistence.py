@@ -38,7 +38,6 @@ class JsonSessionMemory:
             raise ValueError("SESSION_ID_MANCANTE")
         if not obj.object_id:
             raise ValueError("OBJECT_ID_MANCANTE")
-
         with self._lock:
             session = self._sessions.setdefault(session_id, {})
             if obj.object_id in session:
@@ -59,6 +58,19 @@ class JsonSessionMemory:
         with self._lock:
             return len(self._sessions.get(session_id, {}))
 
+    def remove(self, session_id: str, object_id: str) -> CognitiveObject | None:
+        with self._lock:
+            session = self._sessions.get(session_id)
+            if session is None:
+                return None
+            obj = session.pop(object_id, None)
+            if obj is None:
+                return None
+            if not session:
+                self._sessions.pop(session_id, None)
+            self._persist()
+            return deepcopy(obj)
+
     def clear(self, session_id: str) -> int:
         with self._lock:
             removed = len(self._sessions.get(session_id, {}))
@@ -78,10 +90,7 @@ class JsonSessionMemory:
             if not isinstance(sessions, dict):
                 raise PersistenceFormatError("FORMATO_SESSIONI_NON_VALIDO")
             self._sessions = {
-                session_id: {
-                    object_id: self._decode_object(raw)
-                    for object_id, raw in objects.items()
-                }
+                session_id: {object_id: self._decode_object(raw) for object_id, raw in objects.items()}
                 for session_id, objects in sessions.items()
             }
         except PersistenceFormatError:
