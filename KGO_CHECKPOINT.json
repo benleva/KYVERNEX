@@ -1,36 +1,44 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
   "state": "RUNNING",
-  "target_release": "1.0",
-  "milestone": {
-    "id": "M2",
-    "title": "Governance consolidation",
-    "status": "IN_PROGRESS"
+  "target_release": "1.1.0",
+  "stable_baseline": {
+    "version": "1.0.0",
+    "tag": "v1.0.0",
+    "immutable": true,
+    "verification": "GITHUB_ACTIONS_RUN_58_GREEN"
   },
-  "sprint": {
-    "id": "S001",
-    "title": "Establish measurable baseline",
+  "milestone": {
+    "id": "M4",
+    "title": "Governed post-release evolution",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-001",
+  "sprint": {
+    "id": "S002",
+    "title": "Establish the 1.1 evidence baseline",
+    "status": "ACTIVE"
+  },
+  "cycle": "KGO-CYCLE-013",
+  "kpm_cycle": "KPM-CYCLE-002",
+  "completed_task": {
+    "id": "M4-W001",
+    "title": "Synchronize the autonomous control plane with the published 1.0 baseline",
+    "status": "DONE"
+  },
   "active_task": {
-    "id": "KPM-S001-T01",
-    "title": "Inventory repository modules and specifications",
+    "id": "M4-W002",
+    "title": "Produce an evidence-backed inventory of post-release capability gaps",
     "status": "IN_DEVELOPMENT",
     "priority": "P0"
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "verification": {
-    "complete_test_suite": "NOT_VERIFIED",
-    "ci": "NOT_VERIFIED",
-    "project_completion": "NOT_CALCULATED"
-  },
-  "resume_rule": "Resume from this checkpoint and select the next dependency-valid action without requesting user confirmation.",
+  "resume_rule": "Read PROJECT_STATUS.md and BACKLOG.md, execute the first dependency-valid work item, verify it, synchronize governance records and continue until a stop condition is reached.",
   "stop_conditions": [
     "MILESTONE_DONE",
+    "CURRENT_VERIFICATION_FAILURE",
     "UNRESOLVABLE_P0_BLOCKER",
     "EXTERNAL_AUTHORIZATION_REQUIRED",
     "PLATFORM_EXECUTION_BOUNDARY"
