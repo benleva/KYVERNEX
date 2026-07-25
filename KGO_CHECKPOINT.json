@@ -30,37 +30,38 @@
     "title": "Loopback HTTP access",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-037",
-  "kpm_cycle": "KPM-CYCLE-026",
-  "completed_code_tasks": ["M9-W001", "M9-W002"],
+  "cycle": "KGO-CYCLE-038",
+  "kpm_cycle": "KPM-CYCLE-027",
+  "completed_code_tasks": ["M9-W001", "M9-W002", "M9-W003"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
   "active_task": {
-    "id": "M9-W003",
-    "title": "Generate a local OpenAPI document for the fixed routes",
+    "id": "M9-W004",
+    "title": "Add a minimal local invocation page using the existing routes",
     "status": "IN_PROGRESS",
     "priority": "P1"
   },
   "code_evidence": {
     "local_server": "src/kyvernex/local_ai_server.py",
     "server_command": "src/kyvernex/local_ai_server_cli.py",
+    "openapi_builder": "src/kyvernex/local_ai_openapi.py",
     "package_entry_point": "kyvernex-ai-server",
-    "latest_code_commit": "2d1c1e015d49b2b853d558d9ca3c4e5497d9742a"
+    "openapi_commit": "8648ca670ba63e308ca4a8cd785b160baca538f1"
   },
   "transport_boundary": {
     "bind_host": "127.0.0.1",
     "public_bind": false,
     "max_request_bytes": 1048576,
-    "routes": ["GET /health", "GET /manifest", "POST /invoke"],
+    "routes": ["GET /health", "GET /manifest", "GET /openapi.json", "POST /invoke"],
     "external_network_client": false,
     "cloud_dependency": false
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Continue only with executable local-server product code. Preserve loopback binding and the canonical bridge. Do not add public hosting, accounts, databases or provider-specific runtimes.",
+  "resume_rule": "Continue only with one static local page served by the existing loopback process. It may call only the existing routes and must not add another backend, public hosting, accounts or databases.",
   "stop_conditions": [
     "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
-    "SEPARATE_PROVIDER_RUNTIME_FORK",
+    "SECOND_BACKEND_INTRODUCED",
     "EXTERNAL_PUBLICATION_BOUNDARY",
     "MILESTONE_DONE"
   ]
