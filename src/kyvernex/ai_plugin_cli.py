@@ -1,10 +1,10 @@
-"""Command-line bridge for AI hosts using newline-delimited JSON."""
+"""Command-line bridge for AI hosts using JSON or persistent JSON Lines."""
 from __future__ import annotations
 
 import argparse
 import json
 import sys
-from typing import Any
+from typing import Any, TextIO
 
 from .ai_bridge import KyvernexAIBridge
 from .plugin_loader import load_handler
@@ -18,7 +18,50 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--handler", required=True, help="Host callable as module:attribute")
     parser.add_argument("--principal", default="ai-host")
     parser.add_argument("--manifest", action="store_true", help="Print the tool manifest and exit")
+    parser.add_argument(
+        "--stream",
+        action="store_true",
+        help="Keep one bridge alive and process one JSON object per input line",
+    )
     return parser
+
+
+def _write_json(stream: TextIO, payload: MappingLike) -> None:
+    stream.write(json.dumps(payload, ensure_ascii=False, sort_keys=True) + "\n")
+    stream.flush()
+
+
+MappingLike = dict[str, Any]
+
+
+def _load_object(raw: str, *, source: str) -> dict[str, Any]:
+    payload: Any = json.loads(raw)
+    if not isinstance(payload, dict):
+        raise ValueError(f"{source} JSON must be an object")
+    return payload
+
+
+def _stream_requests(bridge: KyvernexAIBridge, input_stream: TextIO, output_stream: TextIO) -> int:
+    """Process independent JSONL requests while preserving one bridge instance."""
+    had_failure = False
+    for line_number, raw_line in enumerate(input_stream, start=1):
+        raw = raw_line.strip()
+        if not raw:
+            continue
+        try:
+            response = bridge.invoke(_load_object(raw, source=f"line {line_number}"))
+        except (TypeError, ValueError, RuntimeError) as exc:
+            had_failure = True
+            response = {
+                "status": "FAILED",
+                "error": str(exc),
+                "line": line_number,
+            }
+        else:
+            if response.get("status") != "SUCCEEDED":
+                had_failure = True
+        _write_json(output_stream, response)
+    return 2 if had_failure else 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -27,17 +70,16 @@ def main(argv: list[str] | None = None) -> int:
         handler = load_handler(args.handler)
         with KyvernexAIBridge(handler, principal=args.principal) as bridge:
             if args.manifest:
-                print(json.dumps(bridge.manifest(), ensure_ascii=False, sort_keys=True))
+                _write_json(sys.stdout, bridge.manifest())
                 return 0
-            raw = sys.stdin.read()
-            payload: Any = json.loads(raw)
-            if not isinstance(payload, dict):
-                raise ValueError("stdin JSON must be an object")
+            if args.stream:
+                return _stream_requests(bridge, sys.stdin, sys.stdout)
+            payload = _load_object(sys.stdin.read(), source="stdin")
             response = bridge.invoke(payload)
-            print(json.dumps(response, ensure_ascii=False, sort_keys=True))
+            _write_json(sys.stdout, response)
             return 0 if response.get("status") == "SUCCEEDED" else 2
     except (ImportError, AttributeError, TypeError, ValueError, RuntimeError) as exc:
-        print(json.dumps({"status": "FAILED", "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
+        _write_json(sys.stderr, {"status": "FAILED", "error": str(exc)})
         return 1
 
 
