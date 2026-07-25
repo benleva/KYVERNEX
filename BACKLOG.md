@@ -3,45 +3,33 @@
 ## Baseline
 - Stable release: `1.1.0`
 - Paused milestone: `M6 — KYVERNEX Plugin Runtime`
-- Code-complete milestone: `M7 — Plugin Product Interface`
-- Code-complete milestone: `M8 — Universal AI Plugin Bridge`
-- Code-complete milestone: `M9 — Local AI Tool Server`
+- Code-complete milestones: `M7`, `M8`, `M9`
+- Active milestone: `M10 — Local Desktop Launcher`
 - Development package version: `1.2.0.dev0`
 
 ## Preserved state
 - M6-W001 through M6-W005: `DONE`;
 - M6-W006 through M6-W009: `PAUSED_BY_USER`;
-- M7-W001 through M7-W005: `CODE_COMPLETE_UNVERIFIED`;
-- M8-W001 through M8-W004: `CODE_COMPLETE_UNVERIFIED`.
+- M7, M8 and M9 work items: `CODE_COMPLETE_UNVERIFIED`.
 
-## M9 product-code backlog
+## M10 product-code backlog
 
 | Work item | Deliverable | Priority | Status |
 |---|---|---:|---|
-| M9-W001 | Loopback-only HTTP server for the canonical AI bridge | P0 | CODE_COMPLETE_UNVERIFIED |
-| M9-W002 | Installed `kyvernex-ai-server` command | P0 | CODE_COMPLETE_UNVERIFIED |
-| M9-W003 | Local OpenAPI 3.1 document generated from the server contract | P1 | CODE_COMPLETE_UNVERIFIED |
-| M9-W004 | Self-contained local invocation console using the existing routes | P1 | CODE_COMPLETE_UNVERIFIED |
+| M10-W001 | Installed `kyvernex-ai-app` one-command launcher | P0 | CODE_COMPLETE_UNVERIFIED |
+| M10-W002 | Optional local launch profile file | P1 | BACKLOG |
 
-## M9 code evidence
-- `src/kyvernex/local_ai_server.py`: loopback server, fixed routes and console delivery;
-- `src/kyvernex/local_ai_server_cli.py`: installed process command;
-- `src/kyvernex/local_ai_openapi.py`: generated OpenAPI document;
-- `src/kyvernex/local_ai_page.py`: self-contained local browser console;
-- `pyproject.toml`: `kyvernex-ai-server` entry point.
+## M10 code evidence
+- `src/kyvernex/local_ai_app_cli.py`: starts the existing loopback server and opens the console;
+- `pyproject.toml`: installs `kyvernex-ai-app`;
+- browser opening can be disabled with `--no-browser`;
+- shutdown remains tied to the same local server and bridge lifecycle.
 
-## Local routes
+## Product behavior
 
 ```text
-GET  /
-GET  /console
-GET  /health
-GET  /manifest?format=canonical|openai|anthropic|gemini
-GET  /openapi.json
-POST /invoke
+kyvernex-ai-app --handler examples.plugin_handler:handle --principal andrea
 ```
 
-The browser console calls only the same-origin local routes. The server remains bound to `127.0.0.1`; `POST /invoke` accepts at most 1 MiB and uses the existing `KyvernexAIBridge`.
-
 ## Boundary
-M9 has no active coding item. It is code-complete but unverified. Public hosting, authentication services, TLS infrastructure, databases, accounts, billing and provider-specific runtime forks remain outside the delivered milestone. No green, clean-install, publication or release claim is made.
+M10 launches only the existing local product. It must not add public binding, remote hosting, authentication systems, databases, accounts, background services or release publication. Testing is not the active user-directed workstream and no green claim is made.
