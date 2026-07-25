@@ -1,51 +1,54 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "AUTONOMOUS",
+  "mode": "AUTONOMOUS_SCOPE_LOCKED",
   "state": "RUNNING",
   "target_release": "1.2.0",
   "stable_release": {"version": "1.1.0", "tag": "v1.1.0", "status": "PUBLISHED_LATEST", "immutable": true},
   "milestone": {"id": "M6", "title": "KYVERNEX Plugin Runtime", "status": "ACTIVE"},
-  "sprint": {"id": "S008", "title": "Reference host adapter", "status": "ACTIVE"},
-  "cycle": "KGO-CYCLE-028",
-  "kpm_cycle": "KPM-CYCLE-017",
+  "sprint": {"id": "S008", "title": "Minimum reference adapter", "status": "ACTIVE"},
+  "cycle": "KGO-CYCLE-029",
+  "kpm_cycle": "KPM-CYCLE-018",
   "completed_tasks": ["M6-W001", "M6-W002", "M6-W003", "M6-W005"],
   "active_task": {
     "id": "M6-W004",
-    "title": "Add host adapter boundary and reference in-process adapter",
+    "title": "Implement one bounded in-process callable adapter",
     "status": "IN_PROGRESS",
-    "priority": "P1"
+    "priority": "P0"
   },
-  "verified_runtime": {"verification_commit": "691c769", "status": "GREEN"},
-  "verified_host_contracts": {"verification_commit": "83ce3a3", "status": "GREEN"},
-  "verified_configuration": {
-    "verification_commit": "a8e7f36",
-    "config_path": "src/kyvernex/plugin_config.py",
-    "runtime_path": "src/kyvernex/plugin_runtime.py",
-    "tests_path": "tests/test_plugin_config.py",
-    "test_suite": "GREEN",
-    "reference_prototype_tests": "GREEN",
-    "kgo_v3": "GREEN",
-    "pages_deployment": "GREEN",
-    "authority_review": "GREEN_NO_EXPANSION",
-    "prior_failed_commit": "9c4fc7e",
-    "repair": "Aligned stale runtime authority assertion with structured frozen-contract output"
+  "scope_lock": {
+    "path": "repository/specifications/M6_SCOPE_LOCK.md",
+    "status": "FROZEN",
+    "single_objective": "Installable Python host to governed runtime to bounded callable adapter to structured response",
+    "maximum_adapter_count": 1,
+    "adapter_type": "IN_PROCESS_PYTHON_CALLABLE",
+    "new_feature_insertion": "FORBIDDEN",
+    "strategic_roadmap_modified": false
   },
-  "adapter_scope": {
-    "protocol_boundary": "EXPLICIT",
-    "reference_adapter": "IN_PROCESS_BOUNDED",
-    "governance_policy_inside_adapter": "FORBIDDEN",
-    "ambient_authority_expansion": "FORBIDDEN",
-    "shutdown": "IDEMPOTENT"
+  "verified_baselines": {
+    "runtime": "691c769",
+    "host_contracts": "83ce3a3",
+    "configuration": "a8e7f36"
   },
-  "plugin_scope": {
-    "target_version": "1.2.0",
-    "strategic_roadmap_modified": false,
-    "independent_implementation_in_scope": false,
-    "conformance_certification_in_scope": false
+  "adapter_authority": {
+    "network": "NONE",
+    "filesystem": "NONE",
+    "process": "NONE",
+    "repository": "FORBIDDEN",
+    "environment_read": "FORBIDDEN",
+    "governance_decision": "FORBIDDEN",
+    "dynamic_discovery": "FORBIDDEN"
   },
+  "remaining_sequence": ["M6-W004", "M6-W006", "M6-W007", "M6-W008", "M6-W009"],
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Implement M6-W004 against the frozen contract and verified configuration boundary, add targeted adapter tests and obtain current regression evidence before advancing.",
-  "stop_conditions": ["CURRENT_VERIFICATION_FAILURE", "ADAPTER_AUTHORITY_EXPANSION", "CONTRACT_CONTRADICTION", "UNRESOLVED_P0_SECURITY_BOUNDARY", "EXTERNAL_PUBLICATION_BOUNDARY", "MILESTONE_DONE"]
+  "resume_rule": "Complete only the frozen minimum shippable plugin sequence. Reject any work that adds another adapter, external platform or unrelated capability.",
+  "stop_conditions": [
+    "SCOPE_EXPANSION",
+    "CURRENT_VERIFICATION_FAILURE",
+    "AUTHORITY_EXPANSION",
+    "CONTRACT_CONTRADICTION",
+    "EXTERNAL_PUBLICATION_BOUNDARY",
+    "MILESTONE_DONE"
+  ]
 }
