@@ -13,6 +13,7 @@ from .models import (
     ValidationOutcome,
     ValidationRecord,
 )
+from .rules import RuleEngine, RuleSeverity
 
 
 class AET:
@@ -33,22 +34,32 @@ class AET:
 
 
 class ContinuousValidator:
-    """First executable subset of CORE-005."""
+    """Executable subset of CORE-005 with deterministic ARGUS rules."""
+
+    def __init__(self, rule_engine: RuleEngine | None = None) -> None:
+        self._rule_engine = rule_engine or RuleEngine()
 
     def validate(self, obj: CognitiveObject) -> ValidationRecord:
-        checks = ["OBJECT_ID", "SOURCE", "ORIGINAL_CONTENT", "CATEGORY", "STATE", "TRACEABILITY"]
+        checks = ["OBJECT_ID", "CATEGORY", "STATE", "TRACEABILITY"]
         errors: list[str] = []
         reservations: list[str] = []
 
         if not obj.object_id:
             errors.append("OBJECT_ID_MANCANTE")
-        if not obj.source.strip():
-            errors.append("ORIGINE_MANCANTE")
-        if obj.original_content is None or obj.original_content == "":
-            errors.append("CONTENUTO_ORIGINALE_MANCANTE")
-        if not obj.transformations:
-            reservations.append("NESSUNA_TRASFORMAZIONE_REGISTRATA")
+
+        rule_results = self._rule_engine.evaluate(obj)
+        checks.extend(result.rule_id for result in rule_results)
+        for result in rule_results:
+            if result.passed:
+                continue
+            if result.severity == RuleSeverity.ERROR:
+                errors.append(result.message)
+            else:
+                reservations.append(result.message)
+
         reservations.extend(obj.limitations)
+        errors = list(dict.fromkeys(errors))
+        reservations = list(dict.fromkeys(reservations))
 
         if errors:
             outcome = ValidationOutcome.INCOMPLETE
@@ -66,11 +77,12 @@ class ContinuousValidator:
 
 
 class KyvernexEngine:
-    """Reference Prototype 0.1: acquisition, AET, validation, audit, restitution."""
+    """Reference Prototype 0.1: acquisition, AET, rules, validation, audit, restitution."""
 
-    def __init__(self) -> None:
+    def __init__(self, rule_engine: RuleEngine | None = None) -> None:
         self._aet = AET()
-        self._validator = ContinuousValidator()
+        self._rule_engine = rule_engine or RuleEngine()
+        self._validator = ContinuousValidator(self._rule_engine)
 
     def execute(self, content: Any, *, source: str, session_id: str | None = None) -> ExecutionResult:
         session = session_id or str(uuid4())
@@ -91,6 +103,28 @@ class KyvernexEngine:
                 event_type="OGGETTO_NORMALIZZATO",
                 object_id=obj.object_id,
                 details={"category": obj.category.value, "state": obj.state.value},
+            )
+        )
+
+        rule_results = self._rule_engine.evaluate(obj)
+        obj.applied_rules.extend(result.rule_id for result in rule_results)
+        audit.append(
+            AuditEvent.create(
+                session_id=session,
+                component="RULE_ENGINE",
+                event_type="REGOLE_APPLICATE",
+                object_id=obj.object_id,
+                details={
+                    "results": [
+                        {
+                            "rule_id": result.rule_id,
+                            "passed": result.passed,
+                            "severity": result.severity.value,
+                            "message": result.message,
+                        }
+                        for result in rule_results
+                    ]
+                },
             )
         )
 
