@@ -1,8 +1,9 @@
-"""Bounded KYVERNEX plugin lifecycle runtime.
+"""Bounded KYVERNEX plugin runtime.
 
-This module implements the M6-W002 lifecycle state machine only. Governed host
-request, response and authorization contracts are added by subsequent M6 work
-items. The runtime therefore grants no execution authority by itself.
+The runtime implements the frozen M6 lifecycle plus governed host request,
+response and error contracts. It grants no ambient authority: every request is
+validated, authorized against negotiated capabilities and explicit grants, and
+only then delegated to the host adapter.
 """
 
 from __future__ import annotations
@@ -13,6 +14,20 @@ from threading import RLock
 from types import MappingProxyType
 from typing import Any, Mapping, Protocol, runtime_checkable
 from uuid import uuid4
+
+from .plugin_contracts import (
+    GovernedPluginError,
+    PluginContractError,
+    PluginDecision,
+    PluginErrorCategory,
+    PluginEvidence,
+    PluginResponse,
+    PluginResponseStatus,
+    decide_request,
+    new_execution_id,
+    parse_plugin_request,
+    utc_timestamp,
+)
 
 
 PLUGIN_ID = "kyvernex.plugin.runtime"
@@ -26,15 +41,6 @@ class PluginState(str, Enum):
     EXECUTING = "EXECUTING"
     DEGRADED = "DEGRADED"
     SHUTDOWN = "SHUTDOWN"
-
-
-class PluginErrorCategory(str, Enum):
-    VALIDATION = "VALIDATION"
-    LIFECYCLE = "LIFECYCLE"
-    ADAPTER = "ADAPTER"
-    EXECUTION = "EXECUTION"
-    INTEGRITY = "INTEGRITY"
-    COMPATIBILITY = "COMPATIBILITY"
 
 
 class PluginRuntimeError(RuntimeError):
@@ -56,14 +62,13 @@ class PluginRuntimeError(RuntimeError):
         self.details = dict(details or {})
 
     def to_dict(self) -> dict[str, Any]:
-        return {
-            "code": self.code,
-            "message": str(self),
-            "category": self.category.value,
-            "retryable": self.retryable,
-            "details": dict(self.details),
-            "cause_id": None,
-        }
+        return GovernedPluginError(
+            code=self.code,
+            message=str(self),
+            category=self.category,
+            retryable=self.retryable,
+            details=self.details,
+        ).to_dict()
 
 
 @runtime_checkable
@@ -104,14 +109,7 @@ _ALLOWED_TRANSITIONS: Mapping[tuple[PluginState, str], PluginState] = MappingPro
 
 
 class KyvernexPluginRuntime:
-    """Deterministic, single-request plugin lifecycle state machine.
-
-    M6-W002 intentionally does not implement governance authorization. Calling
-    ``execute`` exercises the lifecycle boundary and delegates to the adapter
-    only when the caller explicitly supplies an already-bounded authority map.
-    Later M6 work items replace this narrow bridge with the full governed host
-    request and response contract.
-    """
+    """Deterministic, single-request governed plugin runtime."""
 
     def __init__(self, *, kyvernex_version: str, instance_id: str | None = None) -> None:
         if not kyvernex_version:
@@ -126,6 +124,7 @@ class KyvernexPluginRuntime:
         self._config: dict[str, Any] | None = None
         self._adapter: PluginHostAdapter | None = None
         self._capabilities: frozenset[str] = frozenset()
+        self._seen_request_ids: set[str] = set()
         self._current_request_id: str | None = None
         self._last_completed_status: str | None = None
         self._degraded_reason: str | None = None
@@ -150,6 +149,13 @@ class KyvernexPluginRuntime:
                 details={"state": self._state.value, "operation": operation},
             )
         self._state = target
+
+    def _plugin_metadata(self) -> dict[str, str]:
+        return {
+            "plugin_id": self._identity.plugin_id,
+            "plugin_api_version": self._identity.plugin_api_version,
+            "kyvernex_version": self._identity.kyvernex_version,
+        }
 
     def initialize(self, config: Mapping[str, Any], adapter: PluginHostAdapter) -> dict[str, Any]:
         with self._lock:
@@ -176,15 +182,36 @@ class KyvernexPluginRuntime:
                     details={"requested": api_version, "supported": PLUGIN_API_VERSION},
                 )
             allowed = config.get("allowed_capabilities", [])
-            if not isinstance(allowed, list) or not all(isinstance(item, str) for item in allowed):
+            if not isinstance(allowed, list) or not all(isinstance(item, str) and item for item in allowed):
                 raise PluginRuntimeError(
                     "INVALID_CONFIGURATION",
-                    "allowed_capabilities must be a list of strings",
+                    "allowed_capabilities must be a list of non-empty strings",
+                    category=PluginErrorCategory.VALIDATION,
+                )
+            limits = config.get("limits", {})
+            if not isinstance(limits, Mapping):
+                raise PluginRuntimeError(
+                    "INVALID_CONFIGURATION",
+                    "limits must be a mapping",
+                    category=PluginErrorCategory.VALIDATION,
+                )
+            timeout = limits.get("timeout_seconds", 30)
+            output_limit = limits.get("max_output_bytes", 1048576)
+            if not isinstance(timeout, int) or isinstance(timeout, bool) or timeout <= 0:
+                raise PluginRuntimeError(
+                    "INVALID_CONFIGURATION",
+                    "timeout_seconds must be a positive integer",
+                    category=PluginErrorCategory.VALIDATION,
+                )
+            if not isinstance(output_limit, int) or isinstance(output_limit, bool) or output_limit <= 0:
+                raise PluginRuntimeError(
+                    "INVALID_CONFIGURATION",
+                    "max_output_bytes must be a positive integer",
                     category=PluginErrorCategory.VALIDATION,
                 )
             adapter_capabilities = adapter.capabilities()
             if not isinstance(adapter_capabilities, set) or not all(
-                isinstance(item, str) for item in adapter_capabilities
+                isinstance(item, str) and item for item in adapter_capabilities
             ):
                 raise PluginRuntimeError(
                     "ADAPTER_CONTRACT_VIOLATION",
@@ -192,6 +219,10 @@ class KyvernexPluginRuntime:
                     category=PluginErrorCategory.ADAPTER,
                 )
             self._config = dict(config)
+            self._config["limits"] = {
+                "timeout_seconds": timeout,
+                "max_output_bytes": output_limit,
+            }
             self._adapter = adapter
             self._capabilities = frozenset(allowed).intersection(adapter_capabilities)
             self._transition("initialize")
@@ -221,12 +252,34 @@ class KyvernexPluginRuntime:
             self._transition("validate")
             return self.status()
 
-    def execute(
+    def _response(
         self,
-        request: Mapping[str, Any],
         *,
-        authority: Mapping[str, Any] | None = None,
-    ) -> Any:
+        request_id: str,
+        status: PluginResponseStatus,
+        result: Any,
+        error: GovernedPluginError | None,
+        decision: PluginDecision,
+        started_at: str,
+        execution_id: str | None,
+    ) -> dict[str, Any]:
+        response = PluginResponse(
+            request_id=request_id,
+            status=status,
+            result=result,
+            error=error,
+            decision=decision,
+            evidence=PluginEvidence(
+                execution_id=execution_id,
+                audit_record_ids=(),
+                started_at=started_at,
+                completed_at=utc_timestamp(),
+            ),
+            plugin=self._plugin_metadata(),
+        )
+        return response.to_dict()
+
+    def execute(self, request: Mapping[str, Any]) -> dict[str, Any]:
         with self._lock:
             if self._state is not PluginState.READY:
                 raise PluginRuntimeError(
@@ -235,32 +288,101 @@ class KyvernexPluginRuntime:
                     category=PluginErrorCategory.LIFECYCLE,
                     details={"state": self._state.value},
                 )
-            if self._adapter is None:
+            if self._adapter is None or self._config is None:
                 self._state = PluginState.DEGRADED
-                self._degraded_reason = "Adapter missing at execution boundary"
+                self._degraded_reason = "Adapter or configuration missing at execution boundary"
                 raise PluginRuntimeError(
                     "RUNTIME_DEGRADED",
                     self._degraded_reason,
                     category=PluginErrorCategory.INTEGRITY,
                 )
-            request_id = request.get("request_id") if isinstance(request, Mapping) else None
-            self._current_request_id = request_id if isinstance(request_id, str) else None
-            self._transition("execute")
+
+            limits = self._config["limits"]
             try:
-                result = self._adapter.invoke(request, dict(authority or {}))
-            except Exception as exc:
-                self._last_completed_status = "FAILED"
-                self._transition("complete")
+                parsed = parse_plugin_request(
+                    request,
+                    max_timeout_seconds=limits["timeout_seconds"],
+                    max_output_bytes=limits["max_output_bytes"],
+                )
+            except PluginContractError as exc:
+                request_id = request.get("request_id") if isinstance(request, Mapping) else ""
                 raise PluginRuntimeError(
-                    "EXECUTION_FAILED",
-                    "Adapter execution failed",
-                    category=PluginErrorCategory.EXECUTION,
-                    details={"exception_type": type(exc).__name__},
+                    exc.error.code,
+                    exc.error.message,
+                    category=exc.error.category,
+                    retryable=exc.error.retryable,
+                    details=exc.error.details,
                 ) from exc
-            else:
-                self._last_completed_status = "SUCCEEDED"
+
+            if parsed.request_id in self._seen_request_ids:
+                raise PluginRuntimeError(
+                    "DUPLICATE_REQUEST_ID",
+                    "request_id has already been used by this runtime instance",
+                    category=PluginErrorCategory.VALIDATION,
+                    details={"request_id": parsed.request_id},
+                )
+            self._seen_request_ids.add(parsed.request_id)
+            started_at = utc_timestamp()
+            decision = decide_request(parsed, self._capabilities)
+            if not decision.authorized:
+                self._last_completed_status = PluginResponseStatus.BLOCKED.value
+                return self._response(
+                    request_id=parsed.request_id,
+                    status=PluginResponseStatus.BLOCKED,
+                    result=None,
+                    error=GovernedPluginError(
+                        code=decision.reason,
+                        message="Request was blocked by the governed authorization boundary",
+                        category=PluginErrorCategory.AUTHORIZATION,
+                    ),
+                    decision=decision,
+                    started_at=started_at,
+                    execution_id=None,
+                )
+
+            self._current_request_id = parsed.request_id
+            self._transition("execute")
+            execution_id = new_execution_id()
+            authority = {
+                "principal": parsed.authorization.principal,
+                "grants": list(parsed.authorization.grants),
+                "capabilities": list(parsed.requested_capabilities),
+                "limits": {
+                    "timeout_seconds": parsed.limits.timeout_seconds,
+                    "max_output_bytes": parsed.limits.max_output_bytes,
+                },
+            }
+            try:
+                result = self._adapter.invoke(parsed.to_adapter_request(), authority)
+            except Exception as exc:
+                self._last_completed_status = PluginResponseStatus.FAILED.value
                 self._transition("complete")
-                return result
+                return self._response(
+                    request_id=parsed.request_id,
+                    status=PluginResponseStatus.FAILED,
+                    result=None,
+                    error=GovernedPluginError(
+                        code="EXECUTION_FAILED",
+                        message="Adapter execution failed",
+                        category=PluginErrorCategory.EXECUTION,
+                        details={"exception_type": type(exc).__name__},
+                    ),
+                    decision=decision,
+                    started_at=started_at,
+                    execution_id=execution_id,
+                )
+            else:
+                self._last_completed_status = PluginResponseStatus.SUCCEEDED.value
+                self._transition("complete")
+                return self._response(
+                    request_id=parsed.request_id,
+                    status=PluginResponseStatus.SUCCEEDED,
+                    result=result,
+                    error=None,
+                    decision=decision,
+                    started_at=started_at,
+                    execution_id=execution_id,
+                )
             finally:
                 self._current_request_id = None
 
@@ -274,9 +396,7 @@ class KyvernexPluginRuntime:
                     adapter_health = {"status": "UNAVAILABLE"}
             return {
                 "plugin": {
-                    "plugin_id": self._identity.plugin_id,
-                    "plugin_api_version": self._identity.plugin_api_version,
-                    "kyvernex_version": self._identity.kyvernex_version,
+                    **self._plugin_metadata(),
                     "instance_id": self._identity.instance_id,
                 },
                 "state": self._state.value,
