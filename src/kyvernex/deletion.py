@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import StrEnum
 
+from .audit_sink import AuditSink, persist_audit
 from .graph import CognitiveGraph, CognitiveRelation
 from .memory import SessionMemory
 from .models import AuditEvent, CognitiveObject
@@ -32,16 +33,18 @@ class DeletionResult:
 
 
 class CognitiveDeletionCoordinator:
-    """Coordinates object and relation deletion with restrict or cascade semantics.
+    """Coordinates object and relation deletion with restrict or cascade semantics."""
 
-    The operation removes graph edges before memory data. If memory removal fails,
-    removed edges are restored. This provides process-level rollback semantics;
-    cross-file crash atomicity is intentionally not claimed.
-    """
-
-    def __init__(self, *, memory: SessionMemory, graph: CognitiveGraph) -> None:
+    def __init__(
+        self,
+        *,
+        memory: SessionMemory,
+        graph: CognitiveGraph,
+        audit_sink: AuditSink | None = None,
+    ) -> None:
         self._memory = memory
         self._graph = graph
+        self._audit_sink = audit_sink
 
     def delete(
         self,
@@ -91,34 +94,30 @@ class CognitiveDeletionCoordinator:
                 message += "|ROLLBACK_INCOMPLETE:" + ",".join(rollback_errors)
             raise DeletionTransactionError(message) from exc
 
-        audit.append(
+        audit.extend((
             AuditEvent.create(
                 session_id=session_id,
                 component="COGNITIVE_GRAPH",
                 event_type="RELAZIONI_COLLEGATE_RIMOSSE",
                 object_id=object_id,
                 details={"removed_relations": len(removed_relations)},
-            )
-        )
-        audit.append(
+            ),
             AuditEvent.create(
                 session_id=session_id,
                 component="MEMORY",
                 event_type="OGGETTO_COGNITIVO_RIMOSSO",
                 object_id=object_id,
                 details={"policy": policy.value},
-            )
-        )
-        audit.append(
+            ),
             AuditEvent.create(
                 session_id=session_id,
                 component="DELETION_COORDINATOR",
                 event_type="CANCELLAZIONE_COMPLETATA",
                 object_id=object_id,
                 details={"removed_relations": len(removed_relations)},
-            )
-        )
-        return DeletionResult(
+            ),
+        ))
+        result = DeletionResult(
             session_id=session_id,
             object_id=object_id,
             removed_object=removed_object,
@@ -126,3 +125,5 @@ class CognitiveDeletionCoordinator:
             policy=policy,
             audit=tuple(audit),
         )
+        persist_audit(self._audit_sink, result.audit)
+        return result
