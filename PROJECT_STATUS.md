@@ -4,32 +4,31 @@
 - Governance system: KDP + KPM + KGO v1/v2/v3 + KEX + Autonomous Development Engine
 - Stable release: `1.0.0`
 - Immutable published tag: `v1.0.0`
-- Release candidate: `1.1.0rc1`
-- Completed milestones: **M2 — Governance consolidation; M3 — Autonomous Development**
-- Active milestone: **M4 — Governed post-release evolution**
-- Active sprint: **S002 — Establish the 1.1 evidence baseline**
-- Governance mode: **AUTONOMOUS**
-- KPM cycle: `KPM-CYCLE-007`
-- KGO cycle: `KGO-CYCLE-018`
-- M4 implementation evidence: **GREEN on commit `0312f97857dd954b71ad44b07834c545f40a9db1`**
-- Release-candidate CI: **FRESH RUN PENDING**
+- Verified release candidate: `1.1.0rc1`
+- Completed milestones: **M2 — Governance consolidation; M3 — Autonomous Development; M4 — Governed post-release evolution**
+- Completed sprints: **S001; S002**
+- Governance mode: **AUTONOMOUS STOPPED AT EXTERNAL PUBLICATION BOUNDARY**
+- KPM cycle: `KPM-CYCLE-008`
+- KGO cycle: `KGO-CYCLE-019`
+- Release-candidate evidence: **GREEN on commit `807def60aa3f6e8adce74b94f375ac0bc5b24edb`**
 
 ## Current objective
-Verify the synchronized `1.1.0rc1` package, public API and installed `kyvernex-governance` console script through targeted tests, the complete suite, source and wheel builds and clean installation. Do not tag or publish the release candidate before fresh green evidence exists.
+Publish the verified `1.1.0rc1` candidate as a separate GitHub prerelease with tag `v1.1.0-rc.1`. Do not mark it Latest and do not modify the stable `v1.0.0` release.
 
-## Active governance state
-- KPM: `RUNNING`
-- KGO v3 autonomous loop: `RUNNING`
+## Governance state
+- KPM: `MILESTONE_COMPLETE`
+- KGO v3 autonomous loop: `MILESTONE_COMPLETE`
 - M4-W001 control-plane synchronization: `DONE`
 - M4-W002 capability-gap inventory: `DONE`
 - M4-W003 capability selection: `DONE`
 - M4-W004 frozen specification and manifest: `DONE`
 - M4-W005 governance CLI implementation: `DONE`
 - M4-W006 verification and clean installation: `DONE`
-- M4-W007 release-candidate synchronization: `IN_DEVELOPMENT`
+- M4-W007 release-candidate synchronization: `DONE`
+- Active work item: `NONE`
 - Checkpoint: `KGO_CHECKPOINT.json`
 
-## Verified M4 capability
+## Completed M4 capability
 The installed package exposes:
 
 ```bash
@@ -39,30 +38,32 @@ kyvernex-governance <start|status|advance|resume> --plan <path> --checkpoint <pa
 Verified controls include deterministic JSON output, fail-closed plan validation, dependency enforcement, closed-milestone protection, checkpoint overwrite rejection, active-item advancement rejection, governed exit codes, bounded checkpoint writes and absence of unsupported execution claims.
 
 ## Verification evidence
-The user-observed Actions page confirms green results for commit `0312f97` in:
+The user-observed GitHub Actions page confirms green results for the final release-candidate state, including:
 
-- KYVERNEX KGO v3;
+- KYVERNEX KGO v3 on commit `807def6`;
 - KYVERNEX Reference Prototype Tests;
 - KYVERNEX Test Suite;
+- package build and clean installation enforced by the KGO workflow;
+- installed `kyvernex-governance` console-script smoke test;
 - GitHub Pages deployment.
-
-This closes M4-W005 and M4-W006. The subsequent version and documentation synchronization to `1.1.0rc1` requires a new green run.
 
 ## Release-candidate contents
 - package version `1.1.0rc1`;
 - public API version `1.1.0rc1`;
 - installed `kyvernex-governance` console script;
 - release notes in `RELEASE_NOTES_1.1.0rc1.md`;
-- CI version, build, clean-install and installed-CLI checks.
+- source and wheel build verification;
+- clean installation and installed CLI verification.
 
 ## Stable-baseline protection
 - `v1.0.0` remains immutable;
-- Release 1.0 remains the published stable baseline;
-- the release candidate must be tagged separately and marked as a prerelease;
-- no current evidence may be inferred from historical runs.
+- Release 1.0 remains the published stable baseline and Latest release;
+- the release candidate must be tagged separately as `v1.1.0-rc.1`;
+- the GitHub Release must be marked as a prerelease;
+- the prerelease must not replace the stable release as Latest.
 
-## Continuation rule
-After a fresh green release-candidate workflow, close M4-W007 and prepare the separate `v1.1.0-rc.1` prerelease. On current failure, stop and record the failure before repair.
+## Stop condition
+M4 and S002 are complete. Autonomous execution stops at the external publication boundary because tag and GitHub Release creation require an authorized executor and available GitHub permissions.
 
 ## Verification note
-M4 implementation is verified. KYVERNEX `1.1.0rc1` is prepared but not yet verified, tagged or published.
+KYVERNEX `1.1.0rc1` is implemented, synchronized and verified. It is ready for the separate `v1.1.0-rc.1` GitHub prerelease and is not yet published.
