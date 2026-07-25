@@ -54,6 +54,16 @@ from .memory import MemoryConflictError, SessionMemory
 from .models import AuditEvent, CognitiveCategory, CognitiveObject, CognitiveState, ExecutionResult, ValidationOutcome, ValidationRecord
 from .orchestrator import GovernedExecutionResult, KyvernexOrchestrator
 from .persistence import JsonSessionMemory, PersistenceFormatError
+from .plugin_runtime import (
+    PLUGIN_API_VERSION,
+    PLUGIN_ID,
+    KyvernexPluginRuntime,
+    PluginErrorCategory,
+    PluginHostAdapter,
+    PluginIdentity,
+    PluginRuntimeError,
+    PluginState,
+)
 from .process_lock import InterProcessFileLock, ProcessLockError
 from .process_safe_journal import ProcessSafeMultiTransactionDeletionCoordinator
 from .program_manager import (
@@ -105,9 +115,10 @@ __all__ = [
     "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory", "KEXError", "KEXExecutionResult",
     "KGOError", "KGOState", "KGOV3Loop", "KPMError", "KPMFeatureAssessment", "KPMReport",
     "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
-    "KyvernexOrchestrator", "KyvernexProgramManager", "KyvernexUnitOfWork", "LoopDecision",
-    "LoopResult", "MemoryConflictError", "Milestone", "MultiTransactionDeletionCoordinator",
-    "PersistenceFormatError", "PlannedChange", "Priority", "ProcessLockError",
+    "KyvernexOrchestrator", "KyvernexPluginRuntime", "KyvernexProgramManager", "KyvernexUnitOfWork",
+    "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone", "MultiTransactionDeletionCoordinator",
+    "PLUGIN_API_VERSION", "PLUGIN_ID", "PersistenceFormatError", "PlannedChange", "PluginErrorCategory",
+    "PluginHostAdapter", "PluginIdentity", "PluginRuntimeError", "PluginState", "Priority", "ProcessLockError",
     "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch", "RecoveryResult",
     "ReferentialIntegrityError", "RelationConflictError", "RelationType", "ResponseGovernor",
     "RollbackDecision", "RollbackError", "RollbackPlan", "RollbackPolicy", "Rule", "RuleEngine",
