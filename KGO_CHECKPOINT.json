@@ -2,18 +2,18 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS_SCOPE_LOCKED",
-  "state": "VERIFYING",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "stable_release": {"version": "1.1.0", "tag": "v1.1.0", "status": "PUBLISHED_LATEST", "immutable": true},
   "milestone": {"id": "M6", "title": "KYVERNEX Plugin Runtime", "status": "ACTIVE"},
-  "sprint": {"id": "S008", "title": "Minimum reference adapter", "status": "ACTIVE"},
-  "cycle": "KGO-CYCLE-029",
-  "kpm_cycle": "KPM-CYCLE-018",
-  "completed_tasks": ["M6-W001", "M6-W002", "M6-W003", "M6-W005"],
+  "sprint": {"id": "S009", "title": "Focused plugin integration verification", "status": "ACTIVE"},
+  "cycle": "KGO-CYCLE-030",
+  "kpm_cycle": "KPM-CYCLE-019",
+  "completed_tasks": ["M6-W001", "M6-W002", "M6-W003", "M6-W004", "M6-W005"],
   "active_task": {
-    "id": "M6-W004",
-    "title": "Implement one bounded in-process callable adapter",
-    "status": "IN_VERIFICATION",
+    "id": "M6-W006",
+    "title": "Add focused lifecycle and authority integration tests",
+    "status": "IN_PROGRESS",
     "priority": "P0"
   },
   "scope_lock": {
@@ -28,30 +28,32 @@
   "verified_baselines": {
     "runtime": "691c769",
     "host_contracts": "83ce3a3",
-    "configuration": "a8e7f36"
+    "configuration": "a8e7f36",
+    "callable_adapter": "b138134"
   },
-  "adapter_implementation": {
-    "path": "src/kyvernex/plugin_adapter.py",
-    "tests_path": "tests/test_plugin_adapter.py",
-    "exports_path": "src/kyvernex/__init__.py",
-    "implementation_commit": "52d1c4d7a81aaea98d4e8003c68bb574c92bb171",
-    "targeted_tests": "PENDING",
-    "complete_suite": "PENDING",
-    "authority_review": "PENDING"
+  "adapter_verification": {
+    "test_suite": "GREEN",
+    "kgo_v3": "GREEN",
+    "reference_prototype_tests": "GREEN",
+    "pages_deployment": "GREEN",
+    "authority_review": "GREEN_NO_EXPANSION"
   },
-  "adapter_authority": {
+  "integration_test_scope": {
+    "code_changes_allowed": "TESTS_ONLY",
+    "authorized_execution": "REQUIRED",
+    "blocked_execution_no_callable": "REQUIRED",
+    "zero_authority_defaults": "REQUIRED",
+    "lifecycle_terminal_shutdown": "REQUIRED",
     "network": "NONE",
     "filesystem": "NONE",
     "process": "NONE",
     "repository": "FORBIDDEN",
-    "environment_read": "FORBIDDEN",
-    "governance_decision": "FORBIDDEN",
-    "dynamic_discovery": "FORBIDDEN"
+    "environment_read": "FORBIDDEN"
   },
-  "remaining_sequence": ["M6-W004", "M6-W006", "M6-W007", "M6-W008", "M6-W009"],
+  "remaining_sequence": ["M6-W006", "M6-W007", "M6-W008", "M6-W009"],
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Read CI evidence for the exact M6-W004 state. On green, close M6-W004 and proceed directly to M6-W006. On failure, repair only the minimum adapter path.",
+  "resume_rule": "Add focused tests only for the frozen minimum end-to-end plugin path, then obtain fresh CI evidence before advancing.",
   "stop_conditions": [
     "SCOPE_EXPANSION",
     "CURRENT_VERIFICATION_FAILURE",
