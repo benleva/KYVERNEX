@@ -6,10 +6,20 @@ The project follows semantic versioning from Release 1.0 onward.
 
 ## [Unreleased]
 
+No unreleased changes.
+
+## [1.1.0rc1] - 2026-07-25
+
 ### Added
 - Deterministic `kyvernex-governance` console script for KPM/KGO `start`, `status`, `advance` and `resume` operations.
 - Fail-closed JSON governance-plan loading with enum, dependency, milestone and Definition of Done validation.
 - Targeted governance CLI tests and installed-wheel console-script smoke verification in CI.
+- Release Candidate notes in `RELEASE_NOTES_1.1.0rc1.md`.
+
+### Changed
+- Package metadata and public API version advanced to `1.1.0rc1`.
+- GitHub Actions now verifies the governance CLI, full suite, distributions, clean installation and installed console-script behavior.
+- KPM/KGO checkpoint and governance records advanced through M4 and Sprint S002.
 
 ### Security and governance
 - The governance CLI may write only the explicitly supplied checkpoint path.
@@ -18,8 +28,13 @@ The project follows semantic versioning from Release 1.0 onward.
 - The published `v1.0.0` tag remains immutable.
 
 ### Verification
-- Implementation is committed for milestone `M4-W005`.
-- Fresh targeted, complete-suite, package-build and clean-install evidence is pending.
+- M4 targeted tests passed.
+- Complete repository suite passed.
+- Source and wheel distributions built successfully.
+- Generated wheel installed successfully in a clean virtual environment.
+- Installed package metadata and public API both reported `1.1.0rc1`.
+- Installed `kyvernex-governance start` smoke test passed.
+- KGO v3 final Release Candidate workflow was observed green on commit `807def6`.
 
 ## [1.0.0] - 2026-07-25
 
