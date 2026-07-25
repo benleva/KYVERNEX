@@ -10,56 +10,50 @@
 - Active milestone: **M6 — KYVERNEX Plugin Runtime**
 - Completed sprint: **S004 — Freeze the plugin contract**
 - Active sprint: **S005 — Implement the core plugin runtime**
-- Governance mode: **AUTONOMOUS**
+- Governance mode: **AUTONOMOUS VERIFICATION**
 - KPM cycle: `KPM-CYCLE-014`
 - KGO cycle: `KGO-CYCLE-025`
 - Target version: `1.2.0`
 
 ## Current objective
-Implement the deterministic in-process plugin runtime and lifecycle state machine against the frozen M6 contract, without modifying the strategic roadmap or the immutable `v1.1.0` release.
+Verify the deterministic in-process plugin runtime and lifecycle state machine implemented against the frozen M6 contract, without modifying the strategic roadmap or the immutable `v1.1.0` release.
 
 ## Active governance state
-- KPM: `RUNNING`
-- KGO v3 autonomous loop: `RUNNING`
+- KPM: `VERIFYING`
+- KGO v3 autonomous loop: `VERIFYING`
 - M6-W001 plugin contract and lifecycle specification: `DONE`
-- M6-W002 core plugin runtime and lifecycle state machine: `IN_PROGRESS`
+- M6-W002 core plugin runtime and lifecycle state machine: `IN_VERIFICATION`
 - Active work item: `M6-W002`
 - Checkpoint: `KGO_CHECKPOINT.json`
 
-## Frozen M6 contract
-The canonical specification is stored in:
+## M6-W002 implementation evidence
+The repository now contains:
 
-- `repository/specifications/M6_PLUGIN_RUNTIME_CONTRACT.md`;
-- `repository/specifications/m6-plugin-contract.schema.json`.
+- `src/kyvernex/plugin_runtime.py`;
+- `tests/test_plugin_runtime.py`;
+- public runtime exports in `src/kyvernex/__init__.py`.
 
-The contract freezes:
+The implementation provides:
 
-- plugin identity and API version `1.0.0`;
-- lifecycle states `CREATED`, `INITIALIZED`, `READY`, `EXECUTING`, `DEGRADED`, `SHUTDOWN`;
-- operations `initialize`, `validate`, `execute`, `status`, `shutdown`;
-- governed request, response and error envelopes;
-- fail-closed configuration defaults;
-- host adapter protocol;
-- KPM/KGO/KEX integration sequence;
-- filesystem, network, process, repository and secret authority boundaries;
-- audit, evidence and compatibility rules;
-- acceptance criteria for the future runtime tests.
+- deterministic lifecycle states `CREATED`, `INITIALIZED`, `READY`, `EXECUTING`, `DEGRADED`, `SHUTDOWN`;
+- fail-closed transition enforcement;
+- immutable plugin identity metadata;
+- adapter protocol validation;
+- capability intersection rather than capability union;
+- single-request execution state handling;
+- non-mutating secret-free status output;
+- terminal and idempotent shutdown with adapter shutdown at most once;
+- zero-authority status defaults for filesystem, network, process and repository access.
 
-No unresolved P0 authority ambiguity remains in M6-W001.
+The runtime does not yet claim the complete governed request, response and authorization contracts assigned to M6-W003.
 
-## M6 scope
-M6 remains limited to the product plugin layer:
+## Verification gate
+M6-W002 remains open until current evidence confirms:
 
-- host-facing plugin interface;
-- lifecycle operations;
-- structured configuration;
-- governed request and response contracts;
-- adapter boundary for host applications;
-- explicit execution and filesystem authority limits;
-- integration tests and installable example;
-- packaging and release preparation for the `1.2.0` line.
-
-M6 does not create an independent implementation and does not perform conformance certification.
+1. targeted plugin runtime lifecycle tests pass;
+2. the complete repository suite passes;
+3. existing stable behavior remains unbroken;
+4. no unsupported execution authority was introduced.
 
 ## Stable release protection
 - `v1.1.0` remains immutable and Latest;
@@ -68,7 +62,7 @@ M6 does not create an independent implementation and does not perform conformanc
 - no M6 prerelease or stable release is claimed before fresh verification.
 
 ## Continuation rule
-Implement M6-W002 strictly against the frozen contract. Stop on current verification failure, contract contradiction, unresolved P0 security boundary, external publication boundary or milestone completion.
+Read current CI evidence for the exact M6-W002 implementation commit. On green, close M6-W002 and activate M6-W003. On failure, record the failure before repair.
 
 ## Verification note
-M6-W001 is complete by repository evidence. Runtime implementation has not yet been claimed.
+M6-W002 code and targeted tests exist. Verification is pending; completion is not yet claimed.
