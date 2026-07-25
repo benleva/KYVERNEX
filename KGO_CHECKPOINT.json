@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "AUTONOMOUS_PRODUCT_CODE",
-  "state": "RUNNING",
+  "mode": "PRODUCT_CODE_BOUNDARY",
+  "state": "SAFE_STOP",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -21,36 +21,29 @@
     {"id": "M8", "title": "Universal AI Plugin Bridge", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M9", "title": "Local AI Tool Server", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M10", "title": "Local Desktop Launcher", "status": "CODE_COMPLETE_UNVERIFIED"},
-    {"id": "M11", "title": "Local Setup Bootstrap", "status": "CODE_COMPLETE_UNVERIFIED"}
+    {"id": "M11", "title": "Local Setup Bootstrap", "status": "CODE_COMPLETE_UNVERIFIED"},
+    {"id": "M12", "title": "Portable Local Launchers", "status": "CODE_COMPLETE_UNVERIFIED"}
   ],
-  "milestone": {
-    "id": "M12",
-    "title": "Portable Local Launchers",
-    "status": "ACTIVE"
-  },
   "sprint": {
     "id": "S015",
     "title": "Cross-platform local start files",
-    "status": "ACTIVE"
+    "status": "CODE_COMPLETE_UNVERIFIED"
   },
-  "cycle": "KGO-CYCLE-044",
-  "kpm_cycle": "KPM-CYCLE-033",
-  "completed_code_tasks": ["M12-W001"],
+  "cycle": "KGO-CYCLE-045",
+  "kpm_cycle": "KPM-CYCLE-034",
+  "completed_code_tasks": ["M12-W001", "M12-W002"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
-  "active_task": {
-    "id": "M12-W002",
-    "title": "Add optional launcher generation to kyvernex-ai-setup",
-    "status": "IN_PROGRESS",
-    "priority": "P1"
-  },
+  "active_task": null,
   "code_evidence": {
     "portable_launcher_command": "src/kyvernex/local_ai_shortcut_cli.py",
+    "integrated_setup_command": "src/kyvernex/local_ai_setup_cli.py",
     "package_entry_point": "kyvernex-ai-shortcut",
-    "latest_code_commit": "1b4736590efe2c9263b147c6d7e0dd2b874c76bc"
+    "latest_code_commit": "23030120ee03917694f6ec18fcc4b47ffb970d2e"
   },
   "launcher_boundary": {
     "explicit_profile": true,
     "profile_validation": true,
+    "setup_integration": true,
     "supported_platforms": ["windows", "macos", "linux"],
     "portable_files_only": true,
     "operating_system_registration": false,
@@ -58,10 +51,11 @@
     "background_service": false,
     "network_access": false
   },
-  "autonomous_continuation": true,
-  "requires_user_proceed": false,
-  "resume_rule": "Continue only by integrating optional portable launcher generation into the existing setup command. Do not add installers, operating-system registration, services, automatic startup, network access or publication.",
+  "autonomous_continuation": false,
+  "requires_user_proceed": true,
+  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve explicit local profiles and portable-file-only launch behavior. Do not infer installers, operating-system registration, services, verification or release publication.",
   "stop_conditions": [
+    "PRODUCT_TARGET_NOT_DEFINED",
     "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
     "NETWORK_ACCESS_INTRODUCED",
