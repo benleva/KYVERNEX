@@ -33,34 +33,36 @@
     "title": "Provider-neutral AI invocation",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-034",
-  "kpm_cycle": "KPM-CYCLE-023",
-  "completed_code_tasks": ["M8-W001", "M8-W002"],
+  "cycle": "KGO-CYCLE-035",
+  "kpm_cycle": "KPM-CYCLE-024",
+  "completed_code_tasks": ["M8-W001", "M8-W002", "M8-W003"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
   "active_task": {
-    "id": "M8-W003",
-    "title": "Add streaming multi-request process mode",
+    "id": "M8-W004",
+    "title": "Add provider format exporters from the canonical manifest",
     "status": "IN_PROGRESS",
-    "priority": "P0"
+    "priority": "P1"
   },
   "code_evidence": {
     "ai_bridge": "src/kyvernex/ai_bridge.py",
     "ai_command": "src/kyvernex/ai_plugin_cli.py",
     "package_entry_point": "kyvernex-ai-plugin",
     "public_export": "KyvernexAIBridge",
-    "latest_code_commit": "bf88c9316a3fa61e8e6218d97f547f1446d26164"
+    "streaming_commit": "abbcab36325d54d43cc472d6399632c9c68e2248"
   },
   "product_capabilities": {
     "canonical_ai_manifest": true,
     "provider_neutral_invocation": true,
     "stdin_json_request": true,
+    "persistent_jsonl_mode": true,
+    "line_error_isolation": true,
     "explicit_module_attribute_handler": true,
     "separate_provider_runtimes": false,
     "remote_transport": false
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Continue with executable code for one canonical AI bridge. Do not fork governance logic by provider and do not substitute tests or governance prose for code delivery.",
+  "resume_rule": "Continue with code that exports the same canonical manifest into host-specific shapes without forking runtime or governance logic. Do not substitute tests or governance prose for code delivery.",
   "stop_conditions": [
     "PRODUCT_DIRECTION_CONTRADICTION",
     "AUTHORITY_EXPANSION",
