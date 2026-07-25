@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "RUNNING",
+  "state": "MILESTONE_COMPLETE",
   "target_release": "1.1.0",
   "release_candidate": "1.1.0rc1",
   "stable_baseline": {
@@ -14,29 +14,25 @@
   "milestone": {
     "id": "M4",
     "title": "Governed post-release evolution",
-    "status": "ACTIVE"
+    "status": "DONE"
   },
   "sprint": {
     "id": "S002",
     "title": "Establish the 1.1 evidence baseline",
-    "status": "ACTIVE"
+    "status": "DONE"
   },
-  "cycle": "KGO-CYCLE-018",
-  "kpm_cycle": "KPM-CYCLE-007",
+  "cycle": "KGO-CYCLE-019",
+  "kpm_cycle": "KPM-CYCLE-008",
   "completed_tasks": [
     "M4-W001",
     "M4-W002",
     "M4-W003",
     "M4-W004",
     "M4-W005",
-    "M4-W006"
+    "M4-W006",
+    "M4-W007"
   ],
-  "active_task": {
-    "id": "M4-W007",
-    "title": "Synchronize documentation and prepare the 1.1 release candidate",
-    "status": "IN_DEVELOPMENT",
-    "priority": "P1"
-  },
+  "active_task": null,
   "selected_capability": "KPM/KGO autonomous control CLI",
   "implementation_verification": {
     "commit": "0312f97857dd954b71ad44b07834c545f40a9db1",
@@ -45,21 +41,20 @@
     "test_suite": "GREEN"
   },
   "release_candidate_verification": {
-    "targeted_tests": "FRESH_RUN_PENDING",
-    "complete_suite": "FRESH_RUN_PENDING",
-    "package_build": "FRESH_RUN_PENDING",
-    "clean_install": "FRESH_RUN_PENDING",
-    "installed_cli_smoke_test": "FRESH_RUN_PENDING",
+    "commit": "807def60aa3f6e8adce74b94f375ac0bc5b24edb",
+    "kgo_v3": "GREEN",
+    "reference_prototype_tests": "GREEN",
+    "test_suite": "GREEN",
+    "package_build": "GREEN",
+    "clean_install": "GREEN",
+    "installed_cli_smoke_test": "GREEN",
     "version": "1.1.0rc1"
   },
-  "autonomous_continuation": true,
-  "requires_user_proceed": false,
-  "resume_rule": "Read current release-candidate CI evidence. On green, close M4-W007 and prepare the immutable release-candidate tag and GitHub prerelease. On failure, stop and record the current failure before repair.",
+  "autonomous_continuation": false,
+  "requires_user_proceed": true,
+  "resume_rule": "Publish the separate v1.1.0-rc.1 GitHub prerelease from the verified release candidate. Do not mark it Latest and do not modify v1.0.0.",
   "stop_conditions": [
     "MILESTONE_DONE",
-    "CURRENT_VERIFICATION_FAILURE",
-    "UNRESOLVABLE_P0_BLOCKER",
-    "EXTERNAL_AUTHORIZATION_REQUIRED",
-    "PLATFORM_EXECUTION_BOUNDARY"
+    "EXTERNAL_AUTHORIZATION_REQUIRED"
   ]
 }
