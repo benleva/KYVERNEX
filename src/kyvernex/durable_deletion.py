@@ -74,11 +74,14 @@ class DurableDeletionCoordinator(CognitiveDeletionCoordinator):
         if obj is None:
             raise KeyError("OBJECT_NOT_FOUND")
 
-        linked = tuple(
-            dict.fromkeys(
-                (*self._graph.outgoing(session_id, object_id), *self._graph.incoming(session_id, object_id))
+        linked_by_id = {
+            relation.relation_id: relation
+            for relation in (
+                *self._graph.outgoing(session_id, object_id),
+                *self._graph.incoming(session_id, object_id),
             )
-        )
+        }
+        linked = tuple(linked_by_id.values())
         transaction_id = str(uuid4())
         record = {
             "format_version": self.FORMAT_VERSION,
