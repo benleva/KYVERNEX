@@ -9,8 +9,9 @@ def test_valid_input_is_preserved_and_validated() -> None:
     assert result.cognitive_object.source == "test-suite"
     assert result.cognitive_object.state == CognitiveState.VALIDATED
     assert result.validation.outcome == ValidationOutcome.VALIDATED
-    assert len(result.audit) == 4
+    assert len(result.audit) == 5
     assert result.audit[0].component == "CORE-001"
+    assert result.audit[2].component == "RULE_ENGINE"
     assert result.audit[-1].component == "CORE-008"
 
 
