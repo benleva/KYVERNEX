@@ -4,6 +4,7 @@
   "mode": "AUTONOMOUS",
   "state": "RUNNING",
   "target_release": "1.1.0",
+  "release_candidate": "1.1.0rc1",
   "stable_baseline": {
     "version": "1.0.0",
     "tag": "v1.0.0",
@@ -20,38 +21,40 @@
     "title": "Establish the 1.1 evidence baseline",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-017",
-  "kpm_cycle": "KPM-CYCLE-006",
+  "cycle": "KGO-CYCLE-018",
+  "kpm_cycle": "KPM-CYCLE-007",
   "completed_tasks": [
     "M4-W001",
     "M4-W002",
     "M4-W003",
-    "M4-W004"
+    "M4-W004",
+    "M4-W005",
+    "M4-W006"
   ],
   "active_task": {
-    "id": "M4-W006",
-    "title": "Run targeted and complete verification, build and clean installation",
+    "id": "M4-W007",
+    "title": "Synchronize documentation and prepare the 1.1 release candidate",
     "status": "IN_DEVELOPMENT",
-    "priority": "P0"
-  },
-  "implemented_task": {
-    "id": "M4-W005",
-    "title": "Implement the KPM/KGO autonomous control CLI",
-    "status": "TEST"
+    "priority": "P1"
   },
   "selected_capability": "KPM/KGO autonomous control CLI",
-  "specification": "repository/specifications/KPM_KGO_AUTONOMOUS_CONTROL_CLI_SPEC_v0.1.md",
-  "change_manifest": "repository/specifications/M4_W004_CHANGE_MANIFEST_v0.1.md",
-  "verification": {
+  "implementation_verification": {
+    "commit": "0312f97857dd954b71ad44b07834c545f40a9db1",
+    "kgo_v3": "GREEN",
+    "reference_prototype_tests": "GREEN",
+    "test_suite": "GREEN"
+  },
+  "release_candidate_verification": {
     "targeted_tests": "FRESH_RUN_PENDING",
     "complete_suite": "FRESH_RUN_PENDING",
     "package_build": "FRESH_RUN_PENDING",
     "clean_install": "FRESH_RUN_PENDING",
-    "installed_cli_smoke_test": "FRESH_RUN_PENDING"
+    "installed_cli_smoke_test": "FRESH_RUN_PENDING",
+    "version": "1.1.0rc1"
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Read current CI evidence. On green, close M4-W005 and M4-W006 and continue to M4-W007. On failure, stop and record the current failure before repair.",
+  "resume_rule": "Read current release-candidate CI evidence. On green, close M4-W007 and prepare the immutable release-candidate tag and GitHub prerelease. On failure, stop and record the current failure before repair.",
   "stop_conditions": [
     "MILESTONE_DONE",
     "CURRENT_VERIFICATION_FAILURE",
