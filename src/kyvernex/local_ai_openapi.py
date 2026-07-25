@@ -17,6 +17,16 @@ def build_local_ai_openapi(*, host: str, port: int) -> dict[str, Any]:
             "request_id": {"type": "string", "minLength": 1},
         },
     }
+    tool_call_schema = {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["name", "arguments"],
+        "properties": {
+            "id": {"type": "string", "minLength": 1},
+            "name": {"type": "string", "const": "kyvernex_execute"},
+            "arguments": invoke_schema,
+        },
+    }
     json_response = {
         "description": "JSON response",
         "content": {"application/json": {"schema": {"type": "object"}}},
@@ -57,10 +67,25 @@ def build_local_ai_openapi(*, host: str, port: int) -> dict[str, Any]:
             "/invoke": {
                 "post": {
                     "operationId": "kyvernexInvoke",
-                    "summary": "Execute one governed KYVERNEX request",
+                    "summary": "Execute one governed KYVERNEX request with direct arguments",
                     "requestBody": {
                         "required": True,
                         "content": {"application/json": {"schema": invoke_schema}},
+                    },
+                    "responses": {
+                        "200": json_response,
+                        "400": json_response,
+                        "422": json_response,
+                    },
+                }
+            },
+            "/tool-call": {
+                "post": {
+                    "operationId": "kyvernexToolCall",
+                    "summary": "Execute one governed KYVERNEX canonical tool-call envelope",
+                    "requestBody": {
+                        "required": True,
+                        "content": {"application/json": {"schema": tool_call_schema}},
                     },
                     "responses": {
                         "200": json_response,
