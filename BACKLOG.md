@@ -2,12 +2,13 @@
 
 ## Baseline status
 
-- Stable release: `1.0.0`
+- Stable published release: `1.0.0`
 - Published stable tag: `v1.0.0`
 - Published prerelease: `1.1.0rc1`
 - Published prerelease tag: `v1.1.0-rc.1`
-- Active milestone: none
-- Active sprint: none
+- Stable promotion candidate: `1.1.0`
+- Active milestone: `M5 — Promote 1.1 release candidate to stable`
+- Active sprint: `S003 — Verify and publish stable 1.1.0`
 - Maintenance line: `1.0.x`
 
 ## Completed milestones
@@ -18,51 +19,44 @@ Status: `DONE`
 ### M3 — Autonomous Development
 Status: `DONE`
 
-| Work item | Capability | Status |
-|---|---|---|
-| M3-W001 | Autonomous task scheduler | DONE |
-| M3-W002 | Specification-to-change manifest | DONE |
-| M3-W003 | Continuous self-verification controller | DONE |
-| M3-W004 | Safe isolated commit manager | DONE |
-| M3-W005 | Evidence-based rollback controller | DONE |
-| M3-W006 | Execution performance clock and improvement metrics | DONE |
-
 ### M4 — Governed post-release evolution
 Status: `DONE`
-Target: `1.1.0`
-Selected capability: `KPM/KGO autonomous control CLI`
-
-| Work item | Capability | Priority | Status | Dependencies |
-|---|---|---:|---|---|
-| M4-W001 | Synchronize the autonomous control plane with the published 1.0 baseline | P0 | DONE | None |
-| M4-W002 | Produce an evidence-backed inventory of post-release capability gaps | P0 | DONE | M4-W001 |
-| M4-W003 | Rank validated gaps and select the first dependency-valid 1.1 capability | P0 | DONE | M4-W002 |
-| M4-W004 | Write the frozen specification and change manifest for the autonomous control CLI | P1 | DONE | M4-W003 |
-| M4-W005 | Implement the selected capability within the authorized boundary | P1 | DONE | M4-W004 |
-| M4-W006 | Run targeted and complete verification, build and clean installation | P0 | DONE | M4-W005 |
-| M4-W007 | Synchronize documentation and prepare the 1.1 release candidate | P1 | DONE | M4-W006 |
 
 Completion: `7/7`, `100%`.
 
+## Active milestone
+
+### M5 — Promote 1.1 release candidate to stable
+
+Status: `ACTIVE`
+Target: `1.1.0`
+Scope: release promotion only; no new functional capability.
+
+| Work item | Capability | Priority | Status | Dependencies |
+|---|---|---:|---|---|
+| M5-W001 | Synchronize package, public API, CI and stable release materials to `1.1.0`; obtain fresh verification | P0 | IN_VERIFICATION | Published and verified `v1.1.0-rc.1` |
+| M5-W002 | Record green evidence and prepare immutable stable tag and GitHub Release | P0 | BACKLOG | M5-W001 |
+| M5-W003 | Publish `v1.1.0`, mark it Latest and close M5/S003 | P0 | EXTERNAL_BOUNDARY | M5-W002 |
+
+## Current evidence gate
+
+The repository is synchronized to package and public API version `1.1.0`. The current workflow must verify:
+
+1. targeted governance tests;
+2. complete repository suite;
+3. source and wheel builds;
+4. clean wheel installation;
+5. installed package and public API version `1.1.0`;
+6. installed `kyvernex-governance` behavior.
+
+No stable tag or Release publication is claimed before that evidence is green.
+
 ## Release states
 
-### Release 1.0
-Status: `DONE`
+- `v1.0.0`: published stable release and current Latest;
+- `v1.1.0-rc.1`: published immutable prerelease, not Latest;
+- `v1.1.0`: not yet tagged or published.
 
-Release `KYVERNEX 1.0.0` is verified, tagged, published and marked Latest.
+## Continuation policy
 
-### Release Candidate 1.1.0rc1
-Status: `PUBLISHED_PRERELEASE`
-
-- package and public API versions are `1.1.0rc1`;
-- verification gates passed;
-- tag `v1.1.0-rc.1` exists;
-- GitHub prerelease is published;
-- prerelease is not Latest;
-- `v1.0.0` remains the stable Latest release.
-
-## Open backlog
-
-No implementation or publication work item is active.
-
-New work requires a documented defect, explicit release-candidate feedback, an approved promotion plan to stable `1.1.0`, or a separately authorized milestone. The anti-infinite rule applies.
+KPM/KGO continue automatically through verification and release-material synchronization. They stop for current failure evidence or at the external tag and GitHub Release publication boundary.
