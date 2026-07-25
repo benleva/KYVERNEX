@@ -8,48 +8,41 @@
 - Published prerelease record: `1.1.0rc1` with immutable tag `v1.1.0-rc.1`
 - Completed milestones: **M2 — Governance consolidation; M3 — Autonomous Development; M4 — Governed post-release evolution; M5 — Promote 1.1 release candidate to stable**
 - Active milestone: **M6 — KYVERNEX Plugin Runtime**
-- Completed sprints: **S004; S005; S006**
-- Active sprint: **S007 — Fail-closed plugin configuration**
-- Governance mode: **AUTONOMOUS VERIFICATION**
-- KPM cycle: `KPM-CYCLE-016`
-- KGO cycle: `KGO-CYCLE-027`
+- Completed sprints: **S004; S005; S006; S007**
+- Active sprint: **S008 — Reference host adapter**
+- Governance mode: **AUTONOMOUS**
+- KPM cycle: `KPM-CYCLE-017`
+- KGO cycle: `KGO-CYCLE-028`
 - Target version: `1.2.0`
 
 ## Active governance state
 - M6-W001 plugin contract: `DONE`
 - M6-W002 core runtime: `DONE`
 - M6-W003 governed host contracts: `DONE`
-- M6-W005 fail-closed configuration: `IN_VERIFICATION`
-- Active work item: `M6-W005`
+- M6-W005 fail-closed configuration: `DONE`
+- M6-W004 host adapter boundary and reference in-process adapter: `IN_PROGRESS`
+- Active work item: `M6-W004`
 - Checkpoint: `KGO_CHECKPOINT.json`
 
-## M6-W005 implementation evidence
-The repository now contains:
+## M6-W005 verified evidence
+The repository contains:
 
 - `src/kyvernex/plugin_config.py`;
 - immutable configuration integration in `src/kyvernex/plugin_runtime.py`;
-- targeted tests in `tests/test_plugin_config.py`.
+- targeted tests in `tests/test_plugin_config.py`;
+- aligned lifecycle authority assertions in `tests/test_plugin_runtime.py`.
 
-The implementation provides:
+User-observed GitHub Actions evidence confirms green results on commit `a8e7f36` for:
 
-- strict top-level and nested unknown-field rejection;
-- zero-authority defaults for filesystem, network and process execution;
-- absolute, already-normalized filesystem roots;
-- explicit network and process enablement before allowlists are accepted;
-- wildcard-host rejection;
-- mandatory audit in contract `1.0.0`;
-- positive execution limits;
-- immutable effective configuration after initialization;
-- bounded authority reporting without secrets;
-- repository authority permanently `FORBIDDEN` in this contract.
+- KYVERNEX Test Suite;
+- KYVERNEX Reference Prototype Tests;
+- KYVERNEX KGO v3;
+- GitHub Pages deployment.
 
-## Verification gate
-M6-W005 remains open until current evidence confirms:
+The verified implementation rejects unknown fields, grants zero authority by default, normalizes filesystem roots, disables network and process access by default, requires explicit allowlists, keeps audit mandatory and prevents configuration replacement after initialization.
 
-1. targeted configuration tests pass;
-2. the complete repository suite passes;
-3. existing lifecycle and governed-contract behavior remains green;
-4. no configuration path silently expands authority.
+## Next dependency-valid work
+M6-W004 is now the only dependency-valid item required before M6-W006. It adds the explicit host adapter boundary and a bounded reference in-process adapter without moving governance policy into the adapter.
 
 ## Stable release protection
 - `v1.1.0` remains immutable and Latest;
@@ -57,4 +50,4 @@ M6-W005 remains open until current evidence confirms:
 - no prerelease or stable publication is claimed before fresh verification.
 
 ## Continuation rule
-On green evidence for the exact M6-W005 state, close M6-W005 and activate the next dependency-valid item. On failure, record the exact failure before repair.
+Implement M6-W004 against the frozen contract and verified configuration boundary. Stop on current verification failure, adapter authority expansion, contract contradiction, unresolved P0 security boundary, external publication boundary or milestone completion.
