@@ -8,6 +8,28 @@ The project follows semantic versioning from Release 1.0 onward.
 
 No unreleased changes.
 
+## [1.1.0] - 2026-07-25
+
+### Added
+- Deterministic `kyvernex-governance` console script for KPM/KGO `start`, `status`, `advance` and `resume` operations.
+- Fail-closed JSON governance-plan loading with enum, dependency, milestone and Definition of Done validation.
+- Targeted governance CLI tests and installed-wheel console-script smoke verification in CI.
+- Stable release notes in `RELEASE_NOTES_1.1.0.md`.
+
+### Changed
+- Package metadata and public API version promoted from `1.1.0rc1` to `1.1.0`.
+- GitHub Actions verifies the stable package version, full suite, distributions, clean installation and installed console-script behavior.
+- M5 records the governed promotion from the verified release candidate to the stable 1.1 line.
+
+### Security and governance
+- The governance CLI may write only the explicitly supplied checkpoint path.
+- The CLI cannot edit source files, Git refs, branches, issues or releases.
+- Active work, incomplete dependencies and closed milestones cannot be bypassed.
+- Published tags `v1.0.0` and `v1.1.0-rc.1` remain immutable.
+
+### Verification
+- Fresh stable-promotion CI is required before tag `v1.1.0` and GitHub Release publication.
+
 ## [1.1.0rc1] - 2026-07-25
 
 ### Added
