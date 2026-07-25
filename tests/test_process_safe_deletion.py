@@ -9,6 +9,7 @@ from kyvernex import (
     InterProcessFileLock,
     ProcessLockError,
     ProcessSafeMultiTransactionDeletionCoordinator,
+    RelationType,
     SessionMemory,
 )
 
@@ -40,7 +41,7 @@ def test_process_safe_coordinator_completes_cascade_deletion(tmp_path):
         session_id="s",
         source_object_id=left.object_id,
         target_object_id=right.object_id,
-        relation_type="DERIVA_DA",
+        relation_type=RelationType.DERIVED_FROM,
     )
     coordinator = ProcessSafeMultiTransactionDeletionCoordinator(
         memory=memory,
