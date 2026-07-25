@@ -1,7 +1,7 @@
 # KYVERNEX PROJECT STATUS
 
 ## Control
-- Governance system: KDP + integrated KPM/KGO
+- Governance system: KDP + integrated KPM/KGO + KEX execution boundary
 - Repository version: `0.1.0.dev0`
 - Current milestone: **M2 — Governance consolidation**
 - Current sprint: **S001 — Establish measurable baseline**
@@ -15,11 +15,16 @@ Create a trustworthy baseline of every existing feature, its specification, test
 ## Governance activation state
 - KPM: `ACTIVE`
 - KGO: `AUTONOMOUS_RUNNING`
+- KEX: `IMPLEMENTED_NOT_VERIFIED`
 - Start command: `KGO START`
-- Module boundary: `src/kyvernex/program_manager.py`
+- Governance module boundary: `src/kyvernex/program_manager.py`
+- Execution module boundary: `src/kyvernex/execution_engine.py`
 - Target release: `1.0`
 - Checkpoint: `KGO_CHECKPOINT.json`
 - User confirmation between tasks: `NOT REQUIRED`
+
+## KEX execution boundary
+KEX now provides deny-first command validation, authorized working roots, timeout enforcement, injectable runners, captured execution evidence and ordered stop-on-failure behavior. It does not itself close tasks or milestones. Complete tests and CI are still unverified.
 
 ## Current governance cycle
 - Cycle: `KGO-CYCLE-001`
@@ -45,4 +50,4 @@ KGO stops only when the milestone is complete, an unresolvable P0 blocker is fou
 Closed milestones are immutable. New ideas are routed to the backlog of a later version.
 
 ## Verification note
-The integrated KGO implementation and its tests are committed, but the complete suite and CI have not yet been freshly verified.
+The integrated KGO and KEX implementations and their tests are committed, but the complete suite and CI have not yet been freshly verified.
