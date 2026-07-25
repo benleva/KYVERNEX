@@ -6,7 +6,7 @@
 - Current milestone: **M2 — Governance consolidation**
 - Current sprint: **S001 — Establish measurable baseline**
 - Project completion: **NOT YET CALCULATED**
-- CI status: **BLOCKED — MOST RECENT USER-OBSERVED RUN REPORTED 87 PASSED / 10 FAILED**
+- CI status: **REPAIR SET COMMITTED — FRESH RUN PENDING**
 - Latest locally confirmed test run: `4 passed in 0.06s` from an earlier prototype state; it does not verify later modules.
 
 ## Current objective
@@ -15,8 +15,8 @@ Create a trustworthy baseline of every existing feature, its specification, test
 ## Governance activation state
 - KPM: `ACTIVE`
 - KGO v1 analyzer: `IMPLEMENTED`
-- KGO v2 planner: `IMPLEMENTED_NOT_VERIFIED`
-- KEX: `IMPLEMENTED_NOT_VERIFIED`
+- KGO v2 planner: `IMPLEMENTED_AND_USER_OBSERVED`
+- KEX: `IMPLEMENTED_REPAIR_PENDING_VERIFICATION`
 - GitHub Actions workflow: `.github/workflows/kgo.yml`
 - Start channel: manual `workflow_dispatch` or qualifying push to `main`
 - Governance module boundary: `src/kyvernex/program_manager.py`
@@ -28,39 +28,48 @@ Create a trustworthy baseline of every existing feature, its specification, test
 - User confirmation between tasks: `NOT REQUIRED`
 
 ## Observed GitHub Actions evidence
-A first manually triggered run on commit prefix `42d920d` was reported through screenshots with `84 passed, 10 failed in 0.45s`. A later user-observed run of the deterministic backlog analyzer reported `87 passed, 10 failed, 0 skipped`, success `89.69%`, with the run correctly blocked and a P0 runtime defect selected. These observations apply only to their executed commits; they do not verify KGO v2.
+A first manually triggered run on commit prefix `42d920d` was reported through screenshots with `84 passed, 10 failed in 0.45s`. A later deterministic-backlog run reported `87 passed, 10 failed, 0 skipped`, success `89.69%`. The first user-observed KGO v2 run reported `90 passed, 10 failed, 0 skipped`, success `90.0%`, six grouped root causes and a projected `95.0%` success after the highest-impact single repair. These observations apply only to the commits that were executed.
 
 ## KGO v2 capability
 KGO v2 groups repeated failures into probable shared root causes, ranks them by priority, estimates confidence and effort, lists probable files, calculates how many failures a cause may remove, projects the resulting success percentage and emits targeted patch plans and validation commands.
 
-Artifacts added by KGO v2:
+Artifacts produced by KGO v2:
 - `KGO_V2_REPORT.json`
 - `KGO_ROOT_CAUSES.json`
 - `KGO_PATCH_PLAN.json`
 - `KGO_V2_SUMMARY.md`
 
+## First governed repair set
+The following corrections are committed:
+- relation deduplication now uses stable `relation_id` values instead of hashing relation objects containing mutable dictionaries;
+- the default KEX request timeout is aligned to 60 seconds;
+- adapter audit verification now checks semantic presence instead of final position;
+- engine audit tests now verify required event types instead of obsolete fixed counts.
+
+The changes are recorded in `repository/updates/UPDATE_0039_KGO_V2_FIRST_REPAIR_SET.md`.
+
 ## Autonomous repair boundary
-KGO v2 does not modify source code, create repair branches, approve pull requests or merge changes. A high-confidence plan may be marked eligible for a future isolated patch proposal, but passing targeted and complete tests remains mandatory. A separately authorized coding agent and bounded branch permissions are still required for repair execution.
+KGO v2 analyzed and planned this repair set, but the source changes were applied through an explicitly authorized coding action. KGO v2 still does not independently create branches, approve pull requests or merge changes. Passing targeted and complete tests remains mandatory.
 
 ## KEX execution boundary
 KEX provides deny-first command validation, authorized working roots, timeout enforcement, injectable runners, captured execution evidence and ordered stop-on-failure behavior. It does not itself close tasks or milestones.
 
 ## Current governance cycle
-- Cycle: `KGO-CYCLE-002`
-- Status: `KGO_V2_IMPLEMENTED_RUN_PENDING`
+- Cycle: `KGO-CYCLE-003`
+- Status: `REPAIR_SET_COMMITTED_RUN_PENDING`
 - Autonomous continuation: `ENABLED_WITHIN_CI_BOUNDARY`
-- Active task: generate and verify the first KGO v2 root-cause report
+- Active task: verify the first KGO v2 repair set with the complete GitHub Actions suite
 - Priority: `P0`
-- Completion rule: KGO v2 remains unverified until GitHub Actions executes its tests and produces the new artifacts.
+- Completion rule: the repair set remains open until a fresh run reports zero failures or supplies new failure evidence.
 
 ## Required governance cycle
 1. Inventory repository modules and specifications. **IN PROGRESS**
 2. Classify each feature by milestone and lifecycle state. **PENDING**
-3. Reconcile tests with implementations. **PENDING**
-4. Execute KGO v2 complete suite. **PENDING**
-5. Verify KGO v2 root-cause and patch-plan artifacts. **PENDING**
-6. Record CI evidence without assumptions. **PENDING FOR KGO v2 COMMIT**
-7. Select the highest-impact dependency-valid P0/P1 root cause. **IMPLEMENTED, RUN PENDING**
+3. Reconcile tests with implementations. **REPAIR SET 001 COMMITTED**
+4. Execute the complete suite after repairs. **PENDING**
+5. Verify KGO v2 root-cause and patch-plan artifacts after repairs. **PENDING**
+6. Record fresh CI evidence without assumptions. **PENDING**
+7. Select the next root cause only if failures remain. **PENDING CI RESULT**
 
 ## Autonomous stop conditions
 KGO stops only when the milestone is complete, an unresolvable P0 blocker is found, external authorization is required, or the platform reaches an execution boundary. At the next activation it resumes from its generated checkpoint without asking for `Procedi`.
@@ -69,4 +78,4 @@ KGO stops only when the milestone is complete, an unresolvable P0 blocker is fou
 Closed milestones are immutable. New ideas are routed to the backlog of a later version.
 
 ## Verification note
-KGO v2 implementation, unit tests, specification, update record and GitHub Actions integration are committed. They have not yet been freshly executed. No claim of passing KGO v2 tests or successful CI is made.
+The first KGO v2 repair set is committed. No passing result is claimed. A fresh GitHub Actions run is required before changing CI status to verified.
