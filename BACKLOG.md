@@ -45,15 +45,23 @@ Selected capability: `KPM/KGO autonomous control CLI`
 | M4-W001 | Synchronize the autonomous control plane with the published 1.0 baseline | P0 | DONE | None |
 | M4-W002 | Produce an evidence-backed inventory of post-release capability gaps | P0 | DONE | M4-W001 |
 | M4-W003 | Rank validated gaps and select the first dependency-valid 1.1 capability | P0 | DONE | M4-W002 |
-| M4-W004 | Write the frozen specification and change manifest for the autonomous control CLI | P1 | IN_DEVELOPMENT | M4-W003 |
-| M4-W005 | Implement the selected capability within the authorized boundary | P1 | BACKLOG | M4-W004 |
-| M4-W006 | Run targeted and complete verification, build and clean installation | P0 | BACKLOG | M4-W005 |
+| M4-W004 | Write the frozen specification and change manifest for the autonomous control CLI | P1 | DONE | M4-W003 |
+| M4-W005 | Implement the selected capability within the authorized boundary | P1 | TEST | M4-W004 |
+| M4-W006 | Run targeted and complete verification, build and clean installation | P0 | IN_DEVELOPMENT | M4-W005 |
 | M4-W007 | Synchronize documentation and prepare the 1.1 release candidate | P1 | BACKLOG | M4-W006 |
 
-## Evidence
+## Current evidence state
 
-The gap inventory is recorded in `repository/specifications/M4_POST_RELEASE_CAPABILITY_GAP_INVENTORY_v0.1.md`. It selected the CLI because the KPM/KGO orchestration API exists, while the installed package exposes no supported start, status, advance or resume command.
+The governance CLI implementation, console-script metadata, deterministic tests and CI integration are committed. A fresh GitHub Actions run must verify:
+
+1. targeted M4 tests;
+2. complete repository suite;
+3. source and wheel builds;
+4. clean wheel installation;
+5. installed `kyvernex-governance start` behavior.
+
+No successful result is claimed before that run completes.
 
 ## Continuation policy
 
-KPM selects the next dependency-valid item by priority. KGO advances only from current repository evidence. It must stop for a documented blocker, missing authorization, failed verification or completed milestone. New observations do not bypass the ordered backlog.
+KPM selects the next dependency-valid item by priority. KGO advances only from current repository evidence. It must stop for a documented blocker, failed verification, missing authorization or completed milestone.
