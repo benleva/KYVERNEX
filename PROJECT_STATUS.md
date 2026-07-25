@@ -9,8 +9,8 @@
 - Active milestone: **M9 — Local AI Tool Server**
 - Active sprint: **S012 — Loopback HTTP access**
 - Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
-- KPM cycle: `KPM-CYCLE-026`
-- KGO cycle: `KGO-CYCLE-037`
+- KPM cycle: `KPM-CYCLE-027`
+- KGO cycle: `KGO-CYCLE-038`
 - Development package version: `1.2.0.dev0`
 
 ## Product objective
@@ -32,11 +32,7 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 
 - `src/kyvernex/local_ai_server.py` provides `KyvernexLocalAIServer`;
 - binding is fixed to `127.0.0.1`;
-- `GET /health` returns plugin status;
-- `GET /manifest?format=canonical|openai|anthropic|gemini` returns the existing manifest;
-- `POST /invoke` accepts one canonical invocation object;
 - request bodies are bounded to 1 MiB;
-- unknown routes return structured JSON errors;
 - no external network client, cloud service or provider runtime is introduced.
 
 ### M9-W002 — Installed local server command
@@ -44,23 +40,28 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 
 - `src/kyvernex/local_ai_server_cli.py` provides the process entry point;
 - `pyproject.toml` installs `kyvernex-ai-server`;
-- `--handler module:attribute` selects one explicit host callable;
-- `--principal` fixes the governed principal;
-- `--port` selects the local TCP port.
+- one explicit `module:attribute` handler is used.
 
-## Current use
+### M9-W003 — Generated local OpenAPI document
+Status: `CODE_COMPLETE_UNVERIFIED`
+
+- `src/kyvernex/local_ai_openapi.py` generates OpenAPI `3.1.0`;
+- the document describes `/health`, `/manifest`, `/invoke` and itself;
+- the server URL is generated from the actual loopback address and bound port;
+- `GET /openapi.json` serves the document;
+- the invocation schema accepts only `input`, optional `context` and optional `request_id`.
+
+## Current routes
 
 ```text
-kyvernex-ai-server --handler examples.plugin_handler:handle --principal andrea --port 8765
+GET  /health
+GET  /manifest?format=canonical|openai|anthropic|gemini
+GET  /openapi.json
+POST /invoke
 ```
 
-Endpoints:
-
-```text
-GET  http://127.0.0.1:8765/health
-GET  http://127.0.0.1:8765/manifest?format=openai
-POST http://127.0.0.1:8765/invoke
-```
+## Active work
+- M9-W004 minimal local invocation page using only the existing HTTP routes: `IN_PROGRESS`.
 
 ## Boundary
-M9 is limited to local loopback transport. It does not expose `0.0.0.0`, TLS termination, authentication services, public hosting, databases, dashboards, accounts or billing. No verification or release claim is made.
+M9 remains loopback-only. It does not expose `0.0.0.0`, TLS termination, authentication services, public hosting, databases, accounts or billing. The planned local page may call only this same server and may not introduce another backend. No verification or release claim is made.
