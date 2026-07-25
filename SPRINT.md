@@ -4,31 +4,34 @@
 
 - Milestone: `M4 — Governed post-release evolution`
 - Status: `ACTIVE`
-- KPM cycle: `KPM-CYCLE-002`
-- KGO cycle: `KGO-CYCLE-013`
+- KPM cycle: `KPM-CYCLE-006`
+- KGO cycle: `KGO-CYCLE-017`
 - Target version: `1.1.0`
-- Sprint goal: identify, verify and rank real post-release capability gaps before authorizing implementation.
+- Sprint goal: deliver and verify the bounded KPM/KGO autonomous control CLI without changing the immutable Release 1.0 baseline.
 
 ## Sprint backlog
 
 | ID | Task | Priority | Story points | Status | Dependencies |
 |---|---|---:|---:|---|---|
 | M4-W001 | Synchronize the autonomous control plane with the published 1.0 baseline | P0 | 3 | DONE | None |
-| M4-W002 | Produce an evidence-backed inventory of post-release capability gaps | P0 | 5 | IN_DEVELOPMENT | M4-W001 |
-| M4-W003 | Rank validated gaps and select the first dependency-valid 1.1 capability | P0 | 5 | READY | M4-W002 |
-| M4-W004 | Write the frozen specification and change manifest | P1 | 5 | BACKLOG | M4-W003 |
+| M4-W002 | Produce an evidence-backed inventory of post-release capability gaps | P0 | 5 | DONE | M4-W001 |
+| M4-W003 | Rank validated gaps and select the first dependency-valid 1.1 capability | P0 | 5 | DONE | M4-W002 |
+| M4-W004 | Write the frozen specification and change manifest | P1 | 5 | DONE | M4-W003 |
+| M4-W005 | Implement the KPM/KGO autonomous control CLI | P1 | 8 | TEST | M4-W004 |
+| M4-W006 | Verify targeted tests, complete suite, build and installed CLI | P0 | 8 | IN_DEVELOPMENT | M4-W005 |
+| M4-W007 | Synchronize release-candidate documentation | P1 | 3 | BACKLOG | M4-W006 |
 
-## Definition of Sprint Done
+## Verification gate
 
-S002 closes only when:
+S002 may advance only when fresh CI evidence confirms:
 
-- M4-W001 through M4-W004 are `DONE`;
-- every proposed capability is supported by repository evidence;
-- the selected capability has explicit scope, non-goals and Definition of Done;
-- no change modifies the immutable `v1.0.0` tag;
-- `PROJECT_STATUS.md`, `BACKLOG.md`, `QUALITY.md`, `SPRINT.md` and `KGO_CHECKPOINT.json` are synchronized;
-- the next implementation item is dependency-valid and explicitly bounded.
+- targeted governance CLI, program-manager and KGO tests;
+- complete repository suite;
+- source and wheel builds;
+- clean wheel installation;
+- installed console-script smoke test;
+- no unsupported repository, test or CI claim in CLI output.
 
 ## Autonomous rule
 
-KPM chooses the next valid item. KGO proceeds without repeated confirmation until a stop condition is reached. A failed test, missing external authorization, unavailable executor or policy-boundary violation stops the cycle.
+KPM chooses the next valid item. KGO proceeds without repeated confirmation until a stop condition is reached. A current verification failure stops advancement and must be recorded before any repair.
