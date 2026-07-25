@@ -21,6 +21,7 @@ from .models import (
 )
 from .orchestrator import GovernedExecutionResult, KyvernexOrchestrator
 from .persistence import JsonSessionMemory, PersistenceFormatError
+from .response_governance import GovernedResponse, ResponseGovernor
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .serialization import to_primitive
 
@@ -39,11 +40,13 @@ __all__ = [
     "ExecutionResult",
     "FailingAdapter",
     "GovernedExecutionResult",
+    "GovernedResponse",
     "JsonSessionMemory",
     "KyvernexEngine",
     "KyvernexOrchestrator",
     "MemoryConflictError",
     "PersistenceFormatError",
+    "ResponseGovernor",
     "Rule",
     "RuleEngine",
     "RuleResult",
