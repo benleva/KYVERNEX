@@ -8,7 +8,7 @@ version = "0.1.0.dev0"
 description = "Reference prototype of the KYVERNEX cognitive governance plugin"
 requires-python = ">=3.11"
 authors = [{name = "Andrea Pernarcic"}]
-license = {text = "Proprietary - development draft"}
+license = {file = "LICENSE"}
 
 [project.optional-dependencies]
 test = ["pytest>=8.0"]
