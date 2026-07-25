@@ -6,6 +6,7 @@ from enum import StrEnum
 from pathlib import Path
 from typing import Iterable
 
+from .kpm_prioritization import execution_clock_assessment
 from .program_manager import (
     GovernanceCheckpoint,
     GovernanceState,
@@ -110,6 +111,7 @@ class AutonomousDevelopmentEngine:
 
         if checkpoint.current_item_id is None:
             raise AutonomousDevelopmentError("TASK_AUTONOMO_NON_SELEZIONATO")
+
         item = self.orchestrator.manager.items[checkpoint.current_item_id]
         stop_reason = self._policy_stop_reason(item)
         steps = self._build_steps(item, stop_reason=stop_reason)
@@ -149,6 +151,7 @@ class AutonomousDevelopmentEngine:
         if stop_reason:
             steps.append(DevelopmentStep(2, DevelopmentAction.STOP_FOR_AUTHORIZATION, stop_reason, requires_authorization=True))
             return tuple(steps)
+
         order = 2
         if self.policy.require_specification:
             steps.append(DevelopmentStep(order, DevelopmentAction.PREPARE_SPECIFICATION, "Create or update the technical specification and dependency records."))
@@ -187,10 +190,20 @@ class AutonomousDevelopmentEngine:
 
 def build_m3_backlog() -> tuple[WorkItem, ...]:
     """Canonical initial backlog for M3 autonomous development."""
+
+    clock_priority = execution_clock_assessment().priority()
     return (
         WorkItem("M3-W001", "Autonomous task scheduler", "M3", Priority.P0, 3, WorkStatus.READY),
         WorkItem("M3-W002", "Specification-to-change manifest", "M3", Priority.P0, 5, dependencies=("M3-W001",)),
         WorkItem("M3-W003", "Continuous self-verification controller", "M3", Priority.P0, 5, dependencies=("M3-W002",)),
         WorkItem("M3-W004", "Safe isolated commit manager", "M3", Priority.P1, 8, dependencies=("M3-W003",)),
         WorkItem("M3-W005", "Evidence-based rollback controller", "M3", Priority.P1, 8, dependencies=("M3-W004",)),
+        WorkItem(
+            "M3-W006",
+            "Execution performance clock and improvement metrics",
+            "M3",
+            clock_priority,
+            5,
+            dependencies=("M3-W003",),
+        ),
     )
