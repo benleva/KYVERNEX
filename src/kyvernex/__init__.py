@@ -16,6 +16,12 @@ from .deletion import (
     DeletionResult,
     DeletionTransactionError,
 )
+from .durable_deletion import (
+    DeletionJournalError,
+    DeletionJournalState,
+    DurableDeletionCoordinator,
+    RecoveryResult,
+)
 from .graph import (
     CognitiveGraph,
     CognitiveRelation,
@@ -57,10 +63,13 @@ __all__ = [
     "CognitiveRelation",
     "CognitiveState",
     "ContinuousValidator",
+    "DeletionJournalError",
+    "DeletionJournalState",
     "DeletionPolicy",
     "DeletionRestrictedError",
     "DeletionResult",
     "DeletionTransactionError",
+    "DurableDeletionCoordinator",
     "EchoAdapter",
     "ExecutionResult",
     "FailingAdapter",
@@ -73,6 +82,7 @@ __all__ = [
     "KyvernexOrchestrator",
     "MemoryConflictError",
     "PersistenceFormatError",
+    "RecoveryResult",
     "ReferentialIntegrityError",
     "RelationConflictError",
     "RelationType",
