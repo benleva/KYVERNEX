@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "PRODUCT_CODE_BOUNDARY",
-  "state": "SAFE_STOP",
+  "mode": "AUTONOMOUS_PRODUCT_CODE",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "development_version": "1.2.0.dev0",
   "stable_release": {
@@ -26,40 +26,47 @@
     {"id": "M13", "title": "Local Project Scaffold", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M14", "title": "Public API Hardening", "status": "CODE_COMPLETE_UNVERIFIED"}
   ],
+  "milestone": {
+    "id": "M15",
+    "title": "Canonical Tool Call Envelope",
+    "status": "ACTIVE"
+  },
   "sprint": {
-    "id": "S017",
-    "title": "Public integration surface",
-    "status": "CODE_COMPLETE_UNVERIFIED"
+    "id": "S018",
+    "title": "Host-shaped invocation",
+    "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-048",
-  "kpm_cycle": "KPM-CYCLE-037",
-  "completed_code_tasks": ["M14-W001", "M14-W002"],
+  "cycle": "KGO-CYCLE-049",
+  "kpm_cycle": "KPM-CYCLE-038",
+  "completed_code_tasks": ["M15-W001", "M15-W002"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
-  "active_task": null,
+  "active_task": {
+    "id": "M15-W003",
+    "title": "Expose the same canonical tool-call envelope through the existing loopback HTTP server",
+    "status": "IN_PROGRESS",
+    "priority": "P1"
+  },
   "code_evidence": {
-    "handler_loader": "src/kyvernex/plugin_loader.py",
-    "plugin_session": "src/kyvernex/plugin_session.py",
-    "manifest_exporters": "src/kyvernex/ai_formats.py",
-    "package_exports": "src/kyvernex/__init__.py",
-    "latest_code_commit": "d6e027d86367d86c201e9137464b71ae76854d4a"
+    "ai_bridge": "src/kyvernex/ai_bridge.py",
+    "ai_command": "src/kyvernex/ai_plugin_cli.py",
+    "bridge_commit": "d23e6b348db0a51d6ecabe43d3e708188c59ecbd",
+    "cli_commit": "f797a74d4614cfea14f2218570123bf502d594a5"
   },
-  "public_api_boundary": {
-    "canonical_handler_loader": "load_plugin_handler",
-    "compatibility_loader_alias": "load_handler",
-    "persistent_session_exported": true,
-    "dedicated_manifest_exporters": true,
-    "development_version_aligned": true,
-    "new_runtime": false,
-    "network_access": false,
-    "release_publication": false
+  "envelope_boundary": {
+    "tool_name": "kyvernex_execute",
+    "allowed_fields": ["name", "arguments", "id"],
+    "direct_arguments_preserved": true,
+    "unknown_fields_fail_closed": true,
+    "provider_runtime_fork": false,
+    "external_network_access": false
   },
-  "autonomous_continuation": false,
-  "requires_user_proceed": true,
-  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve one strict loader, one canonical runtime and the published package surface. Do not infer testing, verification or release publication.",
+  "autonomous_continuation": true,
+  "requires_user_proceed": false,
+  "resume_rule": "Continue only by exposing the same strict envelope through the existing loopback HTTP server. Do not add provider-specific runtimes, public hosting, accounts, databases, tests or release publication.",
   "stop_conditions": [
-    "PRODUCT_TARGET_NOT_DEFINED",
+    "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
-    "SEPARATE_RUNTIME_FORK",
+    "PROVIDER_RUNTIME_FORK",
     "EXTERNAL_PUBLICATION_BOUNDARY",
     "MILESTONE_DONE"
   ]
