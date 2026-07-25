@@ -14,11 +14,11 @@ Verified Release 1.0 evidence:
 - GitHub Actions run `#58`: green;
 - GitHub Release `KYVERNEX 1.0.0`: published and marked Latest.
 
-## Active M4 quality gate
+## Verified M4 quality gate
 
 Selected capability: `KPM/KGO autonomous control CLI`.
 
-Implemented controls:
+Verified controls:
 
 - deterministic `start`, `status`, `advance` and `resume` commands;
 - fail-closed malformed-plan and unknown-dependency handling;
@@ -26,24 +26,35 @@ Implemented controls:
 - existing-checkpoint overwrite prevention;
 - active-item advancement prevention;
 - blocked-state exit code `2`;
+- invalid input and policy error handling;
 - no unsupported test, CI, repository-write or release claim;
 - write boundary limited to the supplied checkpoint path;
-- installed-wheel console-script smoke test integrated into CI.
+- installed-wheel console-script smoke test.
 
-## Current evidence status
+## Release-candidate evidence
 
 | Area | State |
 |---|---|
-| M4 specification and manifest | PRESENT |
-| CLI implementation | PRESENT |
-| Targeted tests | PRESENT, FRESH CI PENDING |
-| Complete suite | FRESH CI PENDING |
-| Source and wheel builds | FRESH CI PENDING |
-| Clean installation | FRESH CI PENDING |
-| Installed CLI smoke test | FRESH CI PENDING |
-| Active documented blocker | NONE BEFORE CI RESULT |
+| M4 specification and manifest | VERIFIED |
+| CLI implementation | VERIFIED |
+| Targeted tests | GREEN |
+| Complete suite | GREEN |
+| Source and wheel builds | GREEN |
+| Clean installation | GREEN |
+| Installed CLI smoke test | GREEN |
+| Package version | `1.1.0rc1` |
+| Public API version | `1.1.0rc1` |
+| KGO v3 final candidate workflow | GREEN on commit `807def6` |
+| Active technical blocker | NONE |
 
-No M4 verification success is claimed until a fresh GitHub Actions run completes.
+## Completion metrics
+
+| Area | Result |
+|---|---:|
+| M4 work items | 7/7 DONE |
+| S002 story points | 37/37 DONE |
+| Release-candidate technical gates | Complete |
+| GitHub prerelease publication | Pending external action |
 
 ## Quality controls
 
@@ -52,7 +63,8 @@ No M4 verification success is claimed until a fresh GitHub Actions run completes
 - Rollback requires explicit current failure evidence and authorization.
 - The CLI cannot mutate Git refs, source files, branches, issues or releases.
 - The proprietary license notice remains in force; independent legal review remains recommended.
+- `v1.0.0` remains immutable and Latest until a future stable release is explicitly published.
 
 ## Current quality decision
 
-`M4-W005` is implemented and under verification. KGO must stop and record evidence if the current workflow fails; it may advance to release-candidate synchronization only after all M4 gates are green.
+`KYVERNEX 1.1.0rc1` satisfies the technical Release Candidate gate. It is authorized for publication as the separate prerelease `v1.1.0-rc.1`, provided it is marked as a prerelease and not as Latest.
