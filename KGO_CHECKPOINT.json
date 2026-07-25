@@ -2,8 +2,8 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "RELEASE_COMPLETE",
-  "target_release": "1.1.0",
+  "state": "RUNNING",
+  "target_release": "1.2.0",
   "stable_release": {
     "version": "1.1.0",
     "tag": "v1.1.0",
@@ -25,37 +25,44 @@
     }
   ],
   "milestone": {
-    "id": "M5",
-    "title": "Promote 1.1 release candidate to stable",
-    "status": "DONE"
+    "id": "M6",
+    "title": "KYVERNEX Plugin Runtime",
+    "status": "ACTIVE"
   },
   "sprint": {
-    "id": "S003",
-    "title": "Verify and publish stable 1.1.0",
-    "status": "DONE"
+    "id": "S004",
+    "title": "Freeze the plugin contract",
+    "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-023",
-  "kpm_cycle": "KPM-CYCLE-012",
-  "completed_tasks": [
-    "M5-W001",
-    "M5-W002",
-    "M5-W003"
-  ],
-  "active_task": null,
-  "stable_promotion_verification": {
-    "commit": "56bd8da",
-    "targeted_tests": "GREEN",
-    "complete_suite": "GREEN",
-    "package_build": "GREEN",
-    "clean_install": "GREEN",
-    "installed_cli_smoke_test": "GREEN",
-    "version": "1.1.0"
+  "cycle": "KGO-CYCLE-024",
+  "kpm_cycle": "KPM-CYCLE-013",
+  "completed_tasks": [],
+  "active_task": {
+    "id": "M6-W001",
+    "title": "Freeze the plugin contract, lifecycle, schemas and authority boundaries",
+    "status": "IN_PROGRESS",
+    "priority": "P0"
   },
-  "autonomous_continuation": false,
+  "plugin_scope": {
+    "lifecycle": [
+      "initialize",
+      "validate",
+      "execute",
+      "status",
+      "shutdown"
+    ],
+    "target_version": "1.2.0",
+    "strategic_roadmap_modified": false,
+    "independent_implementation_in_scope": false,
+    "conformance_certification_in_scope": false
+  },
+  "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Resume only for a documented defect, verified release feedback, authorized stable-line maintenance or a separately approved milestone.",
+  "resume_rule": "Complete M6 work items in dependency order, beginning with the frozen plugin contract and authority boundaries.",
   "stop_conditions": [
-    "RELEASE_COMPLETE",
-    "NO_AUTHORIZED_WORK"
+    "CURRENT_VERIFICATION_FAILURE",
+    "UNRESOLVED_P0_SECURITY_BOUNDARY",
+    "EXTERNAL_PUBLICATION_BOUNDARY",
+    "MILESTONE_DONE"
   ]
 }
