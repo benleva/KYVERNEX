@@ -48,6 +48,16 @@ class SessionMemory:
         with self._lock:
             return len(self._sessions.get(session_id, {}))
 
+    def remove(self, session_id: str, object_id: str) -> CognitiveObject | None:
+        with self._lock:
+            session = self._sessions.get(session_id)
+            if session is None:
+                return None
+            obj = session.pop(object_id, None)
+            if not session:
+                self._sessions.pop(session_id, None)
+            return deepcopy(obj) if obj is not None else None
+
     def clear(self, session_id: str) -> int:
         with self._lock:
             removed = len(self._sessions.get(session_id, {}))
