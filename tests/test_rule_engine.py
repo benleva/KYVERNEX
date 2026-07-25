@@ -12,6 +12,16 @@ from kyvernex import (
 )
 
 
+_REQUIRED_ENGINE_AUDIT_EVENTS = {
+    "INPUT_ACQUISITO",
+    "OGGETTO_NORMALIZZATO",
+    "REGOLE_APPLICATE",
+    "VALIDAZIONE_COMPLETATA",
+    "OGGETTO_MEMORIZZATO",
+    "RISULTATO_RESTITUITO",
+}
+
+
 def test_default_rules_are_recorded_in_object_and_audit() -> None:
     result = KyvernexEngine().execute("dato", source="test-suite")
 
@@ -58,10 +68,11 @@ def test_rule_exception_is_converted_to_controlled_error() -> None:
 def test_execution_result_matches_declared_top_level_schema_contract() -> None:
     schema = json.loads(Path("schemas/execution-result.schema.json").read_text(encoding="utf-8"))
     payload = to_primitive(KyvernexEngine().execute("dato", source="test-suite"))
+    event_types = {event["event_type"] for event in payload["audit"]}
 
     assert set(payload) == set(schema["required"])
     assert set(payload["cognitive_object"]) == set(
         schema["properties"]["cognitive_object"]["required"]
     )
     assert set(payload["validation"]) == set(schema["properties"]["validation"]["required"])
-    assert len(payload["audit"]) == 5
+    assert _REQUIRED_ENGINE_AUDIT_EVENTS <= event_types
