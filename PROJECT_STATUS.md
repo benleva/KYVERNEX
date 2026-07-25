@@ -13,16 +13,24 @@
 Create a trustworthy baseline of every existing feature, its specification, tests, integration state, CI evidence and Definition of Done. No milestone may be declared complete from file presence alone.
 
 ## KPM activation state
-`READY_NOT_STARTED`
+`ACTIVE`
+
+## Current KPM cycle
+- Cycle: `KPM-CYCLE-001`
+- Status: `IN_PROGRESS`
+- Started by command: `KPM START`
+- Active task: `KPM-S001-T01 — Repository inventory and evidence baseline`
+- Priority: `P0`
+- Completion rule: the task remains open until modules, specifications, tests and CI evidence are reconciled.
 
 ## Required first KPM cycle
-1. Inventory repository modules and specifications.
-2. Classify each feature by milestone and lifecycle state.
-3. Reconcile tests with implementations.
-4. inspect or run the complete test suite.
-5. Record CI evidence without assumptions.
-6. Calculate real completion percentages.
-7. Select the next dependency-valid P0/P1 task.
+1. Inventory repository modules and specifications. **IN PROGRESS**
+2. Classify each feature by milestone and lifecycle state. **PENDING**
+3. Reconcile tests with implementations. **PENDING**
+4. Inspect or run the complete test suite. **PENDING**
+5. Record CI evidence without assumptions. **PENDING**
+6. Calculate real completion percentages. **PENDING**
+7. Select the next dependency-valid P0/P1 task. **PENDING**
 
 ## Anti-infinite rule
 Closed milestones are immutable. New ideas are routed to the backlog of a later version.
