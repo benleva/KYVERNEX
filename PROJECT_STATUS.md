@@ -6,58 +6,61 @@
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
 - Code-complete milestone: **M7 — Plugin Product Interface**
 - Code-complete milestone: **M8 — Universal AI Plugin Bridge**
-- Sprint: **S011 — Provider-neutral AI invocation**
-- Governance mode: **KPM/KGO PRODUCT CODE BOUNDARY**
-- KPM cycle: `KPM-CYCLE-025`
-- KGO cycle: `KGO-CYCLE-036`
+- Active milestone: **M9 — Local AI Tool Server**
+- Active sprint: **S012 — Loopback HTTP access**
+- Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
+- KPM cycle: `KPM-CYCLE-026`
+- KGO cycle: `KGO-CYCLE-037`
 - Development package version: `1.2.0.dev0`
 
-## Product path
+## Product objective
+Expose the existing canonical AI bridge through one localhost-only HTTP server that desktop agents and local AI hosts can call without embedding Python.
 
 ```text
-AI host
--> canonical or provider-shaped tool manifest
--> kyvernex-ai-plugin / KyvernexAIBridge
+local AI host
+-> http://127.0.0.1:8765
+-> KyvernexLocalAIServer
+-> KyvernexAIBridge
 -> KyvernexPlugin
 -> governed runtime
 -> bounded host callable
--> structured response
 ```
 
-## M8 code delivered
-
-### M8-W001 — Provider-neutral AI bridge
+## M9 delivered code
+### M9-W001 — Localhost HTTP server
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-`src/kyvernex/ai_bridge.py` provides one canonical tool named `kyvernex_execute`, strict arguments and governed invocation.
+- `src/kyvernex/local_ai_server.py` provides `KyvernexLocalAIServer`;
+- binding is fixed to `127.0.0.1`;
+- `GET /health` returns plugin status;
+- `GET /manifest?format=canonical|openai|anthropic|gemini` returns the existing manifest;
+- `POST /invoke` accepts one canonical invocation object;
+- request bodies are bounded to 1 MiB;
+- unknown routes return structured JSON errors;
+- no external network client, cloud service or provider runtime is introduced.
 
-### M8-W002 — Installed AI bridge command
+### M9-W002 — Installed local server command
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-`kyvernex-ai-plugin` accepts an explicit `module:attribute` handler, prints manifests and processes JSON requests.
+- `src/kyvernex/local_ai_server_cli.py` provides the process entry point;
+- `pyproject.toml` installs `kyvernex-ai-server`;
+- `--handler module:attribute` selects one explicit host callable;
+- `--principal` fixes the governed principal;
+- `--port` selects the local TCP port.
 
-### M8-W003 — Persistent multi-request process
-Status: `CODE_COMPLETE_UNVERIFIED`
-
-`--stream` keeps one bridge alive and processes JSON Lines with per-line error isolation.
-
-### M8-W004 — Provider manifest exporters
-Status: `CODE_COMPLETE_UNVERIFIED`
-
-- `src/kyvernex/ai_formats.py` translates the canonical manifest;
-- supported shapes: `canonical`, `openai`, `anthropic`, `gemini`;
-- `KyvernexAIBridge.manifest_for(provider)` exposes the translation in Python;
-- `kyvernex-ai-plugin --manifest --manifest-format FORMAT` exposes it from the installed command;
-- exporters change only field layout and never duplicate runtime or governance logic.
-
-## Manifest examples
+## Current use
 
 ```text
-kyvernex-ai-plugin --handler examples.plugin_handler:handle --manifest --manifest-format canonical
-kyvernex-ai-plugin --handler examples.plugin_handler:handle --manifest --manifest-format openai
-kyvernex-ai-plugin --handler examples.plugin_handler:handle --manifest --manifest-format anthropic
-kyvernex-ai-plugin --handler examples.plugin_handler:handle --manifest --manifest-format gemini
+kyvernex-ai-server --handler examples.plugin_handler:handle --principal andrea --port 8765
+```
+
+Endpoints:
+
+```text
+GET  http://127.0.0.1:8765/health
+GET  http://127.0.0.1:8765/manifest?format=openai
+POST http://127.0.0.1:8765/invoke
 ```
 
 ## Boundary
-M8 is code-complete but unverified. No separate provider runtime, remote transport, account system, dashboard, publication or release claim has been added.
+M9 is limited to local loopback transport. It does not expose `0.0.0.0`, TLS termination, authentication services, public hosting, databases, dashboards, accounts or billing. No verification or release claim is made.
