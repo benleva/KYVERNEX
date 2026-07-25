@@ -1,12 +1,18 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, fields
+import json
+from dataclasses import asdict, dataclass, field, fields
 from enum import StrEnum
+from pathlib import Path
 from typing import Iterable
 
 
 class KPMError(RuntimeError):
     """Raised when the development governance state is invalid."""
+
+
+class KGOError(RuntimeError):
+    """Raised when autonomous governance orchestration cannot continue."""
 
 
 class WorkStatus(StrEnum):
@@ -25,6 +31,20 @@ class Priority(StrEnum):
     P2 = "P2"
     P3 = "P3"
     P4 = "P4"
+
+
+class GovernanceMode(StrEnum):
+    MANUAL = "MANUAL"
+    AUTONOMOUS = "AUTONOMOUS"
+
+
+class GovernanceState(StrEnum):
+    READY = "READY"
+    RUNNING = "RUNNING"
+    PAUSED = "PAUSED"
+    BLOCKED = "BLOCKED"
+    MILESTONE_COMPLETE = "MILESTONE_COMPLETE"
+    RELEASE_COMPLETE = "RELEASE_COMPLETE"
 
 
 @dataclass(slots=True, frozen=True)
@@ -83,6 +103,23 @@ class KPMReport:
     remaining_story_points: int
     blocked_items: tuple[str, ...]
     next_item_id: str | None
+
+
+@dataclass(slots=True, frozen=True)
+class GovernanceCheckpoint:
+    mode: GovernanceMode
+    state: GovernanceState
+    target_version: str
+    current_milestone_id: str | None
+    current_item_id: str | None
+    completed_milestones: tuple[str, ...]
+    completed_items: tuple[str, ...]
+    blocked_items: tuple[str, ...]
+    completion_percent: float
+    cycle: int
+    last_verified_commit: str | None = None
+    last_verified_test: str | None = None
+    last_verified_ci: str | None = None
 
 
 class KyvernexProgramManager:
@@ -196,3 +233,131 @@ class KyvernexProgramManager:
             return self.items[item_id]
         except KeyError as exc:
             raise KPMError("TASK_NON_TROVATO") from exc
+
+
+class KyvernexGovernanceOrchestrator:
+    """Autonomous coordinator layered over KPM and contained in the same module."""
+
+    def __init__(
+        self,
+        *,
+        manager: KyvernexProgramManager,
+        target_version: str = "1.0",
+        checkpoint_path: str | Path | None = None,
+    ) -> None:
+        self.manager = manager
+        self.target_version = target_version
+        self.checkpoint_path = Path(checkpoint_path) if checkpoint_path is not None else None
+        self.mode = GovernanceMode.MANUAL
+        self.state = GovernanceState.READY
+        self.current_milestone_id: str | None = None
+        self.current_item_id: str | None = None
+        self.cycle = 0
+        self.last_verified_commit: str | None = None
+        self.last_verified_test: str | None = None
+        self.last_verified_ci: str | None = None
+
+    def start_autonomous(self, *, milestone_id: str | None = None) -> GovernanceCheckpoint:
+        self.mode = GovernanceMode.AUTONOMOUS
+        self.state = GovernanceState.RUNNING
+        self.current_milestone_id = milestone_id or self._next_open_milestone_id()
+        if self.current_milestone_id is None:
+            self.state = GovernanceState.RELEASE_COMPLETE
+            return self.save_checkpoint()
+        return self.advance()
+
+    def advance(self) -> GovernanceCheckpoint:
+        if self.mode != GovernanceMode.AUTONOMOUS:
+            raise KGOError("MODALITA_AUTONOMA_NON_ATTIVA")
+        if self.state in {GovernanceState.RELEASE_COMPLETE, GovernanceState.MILESTONE_COMPLETE}:
+            return self.save_checkpoint()
+        self.cycle += 1
+        milestone_id = self.current_milestone_id or self._next_open_milestone_id()
+        self.current_milestone_id = milestone_id
+        if milestone_id is None:
+            self.current_item_id = None
+            self.state = GovernanceState.RELEASE_COMPLETE
+            return self.save_checkpoint()
+        next_item = self.manager.next_item(milestone_id=milestone_id)
+        if next_item is not None:
+            self.manager.start(next_item.item_id)
+            self.current_item_id = next_item.item_id
+            self.state = GovernanceState.RUNNING
+            return self.save_checkpoint()
+        unfinished = [
+            item for item in self.manager.items.values()
+            if item.milestone_id == milestone_id and item.status != WorkStatus.DONE
+        ]
+        if unfinished:
+            self.current_item_id = unfinished[0].item_id
+            self.state = GovernanceState.BLOCKED
+            return self.save_checkpoint()
+        self.manager.close_milestone(milestone_id)
+        self.current_item_id = None
+        self.state = GovernanceState.MILESTONE_COMPLETE
+        return self.save_checkpoint()
+
+    def complete_current_item(self, done: DefinitionOfDone) -> GovernanceCheckpoint:
+        if self.current_item_id is None:
+            raise KGOError("NESSUN_TASK_CORRENTE")
+        item = self.manager._get(self.current_item_id)
+        item.done = done
+        self.manager.close_item(item.item_id)
+        self.current_item_id = None
+        self.state = GovernanceState.RUNNING
+        return self.advance()
+
+    def resume(self) -> GovernanceCheckpoint:
+        if self.checkpoint_path is None or not self.checkpoint_path.exists():
+            raise KGOError("CHECKPOINT_NON_TROVATO")
+        data = json.loads(self.checkpoint_path.read_text(encoding="utf-8"))
+        self.mode = GovernanceMode(data["mode"])
+        self.state = GovernanceState(data["state"])
+        self.target_version = data["target_version"]
+        self.current_milestone_id = data.get("current_milestone_id")
+        self.current_item_id = data.get("current_item_id")
+        self.cycle = int(data["cycle"])
+        self.last_verified_commit = data.get("last_verified_commit")
+        self.last_verified_test = data.get("last_verified_test")
+        self.last_verified_ci = data.get("last_verified_ci")
+        return self.checkpoint()
+
+    def checkpoint(self) -> GovernanceCheckpoint:
+        report = self.manager.report()
+        return GovernanceCheckpoint(
+            mode=self.mode,
+            state=self.state,
+            target_version=self.target_version,
+            current_milestone_id=self.current_milestone_id,
+            current_item_id=self.current_item_id,
+            completed_milestones=tuple(sorted(m.milestone_id for m in self.manager.milestones.values() if m.closed)),
+            completed_items=tuple(sorted(i.item_id for i in self.manager.items.values() if i.status == WorkStatus.DONE)),
+            blocked_items=report.blocked_items,
+            completion_percent=report.completion_percent,
+            cycle=self.cycle,
+            last_verified_commit=self.last_verified_commit,
+            last_verified_test=self.last_verified_test,
+            last_verified_ci=self.last_verified_ci,
+        )
+
+    def save_checkpoint(self) -> GovernanceCheckpoint:
+        checkpoint = self.checkpoint()
+        if self.checkpoint_path is not None:
+            self.checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+            payload = asdict(checkpoint)
+            payload["mode"] = checkpoint.mode.value
+            payload["state"] = checkpoint.state.value
+            self.checkpoint_path.write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True),
+                encoding="utf-8",
+            )
+        return checkpoint
+
+    def _next_open_milestone_id(self) -> str | None:
+        candidates = [
+            milestone for milestone in self.manager.milestones.values()
+            if not milestone.closed and milestone.target_version <= self.target_version
+        ]
+        if not candidates:
+            return None
+        return sorted(candidates, key=lambda item: item.milestone_id)[0].milestone_id
