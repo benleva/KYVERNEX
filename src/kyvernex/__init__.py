@@ -26,6 +26,13 @@ from .core import AET, ContinuousValidator, KyvernexEngine
 from .decision_gate import CognitiveDecisionGate, DecisionDisposition, DecisionGateError, DecisionPolicy, GovernedDecision
 from .deletion import CognitiveDeletionCoordinator, DeletionPolicy, DeletionRestrictedError, DeletionResult, DeletionTransactionError
 from .durable_deletion import DeletionJournalError, DeletionJournalState, DurableDeletionCoordinator, RecoveryResult
+from .execution_clock import (
+    ExecutionClockError,
+    ExecutionMetrics,
+    ExecutionPerformanceClock,
+    ExecutionSample,
+    write_execution_metrics,
+)
 from .execution_engine import (
     CommandRunner, ExecutionPolicy, ExecutionRequest, ExecutionResult as KEXExecutionResult,
     ExecutionStatus, KEXError, KyvernexExecutionEngine, SubprocessCommandRunner,
@@ -90,7 +97,8 @@ __all__ = [
     "DeletionJournalError", "DeletionJournalState", "DeletionPolicy", "DeletionRestrictedError",
     "DeletionResult", "DeletionTransactionError", "DevelopmentAction", "DevelopmentPolicy",
     "DevelopmentStep", "DurableDeletionCoordinator", "EchoAdapter", "EvidenceBasedRollbackController",
-    "ExecutionPolicy", "ExecutionRequest", "ExecutionResult", "ExecutionStatus", "ExplainabilityError",
+    "ExecutionClockError", "ExecutionMetrics", "ExecutionPerformanceClock", "ExecutionPolicy",
+    "ExecutionRequest", "ExecutionResult", "ExecutionSample", "ExecutionStatus", "ExplainabilityError",
     "FailingAdapter", "FileChange", "GovernanceCheckpoint", "GovernanceMode", "GovernanceState",
     "GovernedDecision", "GovernedExecutionResult", "GovernedResponse", "GraphPersistenceFormatError",
     "InterProcessFileLock", "IsolatedCommitError", "IsolatedCommitPlan", "IsolatedCommitPolicy",
@@ -109,8 +117,8 @@ __all__ = [
     "ValidationOutcome", "ValidationRecord", "VerificationEvidence", "VerificationStatus",
     "VersionChangeType", "VersionConflictError", "VersionTransition", "VersioningError",
     "WorkItem", "WorkStatus", "build_m3_backlog", "default_rules", "execution_clock_assessment",
-    "load_state", "persist_audit", "to_primitive", "write_result", "write_rollback_plan",
-    "write_verification_result",
+    "load_state", "persist_audit", "to_primitive", "write_execution_metrics", "write_result",
+    "write_rollback_plan", "write_verification_result",
 ]
 
 __version__ = "0.1.0.dev0"
