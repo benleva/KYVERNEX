@@ -17,6 +17,13 @@ from .confidence import (
     ConfidenceError,
 )
 from .core import AET, ContinuousValidator, KyvernexEngine
+from .decision_gate import (
+    CognitiveDecisionGate,
+    DecisionDisposition,
+    DecisionGateError,
+    DecisionPolicy,
+    GovernedDecision,
+)
 from .deletion import (
     CognitiveDeletionCoordinator,
     DeletionPolicy,
@@ -76,22 +83,23 @@ __all__ = [
     "AET", "AIAdapter", "AdapterExecutionError", "AdapterRequest", "AdapterResponse",
     "AuditEvent", "AuditSink", "AuditTraceError", "AuditTraceReader", "AuditTraceRecord",
     "CognitiveCategory", "CognitiveConfidenceEngine", "CognitiveDecisionDossier",
-    "CognitiveDecisionExplainer", "CognitiveDeletionCoordinator", "CognitiveGraph",
-    "CognitiveObject", "CognitiveRelation", "CognitiveState", "CognitiveVersionManager",
-    "ConfidenceAssessment", "ConfidenceCycleError", "ConfidenceError", "ContinuousValidator",
+    "CognitiveDecisionExplainer", "CognitiveDecisionGate", "CognitiveDeletionCoordinator",
+    "CognitiveGraph", "CognitiveObject", "CognitiveRelation", "CognitiveState",
+    "CognitiveVersionManager", "ConfidenceAssessment", "ConfidenceCycleError", "ConfidenceError",
+    "ContinuousValidator", "DecisionDisposition", "DecisionGateError", "DecisionPolicy",
     "DeletionJournalError", "DeletionJournalState", "DeletionPolicy", "DeletionRestrictedError",
     "DeletionResult", "DeletionTransactionError", "DurableDeletionCoordinator", "EchoAdapter",
-    "ExecutionResult", "ExplainabilityError", "FailingAdapter", "GovernedExecutionResult",
-    "GovernedResponse", "GraphPersistenceFormatError", "InterProcessFileLock", "JsonAuditTrace",
-    "JsonCognitiveGraph", "JsonSessionMemory", "KyvernexEngine", "KyvernexOrchestrator",
-    "KyvernexUnitOfWork", "MemoryConflictError", "MultiTransactionDeletionCoordinator",
-    "PersistenceFormatError", "ProcessLockError", "ProcessSafeMultiTransactionDeletionCoordinator",
-    "RecoveryBatch", "RecoveryResult", "ReferentialIntegrityError", "RelationConflictError",
-    "RelationType", "ResponseGovernor", "Rule", "RuleEngine", "RuleResult", "RuleSeverity",
-    "SessionMemory", "UnitOfWorkCommitError", "UnitOfWorkError", "UnitOfWorkResult",
-    "UnitOfWorkState", "UnitOfWorkStateError", "ValidationOutcome", "ValidationRecord",
-    "VersionChangeType", "VersionConflictError", "VersionTransition", "VersioningError",
-    "default_rules", "persist_audit", "to_primitive",
+    "ExecutionResult", "ExplainabilityError", "FailingAdapter", "GovernedDecision",
+    "GovernedExecutionResult", "GovernedResponse", "GraphPersistenceFormatError",
+    "InterProcessFileLock", "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory",
+    "KyvernexEngine", "KyvernexOrchestrator", "KyvernexUnitOfWork", "MemoryConflictError",
+    "MultiTransactionDeletionCoordinator", "PersistenceFormatError", "ProcessLockError",
+    "ProcessSafeMultiTransactionDeletionCoordinator", "RecoveryBatch", "RecoveryResult",
+    "ReferentialIntegrityError", "RelationConflictError", "RelationType", "ResponseGovernor",
+    "Rule", "RuleEngine", "RuleResult", "RuleSeverity", "SessionMemory", "UnitOfWorkCommitError",
+    "UnitOfWorkError", "UnitOfWorkResult", "UnitOfWorkState", "UnitOfWorkStateError",
+    "ValidationOutcome", "ValidationRecord", "VersionChangeType", "VersionConflictError",
+    "VersionTransition", "VersioningError", "default_rules", "persist_audit", "to_primitive",
 ]
 
 __version__ = "0.1.0.dev0"
