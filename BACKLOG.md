@@ -7,7 +7,7 @@
 - Previous stable tag: `v1.0.0`
 - Published prerelease tag: `v1.1.0-rc.1`
 - Active milestone: `M6 — KYVERNEX Plugin Runtime`
-- Active sprint: `S006 — Govern host contracts`
+- Active sprint: `S007 — Fail-closed plugin configuration`
 - Target version: `1.2.0`
 - Maintenance line: `1.1.x`
 
@@ -39,23 +39,55 @@ Scope: build the installable product plugin layer over the existing KYVERNEX eng
 |---|---|---:|---:|---|---|
 | M6-W001 | Freeze the plugin contract, lifecycle, schemas and authority boundaries | P0 | 5 | DONE | Stable `v1.1.0` baseline |
 | M6-W002 | Implement the core plugin runtime and lifecycle state machine | P0 | 8 | DONE | M6-W001 |
-| M6-W003 | Implement governed host request, response and error contracts | P0 | 8 | IN_VERIFICATION | M6-W002 |
+| M6-W003 | Implement governed host request, response and error contracts | P0 | 8 | DONE | M6-W002 |
 | M6-W004 | Add host adapter boundary and reference in-process adapter | P1 | 8 | BACKLOG | M6-W003 |
-| M6-W005 | Add configuration loading, validation and fail-closed defaults | P0 | 5 | BACKLOG | M6-W002 |
+| M6-W005 | Add configuration loading, validation and fail-closed defaults | P0 | 5 | IN_PROGRESS | M6-W002 |
 | M6-W006 | Add security-boundary and lifecycle integration tests | P0 | 8 | BACKLOG | M6-W003, M6-W004, M6-W005 |
 | M6-W007 | Add installable example, developer documentation and package entry point | P1 | 5 | BACKLOG | M6-W006 |
 | M6-W008 | Run complete verification, build, clean installation and plugin smoke test | P0 | 8 | BACKLOG | M6-W007 |
 | M6-W009 | Prepare the first `1.2.0` prerelease package and release evidence | P1 | 3 | BACKLOG | M6-W008 |
 
-Progress: `2/9` work items, `13/58` story points. M6-W003 remains open until fresh CI is green.
+Progress: `3/9` work items, `21/58` story points.
 
-## M6-W003 current implementation
+## Verified evidence
 
-- `src/kyvernex/plugin_contracts.py` defines immutable request, response, decision, evidence and error envelopes.
-- `src/kyvernex/plugin_runtime.py` validates and authorizes requests before adapter invocation.
-- `tests/test_plugin_runtime.py` covers success, blocked, failed, duplicate-ID, unknown-field, limit and lifecycle behavior.
-- blocked requests do not reach the adapter;
-- no ambient filesystem, network, process or repository authority is added.
+### M6-W001
+
+Frozen contract:
+
+- `repository/specifications/M6_PLUGIN_RUNTIME_CONTRACT.md`;
+- `repository/specifications/m6-plugin-contract.schema.json`.
+
+### M6-W002
+
+Verified lifecycle runtime on commit `691c769`:
+
+- `src/kyvernex/plugin_runtime.py`;
+- `tests/test_plugin_runtime.py`;
+- public exports in `src/kyvernex/__init__.py`.
+
+### M6-W003
+
+Verified governed host contracts on commit `83ce3a3`:
+
+- `src/kyvernex/plugin_contracts.py`;
+- governed integration in `src/kyvernex/plugin_runtime.py`;
+- targeted tests in `tests/test_plugin_runtime.py`;
+- public contract exports in `src/kyvernex/__init__.py`.
+
+GitHub Actions is green for the Test Suite, Reference Prototype Tests, KGO v3 and Pages deployment. No filesystem, network, process or repository authority expansion was introduced.
+
+## Current work item
+
+`M6-W005` is selected before the P1 adapter work because it is P0 and already dependency-valid. It must establish:
+
+- strict configuration field validation;
+- zero-authority defaults;
+- normalized filesystem roots;
+- disabled-by-default network and process access;
+- explicit bounded allowlists;
+- immutable effective configuration after initialization;
+- rejection of any silent authority increase.
 
 ## Definition of M6 Done
 
@@ -81,4 +113,4 @@ M6 is complete only when:
 
 ## Continuation policy
 
-Read current CI evidence for M6-W003. On green, close it and activate the next dependency-valid work item. On failure, record the exact failure before repair.
+KPM/KGO execute M6 in dependency and priority order. M6-W005 must conform to the frozen contract and verified runtime. Stop for current verification failure, contract contradiction, unresolved P0 security boundary, external publication boundary or milestone completion.
