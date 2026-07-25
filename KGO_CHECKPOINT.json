@@ -1,64 +1,59 @@
 {
   "schema_version": "1.0",
   "orchestrator": "KGO",
-  "mode": "AUTONOMOUS_SCOPE_LOCKED",
+  "mode": "AUTONOMOUS_PRODUCT_CODE",
   "state": "RUNNING",
   "target_release": "1.2.0",
-  "stable_release": {"version": "1.1.0", "tag": "v1.1.0", "status": "PUBLISHED_LATEST", "immutable": true},
-  "milestone": {"id": "M6", "title": "KYVERNEX Plugin Runtime", "status": "ACTIVE"},
-  "sprint": {"id": "S009", "title": "Focused plugin integration verification", "status": "ACTIVE"},
-  "cycle": "KGO-CYCLE-030",
-  "kpm_cycle": "KPM-CYCLE-019",
-  "completed_tasks": ["M6-W001", "M6-W002", "M6-W003", "M6-W004", "M6-W005"],
+  "stable_release": {
+    "version": "1.1.0",
+    "tag": "v1.1.0",
+    "status": "PUBLISHED_LATEST",
+    "immutable": true
+  },
+  "paused_milestone": {
+    "id": "M6",
+    "title": "KYVERNEX Plugin Runtime",
+    "status": "PAUSED_BY_USER",
+    "completed_tasks": ["M6-W001", "M6-W002", "M6-W003", "M6-W004", "M6-W005"],
+    "paused_tasks": ["M6-W006", "M6-W007", "M6-W008", "M6-W009"]
+  },
+  "milestone": {
+    "id": "M7",
+    "title": "Plugin Product Interface",
+    "status": "ACTIVE"
+  },
+  "sprint": {
+    "id": "S010",
+    "title": "Usable plugin API",
+    "status": "ACTIVE"
+  },
+  "cycle": "KGO-CYCLE-031",
+  "kpm_cycle": "KPM-CYCLE-020",
   "active_task": {
-    "id": "M6-W006",
-    "title": "Add focused lifecycle and authority integration tests",
-    "status": "IN_PROGRESS",
+    "id": "M7-W001",
+    "title": "Create public plugin facade and installed command",
+    "status": "CODE_COMPLETE_UNVERIFIED",
     "priority": "P0"
   },
-  "scope_lock": {
-    "path": "repository/specifications/M6_SCOPE_LOCK.md",
-    "status": "FROZEN",
-    "single_objective": "Installable Python host to governed runtime to bounded callable adapter to structured response",
-    "maximum_adapter_count": 1,
-    "adapter_type": "IN_PROCESS_PYTHON_CALLABLE",
-    "new_feature_insertion": "FORBIDDEN",
-    "strategic_roadmap_modified": false
+  "code_evidence": {
+    "facade": "src/kyvernex/plugin.py",
+    "command": "src/kyvernex/plugin_cli.py",
+    "package_entry_point": "kyvernex-plugin",
+    "public_export": "KyvernexPlugin",
+    "latest_code_commit": "8afc7d522916e085674bf087c052e95659f5fe79"
   },
-  "verified_baselines": {
-    "runtime": "691c769",
-    "host_contracts": "83ce3a3",
-    "configuration": "a8e7f36",
-    "callable_adapter": "b138134"
-  },
-  "adapter_verification": {
-    "test_suite": "GREEN",
-    "kgo_v3": "GREEN",
-    "reference_prototype_tests": "GREEN",
-    "pages_deployment": "GREEN",
-    "authority_review": "GREEN_NO_EXPANSION"
-  },
-  "integration_test_scope": {
-    "code_changes_allowed": "TESTS_ONLY",
-    "authorized_execution": "REQUIRED",
-    "blocked_execution_no_callable": "REQUIRED",
-    "zero_authority_defaults": "REQUIRED",
-    "lifecycle_terminal_shutdown": "REQUIRED",
-    "network": "NONE",
-    "filesystem": "NONE",
-    "process": "NONE",
-    "repository": "FORBIDDEN",
-    "environment_read": "FORBIDDEN"
-  },
-  "remaining_sequence": ["M6-W006", "M6-W007", "M6-W008", "M6-W009"],
+  "next_product_work": [
+    "M7-W002",
+    "M7-W003",
+    "M7-W004",
+    "M7-W005"
+  ],
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Add focused tests only for the frozen minimum end-to-end plugin path, then obtain fresh CI evidence before advancing.",
+  "resume_rule": "Continue with executable plugin product code. Do not substitute tests, governance prose or roadmap expansion for code delivery.",
   "stop_conditions": [
-    "SCOPE_EXPANSION",
-    "CURRENT_VERIFICATION_FAILURE",
+    "PRODUCT_DIRECTION_CONTRADICTION",
     "AUTHORITY_EXPANSION",
-    "CONTRACT_CONTRADICTION",
     "EXTERNAL_PUBLICATION_BOUNDARY",
     "MILESTONE_DONE"
   ]
