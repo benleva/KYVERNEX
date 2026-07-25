@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from .adapters import AIAdapter, AdapterExecutionError, AdapterRequest, AdapterResponse
 from .core import KyvernexEngine
+from .graph import CognitiveGraph
 from .models import AuditEvent, ExecutionResult, ValidationOutcome
 from .response_governance import GovernedResponse, ResponseGovernor
 
@@ -21,10 +22,20 @@ class GovernedExecutionResult:
 class KyvernexOrchestrator:
     """Runs governance before and after a controlled AI-adapter invocation."""
 
-    def __init__(self, adapter: AIAdapter, *, engine: KyvernexEngine | None = None) -> None:
+    def __init__(
+        self,
+        adapter: AIAdapter,
+        *,
+        engine: KyvernexEngine | None = None,
+        graph: CognitiveGraph | None = None,
+    ) -> None:
         self._adapter = adapter
         self._engine = engine or KyvernexEngine()
-        self._response_governor = ResponseGovernor(memory=self._engine.memory)
+        self._graph = graph or CognitiveGraph()
+        self._response_governor = ResponseGovernor(
+            memory=self._engine.memory,
+            graph=self._graph,
+        )
 
     @property
     def adapter(self) -> AIAdapter:
@@ -33,6 +44,10 @@ class KyvernexOrchestrator:
     @property
     def engine(self) -> KyvernexEngine:
         return self._engine
+
+    @property
+    def graph(self) -> CognitiveGraph:
+        return self._graph
 
     def execute(
         self,
