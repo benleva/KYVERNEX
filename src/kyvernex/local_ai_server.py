@@ -7,6 +7,7 @@ from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 from .ai_bridge import KyvernexAIBridge
+from .local_ai_openapi import build_local_ai_openapi
 
 
 class KyvernexLocalAIServer:
@@ -18,6 +19,11 @@ class KyvernexLocalAIServer:
         self._bridge = bridge
         handler_type = self._build_handler(bridge)
         self._server = ThreadingHTTPServer(("127.0.0.1", port), handler_type)
+        host, bound_port = self._server.server_address
+        handler_type.openapi_document = build_local_ai_openapi(
+            host=str(host),
+            port=int(bound_port),
+        )
 
     @property
     def address(self) -> tuple[str, int]:
@@ -36,6 +42,7 @@ class KyvernexLocalAIServer:
     def _build_handler(bridge: KyvernexAIBridge) -> type[BaseHTTPRequestHandler]:
         class Handler(BaseHTTPRequestHandler):
             server_version = "KYVERNEXLocalAI/1.0"
+            openapi_document: dict[str, Any] = {}
 
             def _write_json(self, status: int, payload: Any) -> None:
                 body = json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
@@ -59,6 +66,9 @@ class KyvernexLocalAIServer:
                         self._write_json(400, {"status": "FAILED", "error": str(exc)})
                         return
                     self._write_json(200, payload)
+                    return
+                if parsed.path == "/openapi.json":
+                    self._write_json(200, self.openapi_document)
                     return
                 self._write_json(404, {"status": "FAILED", "error": "route not found"})
 
