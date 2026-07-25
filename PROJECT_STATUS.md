@@ -8,8 +8,8 @@
 - Active milestone: **M8 — Universal AI Plugin Bridge**
 - Active sprint: **S011 — Provider-neutral AI invocation**
 - Governance mode: **KPM/KGO ACTIVE — PRODUCT CODE**
-- KPM cycle: `KPM-CYCLE-023`
-- KGO cycle: `KGO-CYCLE-034`
+- KPM cycle: `KPM-CYCLE-024`
+- KGO cycle: `KGO-CYCLE-035`
 - Development package version: `1.2.0.dev0`
 
 ## Product objective
@@ -27,7 +27,7 @@ AI host
 ## M7 preserved code
 M7 remains `CODE_COMPLETE_UNVERIFIED`. It provides the public facade, installed plugin command, explicit handler loading, JSON file workflows, persistent local sessions and the `1.2.0.dev0` development line.
 
-## M8 active code
+## M8 delivered code
 ### M8-W001 — Provider-neutral AI bridge
 Status: `CODE_COMPLETE_UNVERIFIED`
 
@@ -41,21 +41,46 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 ### M8-W002 — Installed AI bridge command
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `src/kyvernex/ai_plugin_cli.py` reads one JSON object from standard input;
-- `--handler module:attribute` selects the explicit host callable;
-- `--manifest` prints the tool definition;
-- `pyproject.toml` installs `kyvernex-ai-plugin`;
+- `src/kyvernex/ai_plugin_cli.py` provides `kyvernex-ai-plugin`;
+- `--handler module:attribute` selects one explicit host callable;
+- `--manifest` prints the canonical tool definition;
+- `pyproject.toml` installs the command;
 - `src/kyvernex/__init__.py` exports `KyvernexAIBridge`.
 
-## Current use
+### M8-W003 — Persistent multi-request process
+Status: `CODE_COMPLETE_UNVERIFIED`
+
+The installed command now supports:
 
 ```text
-kyvernex-ai-plugin --handler examples.plugin_handler:handle --manifest
+--stream
 ```
+
+In stream mode:
+- one `KyvernexAIBridge` instance remains alive;
+- standard input is interpreted as JSON Lines;
+- each non-empty line is one independent invocation;
+- each response is emitted immediately as one JSON line;
+- malformed requests return a line-specific `FAILED` response without terminating the process;
+- the process exits after end-of-file and shuts down the bridge once.
+
+## Current use
+Single request:
 
 ```text
 echo '{"input":{"message":"ciao"}}' | kyvernex-ai-plugin --handler examples.plugin_handler:handle --principal andrea
 ```
 
+Persistent request stream:
+
+```text
+kyvernex-ai-plugin --handler examples.plugin_handler:handle --principal andrea --stream
+```
+
+Then send one JSON object per line.
+
+## Active work
+- M8-W004 provider format exporters from the same canonical manifest: `IN_PROGRESS`.
+
 ## Boundary
-M8 builds one AI-neutral bridge. It does not create separate ChatGPT, Claude, Gemini or Copilot plugins, remote transports, accounts, billing, dashboards or external services. No verification or release claim is made yet.
+M8 builds one AI-neutral bridge. It does not create separate ChatGPT, Claude, Gemini or Copilot runtimes, remote transports, accounts, billing, dashboards or external services. No verification or release claim is made yet.
