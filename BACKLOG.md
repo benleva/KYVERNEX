@@ -20,24 +20,22 @@ M7-W001 through M7-W005 remain `CODE_COMPLETE_UNVERIFIED`. No test, installation
 |---|---|---:|---|
 | M8-W001 | Public provider-neutral `KyvernexAIBridge` | P0 | CODE_COMPLETE_UNVERIFIED |
 | M8-W002 | Installed `kyvernex-ai-plugin` JSON bridge command | P0 | CODE_COMPLETE_UNVERIFIED |
-| M8-W003 | Streaming multi-request process mode | P0 | BACKLOG |
-| M8-W004 | Provider format exporters using the same canonical manifest | P1 | BACKLOG |
+| M8-W003 | Persistent JSONL multi-request process mode | P0 | CODE_COMPLETE_UNVERIFIED |
+| M8-W004 | Provider format exporters using the same canonical manifest | P1 | IN_PROGRESS |
 
 ## M8 code evidence
 - `src/kyvernex/ai_bridge.py`: canonical AI tool bridge;
-- `src/kyvernex/ai_plugin_cli.py`: standard-input JSON command;
+- `src/kyvernex/ai_plugin_cli.py`: single-request and persistent JSONL command;
 - `pyproject.toml`: installed `kyvernex-ai-plugin` entry point;
 - `src/kyvernex/__init__.py`: public `KyvernexAIBridge` export.
 
-## Current product behavior
+## Persistent mode
 
 ```text
-kyvernex-ai-plugin --handler examples.plugin_handler:handle --manifest
+kyvernex-ai-plugin --handler examples.plugin_handler:handle --principal andrea --stream
 ```
 
-```text
-echo '{"input":{"message":"ciao"}}' | kyvernex-ai-plugin --handler examples.plugin_handler:handle --principal andrea
-```
+The process keeps one bridge alive, consumes one JSON object per line and emits one response per line. A malformed line produces a line-specific failure response while later lines continue to be processed.
 
 ## Product rule
 M8 must preserve one canonical KYVERNEX plugin. Provider-specific representations may translate the same manifest but must not fork governance logic or create separate runtime implementations. Testing is not the active user-directed workstream and no green claim is made.
