@@ -38,18 +38,21 @@ Release `KYVERNEX 1.0.0` is verified, tagged, published and marked Latest.
 
 Status: `ACTIVE`
 Target: `1.1.0`
-
-Goal: allow KPM and KGO to resume autonomous, evidence-bounded progression after Release 1.0 without altering the immutable `v1.0.0` baseline or inventing unsupported features.
+Selected capability: `KPM/KGO autonomous control CLI`
 
 | Work item | Capability | Priority | Status | Dependencies |
 |---|---|---:|---|---|
 | M4-W001 | Synchronize the autonomous control plane with the published 1.0 baseline | P0 | DONE | None |
-| M4-W002 | Produce an evidence-backed inventory of post-release capability gaps | P0 | IN_DEVELOPMENT | M4-W001 |
-| M4-W003 | Rank validated gaps and select the first dependency-valid 1.1 capability | P0 | READY | M4-W002 |
-| M4-W004 | Write the frozen specification and change manifest for the selected capability | P1 | BACKLOG | M4-W003 |
+| M4-W002 | Produce an evidence-backed inventory of post-release capability gaps | P0 | DONE | M4-W001 |
+| M4-W003 | Rank validated gaps and select the first dependency-valid 1.1 capability | P0 | DONE | M4-W002 |
+| M4-W004 | Write the frozen specification and change manifest for the autonomous control CLI | P1 | IN_DEVELOPMENT | M4-W003 |
 | M4-W005 | Implement the selected capability within the authorized boundary | P1 | BACKLOG | M4-W004 |
 | M4-W006 | Run targeted and complete verification, build and clean installation | P0 | BACKLOG | M4-W005 |
 | M4-W007 | Synchronize documentation and prepare the 1.1 release candidate | P1 | BACKLOG | M4-W006 |
+
+## Evidence
+
+The gap inventory is recorded in `repository/specifications/M4_POST_RELEASE_CAPABILITY_GAP_INVENTORY_v0.1.md`. It selected the CLI because the KPM/KGO orchestration API exists, while the installed package exposes no supported start, status, advance or resume command.
 
 ## Continuation policy
 
