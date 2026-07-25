@@ -11,6 +11,7 @@ from .models import (
     ValidationOutcome,
     ValidationRecord,
 )
+from .persistence import JsonSessionMemory, PersistenceFormatError
 from .rules import Rule, RuleEngine, RuleResult, RuleSeverity, default_rules
 from .serialization import to_primitive
 
@@ -22,8 +23,10 @@ __all__ = [
     "CognitiveState",
     "ContinuousValidator",
     "ExecutionResult",
+    "JsonSessionMemory",
     "KyvernexEngine",
     "MemoryConflictError",
+    "PersistenceFormatError",
     "Rule",
     "RuleEngine",
     "RuleResult",
