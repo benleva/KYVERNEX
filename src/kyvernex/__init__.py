@@ -3,6 +3,7 @@
 from .adapters import (
     AIAdapter, AdapterExecutionError, AdapterRequest, AdapterResponse, EchoAdapter, FailingAdapter,
 )
+from .ai_bridge import KyvernexAIBridge
 from .audit_sink import AuditSink, persist_audit
 from .audit_trace import AuditTraceError, AuditTraceRecord, JsonAuditTrace
 from .autonomous_development import (
@@ -128,7 +129,7 @@ __all__ = [
     "InterProcessFileLock", "IsolatedCommitError", "IsolatedCommitPlan", "IsolatedCommitPolicy",
     "JsonAuditTrace", "JsonCognitiveGraph", "JsonSessionMemory", "KEXError", "KEXExecutionResult",
     "KGOError", "KGOState", "KGOV3Loop", "KPMError", "KPMFeatureAssessment", "KPMReport",
-    "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
+    "KyvernexAIBridge", "KyvernexEngine", "KyvernexExecutionEngine", "KyvernexGovernanceOrchestrator",
     "KyvernexOrchestrator", "KyvernexPlugin", "KyvernexPluginRuntime", "KyvernexProgramManager",
     "KyvernexUnitOfWork", "LoopDecision", "LoopResult", "MemoryConflictError", "Milestone",
     "MultiTransactionDeletionCoordinator", "PLUGIN_API_VERSION", "PLUGIN_ID", "PersistenceFormatError",
