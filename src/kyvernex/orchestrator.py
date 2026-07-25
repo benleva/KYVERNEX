@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from .adapters import AIAdapter, AdapterExecutionError, AdapterRequest, AdapterResponse
 from .core import KyvernexEngine
 from .models import AuditEvent, ExecutionResult, ValidationOutcome
+from .response_governance import GovernedResponse, ResponseGovernor
 
 
 @dataclass(slots=True, frozen=True)
@@ -14,6 +15,7 @@ class GovernedExecutionResult:
     adapter_audit: tuple[AuditEvent, ...]
     blocked: bool
     error: str | None = None
+    response_governance: GovernedResponse | None = None
 
 
 class KyvernexOrchestrator:
@@ -22,6 +24,7 @@ class KyvernexOrchestrator:
     def __init__(self, adapter: AIAdapter, *, engine: KyvernexEngine | None = None) -> None:
         self._adapter = adapter
         self._engine = engine or KyvernexEngine()
+        self._response_governor = ResponseGovernor(memory=self._engine.memory)
 
     @property
     def adapter(self) -> AIAdapter:
@@ -136,9 +139,18 @@ class KyvernexOrchestrator:
                 },
             )
         )
+
+        governed_response = self._response_governor.govern(
+            response,
+            session_id=governance.session_id,
+            parent_object_id=obj.object_id,
+        )
+        audit.extend(governed_response.audit)
+
         return GovernedExecutionResult(
             governance=governance,
             adapter_response=response,
             adapter_audit=tuple(audit),
             blocked=False,
+            response_governance=governed_response,
         )
