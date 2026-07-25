@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1",
+  "orchestrator": "KGO",
+  "mode": "AUTONOMOUS",
+  "state": "RUNNING",
+  "target_release": "1.0",
+  "milestone": {
+    "id": "M2",
+    "title": "Governance consolidation",
+    "status": "IN_PROGRESS"
+  },
+  "sprint": {
+    "id": "S001",
+    "title": "Establish measurable baseline",
+    "status": "ACTIVE"
+  },
+  "cycle": "KGO-CYCLE-001",
+  "active_task": {
+    "id": "KPM-S001-T01",
+    "title": "Inventory repository modules and specifications",
+    "status": "IN_DEVELOPMENT",
+    "priority": "P0"
+  },
+  "autonomous_continuation": true,
+  "requires_user_proceed": false,
+  "verification": {
+    "complete_test_suite": "NOT_VERIFIED",
+    "ci": "NOT_VERIFIED",
+    "project_completion": "NOT_CALCULATED"
+  },
+  "resume_rule": "Resume from this checkpoint and select the next dependency-valid action without requesting user confirmation.",
+  "stop_conditions": [
+    "MILESTONE_DONE",
+    "UNRESOLVABLE_P0_BLOCKER",
+    "EXTERNAL_AUTHORIZATION_REQUIRED",
+    "PLATFORM_EXECUTION_BOUNDARY"
+  ]
+}
