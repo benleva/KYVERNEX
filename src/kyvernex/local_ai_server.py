@@ -65,6 +65,15 @@ class KyvernexLocalAIServer:
                 self.end_headers()
                 self.wfile.write(body)
 
+            def _read_json_object(self) -> dict[str, Any]:
+                length = int(self.headers.get("Content-Length", "0"))
+                if length <= 0 or length > 1_048_576:
+                    raise ValueError("request body must be between 1 and 1048576 bytes")
+                payload = json.loads(self.rfile.read(length).decode("utf-8"))
+                if not isinstance(payload, dict):
+                    raise ValueError("request JSON must be an object")
+                return payload
+
             def do_GET(self) -> None:
                 parsed = urlparse(self.path)
                 if parsed.path in {"/", "/console"}:
@@ -88,17 +97,17 @@ class KyvernexLocalAIServer:
                 self._write_json(404, {"status": "FAILED", "error": "route not found"})
 
             def do_POST(self) -> None:
-                if urlparse(self.path).path != "/invoke":
+                path = urlparse(self.path).path
+                if path not in {"/invoke", "/tool-call"}:
                     self._write_json(404, {"status": "FAILED", "error": "route not found"})
                     return
                 try:
-                    length = int(self.headers.get("Content-Length", "0"))
-                    if length <= 0 or length > 1_048_576:
-                        raise ValueError("request body must be between 1 and 1048576 bytes")
-                    payload = json.loads(self.rfile.read(length).decode("utf-8"))
-                    if not isinstance(payload, dict):
-                        raise ValueError("request JSON must be an object")
-                    response = bridge.invoke(payload)
+                    payload = self._read_json_object()
+                    response = (
+                        bridge.invoke_tool_call(payload)
+                        if path == "/tool-call"
+                        else bridge.invoke(payload)
+                    )
                 except (UnicodeDecodeError, json.JSONDecodeError, TypeError, ValueError, RuntimeError) as exc:
                     self._write_json(400, {"status": "FAILED", "error": str(exc)})
                     return
