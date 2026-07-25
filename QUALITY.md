@@ -1,50 +1,58 @@
 # KYVERNEX QUALITY BASELINE
 
-## Scope
+## Stable baseline
 
-This document records the quality state of the published KYVERNEX `1.0.0` baseline. It does not authorize new features or modify the frozen KGO/KPM behavior.
+KYVERNEX `1.0.0` remains the verified and published stable baseline under immutable tag `v1.0.0`.
 
-## Verified evidence
+Verified Release 1.0 evidence:
 
-- M3 targeted tests: passed.
-- Complete repository test suite: passed.
-- Source distribution build: passed.
-- Wheel distribution build: passed.
-- Clean virtual-environment wheel installation: passed.
-- Installed package metadata version: `1.0.0`.
-- Public API version: `1.0.0`.
-- GitHub Actions evidence: run `#58`, green.
-- Publication: tag `v1.0.0`; GitHub Release `KYVERNEX 1.0.0`, marked Latest.
+- M3 targeted tests: passed;
+- complete repository suite: passed;
+- source and wheel builds: passed;
+- clean wheel installation: passed;
+- installed package and public API version: `1.0.0`;
+- GitHub Actions run `#58`: green;
+- GitHub Release `KYVERNEX 1.0.0`: published and marked Latest.
 
-## Completion metrics
+## Active M4 quality gate
 
-| Area | Result |
-|---|---:|
-| Historical S001 tasks | 7/7 DONE |
-| M3 work items | 6/6 DONE |
-| Release 1.0 technical gates | Complete |
-| Published stable release | Yes |
-| Active P0/P1 blockers | 0 documented |
+Selected capability: `KPM/KGO autonomous control CLI`.
+
+Implemented controls:
+
+- deterministic `start`, `status`, `advance` and `resume` commands;
+- fail-closed malformed-plan and unknown-dependency handling;
+- closed-milestone validation;
+- existing-checkpoint overwrite prevention;
+- active-item advancement prevention;
+- blocked-state exit code `2`;
+- no unsupported test, CI, repository-write or release claim;
+- write boundary limited to the supplied checkpoint path;
+- installed-wheel console-script smoke test integrated into CI.
+
+## Current evidence status
+
+| Area | State |
+|---|---|
+| M4 specification and manifest | PRESENT |
+| CLI implementation | PRESENT |
+| Targeted tests | PRESENT, FRESH CI PENDING |
+| Complete suite | FRESH CI PENDING |
+| Source and wheel builds | FRESH CI PENDING |
+| Clean installation | FRESH CI PENDING |
+| Installed CLI smoke test | FRESH CI PENDING |
+| Active documented blocker | NONE BEFORE CI RESULT |
+
+No M4 verification success is claimed until a fresh GitHub Actions run completes.
 
 ## Quality controls
 
-- Current commit evidence takes precedence over historical workflow failures.
+- Current commit evidence takes precedence over historical workflow results.
 - Correctness evidence cannot be replaced by performance measurements.
-- Rollback planning requires explicit current failure evidence and authorization.
-- Repository writes and release operations remain outside autonomous decision authority unless an executor is authorized.
-- The proprietary license notice is present; independent legal review remains recommended.
-
-## Maintenance threshold
-
-A change to the stable `1.0.x` line is admissible only when:
-
-1. the defect or maintenance need is documented;
-2. scope is explicitly authorized;
-3. targeted tests are present or updated;
-4. the complete suite passes;
-5. package build and clean installation pass when packaging is affected;
-6. project status, backlog and changelog are synchronized.
+- Rollback requires explicit current failure evidence and authorization.
+- The CLI cannot mutate Git refs, source files, branches, issues or releases.
+- The proprietary license notice remains in force; independent legal review remains recommended.
 
 ## Current quality decision
 
-`KYVERNEX 1.0.0` is the verified and published stable baseline. No unresolved technical release blocker is recorded.
+`M4-W005` is implemented and under verification. KGO must stop and record evidence if the current workflow fails; it may advance to release-candidate synchronization only after all M4 gates are green.
