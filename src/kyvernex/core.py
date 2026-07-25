@@ -4,6 +4,7 @@ from dataclasses import replace
 from typing import Any
 from uuid import uuid4
 
+from .audit_sink import AuditSink, persist_audit
 from .memory import SessionMemory
 from .models import (
     AuditEvent,
@@ -84,15 +85,21 @@ class KyvernexEngine:
         self,
         rule_engine: RuleEngine | None = None,
         memory: SessionMemory | None = None,
+        audit_sink: AuditSink | None = None,
     ) -> None:
         self._aet = AET()
         self._rule_engine = rule_engine or RuleEngine()
         self._validator = ContinuousValidator(self._rule_engine)
         self._memory = memory or SessionMemory()
+        self._audit_sink = audit_sink
 
     @property
     def memory(self) -> SessionMemory:
         return self._memory
+
+    @property
+    def audit_sink(self) -> AuditSink | None:
+        return self._audit_sink
 
     def execute(self, content: Any, *, source: str, session_id: str | None = None) -> ExecutionResult:
         session = session_id or str(uuid4())
@@ -177,9 +184,11 @@ class KyvernexEngine:
             )
         )
 
-        return ExecutionResult(
+        result = ExecutionResult(
             session_id=session,
             cognitive_object=obj,
             validation=validation,
             audit=tuple(audit),
         )
+        persist_audit(self._audit_sink, result.audit)
+        return result
