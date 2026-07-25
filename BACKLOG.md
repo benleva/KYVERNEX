@@ -3,43 +3,41 @@
 ## Baseline
 - Stable release: `1.1.0`
 - Paused milestone: `M6 — KYVERNEX Plugin Runtime`
-- Product-code milestone: `M7 — Plugin Product Interface`
+- Code-complete milestone: `M7 — Plugin Product Interface`
+- Active milestone: `M8 — Universal AI Plugin Bridge`
 - Development package version: `1.2.0.dev0`
 
 ## M6 paused state
-Completed M6 work remains preserved:
 - M6-W001 through M6-W005: `DONE`;
 - M6-W006 through M6-W009: `PAUSED_BY_USER`.
 
-No unfinished M6 item is reported as complete.
+## M7 preserved state
+M7-W001 through M7-W005 remain `CODE_COMPLETE_UNVERIFIED`. No test, installation or release claim is inferred.
 
-## M7 product-code backlog
+## M8 product-code backlog
 
 | Work item | Deliverable | Priority | Status |
 |---|---|---:|---|
-| M7-W001 | Public `KyvernexPlugin` facade and installed `kyvernex-plugin` command | P0 | CODE_COMPLETE_UNVERIFIED |
-| M7-W002 | File-based JSON input and output for practical host use | P0 | CODE_COMPLETE_UNVERIFIED |
-| M7-W003 | Persistent local plugin session wrapper | P0 | CODE_COMPLETE_UNVERIFIED |
-| M7-W004 | Explicit real host-callable loading and minimal example | P0 | CODE_COMPLETE_UNVERIFIED |
-| M7-W005 | Package, API and facade version move to `1.2.0.dev0` | P1 | CODE_COMPLETE_UNVERIFIED |
+| M8-W001 | Public provider-neutral `KyvernexAIBridge` | P0 | CODE_COMPLETE_UNVERIFIED |
+| M8-W002 | Installed `kyvernex-ai-plugin` JSON bridge command | P0 | CODE_COMPLETE_UNVERIFIED |
+| M8-W003 | Streaming multi-request process mode | P0 | BACKLOG |
+| M8-W004 | Provider format exporters using the same canonical manifest | P1 | BACKLOG |
 
-## Product code evidence
+## M8 code evidence
+- `src/kyvernex/ai_bridge.py`: canonical AI tool bridge;
+- `src/kyvernex/ai_plugin_cli.py`: standard-input JSON command;
+- `pyproject.toml`: installed `kyvernex-ai-plugin` entry point;
+- `src/kyvernex/__init__.py`: public `KyvernexAIBridge` export.
 
-- `src/kyvernex/plugin.py`: compact host-facing plugin facade;
-- `src/kyvernex/plugin_cli.py`: installed CLI with inline or file JSON input, optional file output and explicit handler selection;
-- `src/kyvernex/plugin_loader.py`: exact `module:attribute` callable loader without discovery;
-- `src/kyvernex/plugin_session.py`: persistent local multi-call session;
-- `examples/plugin_handler.py`: real minimal application handler;
-- `pyproject.toml`: installed `kyvernex-plugin` command and package version `1.2.0.dev0`;
-- `src/kyvernex/__init__.py`: public API version `1.2.0.dev0`.
-
-## Product behavior now available
+## Current product behavior
 
 ```text
-kyvernex-plugin --handler examples.plugin_handler:handle --input-file request.json --output-file response.json --principal andrea
+kyvernex-ai-plugin --handler examples.plugin_handler:handle --manifest
 ```
 
-Python hosts may use either `KyvernexPlugin` for one owned plugin instance or `KyvernexPluginSession` for repeated calls.
+```text
+echo '{"input":{"message":"ciao"}}' | kyvernex-ai-plugin --handler examples.plugin_handler:handle --principal andrea
+```
 
-## Boundary
-M7 contains no active coding item. It is code-complete but unverified. A new milestone must name a concrete host, platform or product outcome before additional code is authorized. Testing remains outside the current user-directed workstream.
+## Product rule
+M8 must preserve one canonical KYVERNEX plugin. Provider-specific representations may translate the same manifest but must not fork governance logic or create separate runtime implementations. Testing is not the active user-directed workstream and no green claim is made.
