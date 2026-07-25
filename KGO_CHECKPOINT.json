@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "RUNNING",
+  "state": "VERIFYING",
   "target_release": "1.2.0",
   "stable_release": {
     "version": "1.1.0",
@@ -42,7 +42,7 @@
   "active_task": {
     "id": "M6-W002",
     "title": "Implement the core plugin runtime and lifecycle state machine",
-    "status": "IN_PROGRESS",
+    "status": "IN_VERIFICATION",
     "priority": "P0"
   },
   "plugin_contract": {
@@ -52,6 +52,15 @@
     "normative_path": "repository/specifications/M6_PLUGIN_RUNTIME_CONTRACT.md",
     "schema_path": "repository/specifications/m6-plugin-contract.schema.json",
     "unresolved_p0_authority_ambiguity": false
+  },
+  "implementation": {
+    "runtime_path": "src/kyvernex/plugin_runtime.py",
+    "targeted_tests_path": "tests/test_plugin_runtime.py",
+    "public_exports": "src/kyvernex/__init__.py",
+    "implementation_commit": "d9a8cb7dc2cb837663f0de06de5029a1f0f06241",
+    "targeted_tests": "PENDING",
+    "complete_suite": "PENDING",
+    "authority_review": "PENDING"
   },
   "plugin_scope": {
     "lifecycle": [
@@ -76,7 +85,7 @@
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Implement M6-W002 strictly against the frozen plugin contract, add targeted lifecycle tests and obtain current regression evidence before advancing.",
+  "resume_rule": "Read current CI evidence for M6-W002. On green, close M6-W002 and activate M6-W003. On failure, record the failure before repair.",
   "stop_conditions": [
     "CURRENT_VERIFICATION_FAILURE",
     "CONTRACT_CONTRADICTION",
