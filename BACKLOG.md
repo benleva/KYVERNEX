@@ -7,7 +7,7 @@
 - Previous stable tag: `v1.0.0`
 - Published prerelease tag: `v1.1.0-rc.1`
 - Active milestone: `M6 — KYVERNEX Plugin Runtime`
-- Active sprint: `S004 — Freeze the plugin contract`
+- Active sprint: `S005 — Implement the core plugin runtime`
 - Target version: `1.2.0`
 - Maintenance line: `1.1.x`
 
@@ -37,8 +37,8 @@ Scope: build the installable product plugin layer over the existing KYVERNEX eng
 
 | Work item | Capability | Priority | Story points | Status | Dependencies |
 |---|---|---:|---:|---|---|
-| M6-W001 | Freeze the plugin contract, lifecycle, schemas and authority boundaries | P0 | 5 | IN_PROGRESS | Stable `v1.1.0` baseline |
-| M6-W002 | Implement the core plugin runtime and lifecycle state machine | P0 | 8 | BACKLOG | M6-W001 |
+| M6-W001 | Freeze the plugin contract, lifecycle, schemas and authority boundaries | P0 | 5 | DONE | Stable `v1.1.0` baseline |
+| M6-W002 | Implement the core plugin runtime and lifecycle state machine | P0 | 8 | IN_PROGRESS | M6-W001 |
 | M6-W003 | Implement governed host request, response and error contracts | P0 | 8 | BACKLOG | M6-W002 |
 | M6-W004 | Add host adapter boundary and reference in-process adapter | P1 | 8 | BACKLOG | M6-W003 |
 | M6-W005 | Add configuration loading, validation and fail-closed defaults | P0 | 5 | BACKLOG | M6-W002 |
@@ -47,7 +47,16 @@ Scope: build the installable product plugin layer over the existing KYVERNEX eng
 | M6-W008 | Run complete verification, build, clean installation and plugin smoke test | P0 | 8 | BACKLOG | M6-W007 |
 | M6-W009 | Prepare the first `1.2.0` prerelease package and release evidence | P1 | 3 | BACKLOG | M6-W008 |
 
-Planned total: `9` work items, `58` story points.
+Progress: `1/9` work items, `5/58` story points.
+
+## M6-W001 evidence
+
+Frozen contract:
+
+- `repository/specifications/M6_PLUGIN_RUNTIME_CONTRACT.md`;
+- `repository/specifications/m6-plugin-contract.schema.json`.
+
+The specification defines lifecycle states and transitions, public envelopes, governed errors, fail-closed defaults, adapter protocol, authority boundaries, audit evidence, compatibility and acceptance criteria. No P0 authority ambiguity remains.
 
 ## Definition of M6 Done
 
@@ -73,4 +82,4 @@ M6 is complete only when:
 
 ## Continuation policy
 
-KPM/KGO execute M6 in dependency order. They stop for current verification failure, unresolved P0 security boundary, external publication boundary or milestone completion.
+KPM/KGO execute M6 in dependency order. M6-W002 must conform to the frozen contract. They stop for current verification failure, contract contradiction, unresolved P0 security boundary, external publication boundary or milestone completion.
