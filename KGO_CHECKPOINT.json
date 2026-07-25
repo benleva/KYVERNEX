@@ -20,8 +20,8 @@
     "title": "Establish the 1.1 evidence baseline",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-016",
-  "kpm_cycle": "KPM-CYCLE-005",
+  "cycle": "KGO-CYCLE-017",
+  "kpm_cycle": "KPM-CYCLE-006",
   "completed_tasks": [
     "M4-W001",
     "M4-W002",
@@ -29,17 +29,29 @@
     "M4-W004"
   ],
   "active_task": {
+    "id": "M4-W006",
+    "title": "Run targeted and complete verification, build and clean installation",
+    "status": "IN_DEVELOPMENT",
+    "priority": "P0"
+  },
+  "implemented_task": {
     "id": "M4-W005",
     "title": "Implement the KPM/KGO autonomous control CLI",
-    "status": "IN_DEVELOPMENT",
-    "priority": "P1"
+    "status": "TEST"
   },
   "selected_capability": "KPM/KGO autonomous control CLI",
   "specification": "repository/specifications/KPM_KGO_AUTONOMOUS_CONTROL_CLI_SPEC_v0.1.md",
   "change_manifest": "repository/specifications/M4_W004_CHANGE_MANIFEST_v0.1.md",
+  "verification": {
+    "targeted_tests": "FRESH_RUN_PENDING",
+    "complete_suite": "FRESH_RUN_PENDING",
+    "package_build": "FRESH_RUN_PENDING",
+    "clean_install": "FRESH_RUN_PENDING",
+    "installed_cli_smoke_test": "FRESH_RUN_PENDING"
+  },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Implement only the frozen change manifest, run targeted and complete verification, synchronize evidence and continue until a stop condition is reached.",
+  "resume_rule": "Read current CI evidence. On green, close M4-W005 and M4-W006 and continue to M4-W007. On failure, stop and record the current failure before repair.",
   "stop_conditions": [
     "MILESTONE_DONE",
     "CURRENT_VERIFICATION_FAILURE",
