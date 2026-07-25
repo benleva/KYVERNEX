@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "orchestrator": "KGO",
   "mode": "AUTONOMOUS",
-  "state": "VERIFYING",
+  "state": "RUNNING",
   "target_release": "1.2.0",
   "stable_release": {
     "version": "1.1.0",
@@ -30,20 +30,21 @@
     "status": "ACTIVE"
   },
   "sprint": {
-    "id": "S006",
-    "title": "Govern host contracts",
+    "id": "S007",
+    "title": "Fail-closed plugin configuration",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-026",
-  "kpm_cycle": "KPM-CYCLE-015",
+  "cycle": "KGO-CYCLE-027",
+  "kpm_cycle": "KPM-CYCLE-016",
   "completed_tasks": [
     "M6-W001",
-    "M6-W002"
+    "M6-W002",
+    "M6-W003"
   ],
   "active_task": {
-    "id": "M6-W003",
-    "title": "Implement governed host request, response and error contracts",
-    "status": "IN_VERIFICATION",
+    "id": "M6-W005",
+    "title": "Add configuration loading, validation and fail-closed defaults",
+    "status": "IN_PROGRESS",
     "priority": "P0"
   },
   "plugin_contract": {
@@ -62,15 +63,26 @@
     "pages_deployment": "GREEN",
     "authority_review": "GREEN_NO_EXPANSION"
   },
-  "host_contract_implementation": {
+  "verified_host_contracts": {
+    "verification_commit": "83ce3a3",
     "contracts_path": "src/kyvernex/plugin_contracts.py",
     "runtime_path": "src/kyvernex/plugin_runtime.py",
     "tests_path": "tests/test_plugin_runtime.py",
     "exports_path": "src/kyvernex/__init__.py",
-    "latest_governance_commit": "e56ffc6",
-    "targeted_tests": "PENDING",
-    "complete_suite": "PENDING",
-    "authority_review": "PENDING"
+    "test_suite": "GREEN",
+    "kgo_v3": "GREEN",
+    "reference_prototype_tests": "GREEN",
+    "pages_deployment": "GREEN",
+    "authority_review": "GREEN_NO_EXPANSION"
+  },
+  "configuration_scope": {
+    "unknown_fields": "REJECT",
+    "filesystem_default": "NONE",
+    "network_default": "DISABLED",
+    "process_default": "DISABLED",
+    "repository_authority": "FORBIDDEN",
+    "silent_authority_expansion": "FORBIDDEN",
+    "configuration_mutation_after_initialize": "UNSUPPORTED"
   },
   "plugin_scope": {
     "target_version": "1.2.0",
@@ -80,7 +92,7 @@
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Read current CI evidence for M6-W003. On green, close M6-W003 and activate the next dependency-valid work item. On failure, record the exact failure before repair.",
+  "resume_rule": "Implement M6-W005 against the frozen contract and verified runtime, add targeted configuration tests and obtain current regression evidence before advancing.",
   "stop_conditions": [
     "CURRENT_VERIFICATION_FAILURE",
     "CONTRACT_CONTRADICTION",
