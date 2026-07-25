@@ -23,46 +23,43 @@
     {"id": "M10", "title": "Local Desktop Launcher", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M11", "title": "Local Setup Bootstrap", "status": "CODE_COMPLETE_UNVERIFIED"},
     {"id": "M12", "title": "Portable Local Launchers", "status": "CODE_COMPLETE_UNVERIFIED"},
-    {"id": "M13", "title": "Local Project Scaffold", "status": "CODE_COMPLETE_UNVERIFIED"}
+    {"id": "M13", "title": "Local Project Scaffold", "status": "CODE_COMPLETE_UNVERIFIED"},
+    {"id": "M14", "title": "Public API Hardening", "status": "CODE_COMPLETE_UNVERIFIED"}
   ],
   "sprint": {
-    "id": "S016",
-    "title": "Editable local project generation",
+    "id": "S017",
+    "title": "Public integration surface",
     "status": "CODE_COMPLETE_UNVERIFIED"
   },
-  "cycle": "KGO-CYCLE-047",
-  "kpm_cycle": "KPM-CYCLE-036",
-  "completed_code_tasks": ["M13-W001", "M13-W002"],
+  "cycle": "KGO-CYCLE-048",
+  "kpm_cycle": "KPM-CYCLE-037",
+  "completed_code_tasks": ["M14-W001", "M14-W002"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
   "active_task": null,
   "code_evidence": {
-    "project_scaffold_command": "src/kyvernex/local_ai_project_cli.py",
-    "package_entry_point": "kyvernex-ai-project",
-    "latest_code_commit": "782fbc566acc826cd2568581b6be88a18ff87a2b"
+    "handler_loader": "src/kyvernex/plugin_loader.py",
+    "plugin_session": "src/kyvernex/plugin_session.py",
+    "manifest_exporters": "src/kyvernex/ai_formats.py",
+    "package_exports": "src/kyvernex/__init__.py",
+    "latest_code_commit": "d6e027d86367d86c201e9137464b71ae76854d4a"
   },
-  "scaffold_boundary": {
-    "editable_handler": true,
-    "explicit_profile": true,
-    "portable_launchers": true,
-    "project_readme": true,
-    "profile_validation": true,
-    "optional_immediate_launch": true,
-    "launch_uses_existing_app": true,
-    "working_directory_restored": true,
-    "package_installation": false,
-    "operating_system_registration": false,
-    "automatic_startup": false,
-    "external_network_access": false
+  "public_api_boundary": {
+    "canonical_handler_loader": "load_plugin_handler",
+    "compatibility_loader_alias": "load_handler",
+    "persistent_session_exported": true,
+    "dedicated_manifest_exporters": true,
+    "development_version_aligned": true,
+    "new_runtime": false,
+    "network_access": false,
+    "release_publication": false
   },
   "autonomous_continuation": false,
   "requires_user_proceed": true,
-  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve editable local projects and loopback-only execution. Do not infer package installation, operating-system registration, services, verification or release publication.",
+  "resume_rule": "Open another coding milestone only for a named concrete product outcome. Preserve one strict loader, one canonical runtime and the published package surface. Do not infer testing, verification or release publication.",
   "stop_conditions": [
     "PRODUCT_TARGET_NOT_DEFINED",
-    "PUBLIC_BIND_REQUEST",
     "AUTHORITY_EXPANSION",
-    "NETWORK_ACCESS_INTRODUCED",
-    "OPERATING_SYSTEM_REGISTRATION_INTRODUCED",
+    "SEPARATE_RUNTIME_FORK",
     "EXTERNAL_PUBLICATION_BOUNDARY",
     "MILESTONE_DONE"
   ]
