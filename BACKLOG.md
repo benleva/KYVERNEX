@@ -2,54 +2,38 @@
 
 ## Baseline
 - Stable release: `1.1.0`
-- Active milestone: `M6 — KYVERNEX Plugin Runtime`
-- Active sprint: `S009 — Focused plugin integration verification`
+- Paused milestone: `M6 — KYVERNEX Plugin Runtime`
+- Active milestone: `M7 — Plugin Product Interface`
+- Active sprint: `S010 — Usable plugin API`
 - Target version: `1.2.0`
-- Scope lock: `repository/specifications/M6_SCOPE_LOCK.md`
 
-## M6 work items
+## M6 paused state
+Completed M6 work remains preserved:
+- M6-W001 through M6-W005: `DONE`;
+- M6-W006 through M6-W009: `PAUSED_BY_USER`.
 
-| Work item | Deliverable | Priority | Story points | Status | Dependencies |
-|---|---|---:|---:|---|---|
-| M6-W001 | Frozen plugin contract and authority boundaries | P0 | 5 | DONE | stable baseline |
-| M6-W002 | Core runtime and lifecycle state machine | P0 | 8 | DONE | M6-W001 |
-| M6-W003 | Governed request, response and error contracts | P0 | 8 | DONE | M6-W002 |
-| M6-W004 | One bounded in-process callable adapter | P0 | 3 | DONE | M6-W003, M6-W005 |
-| M6-W005 | Immutable fail-closed configuration | P0 | 5 | DONE | M6-W002 |
-| M6-W006 | Focused lifecycle and authority integration tests | P0 | 5 | IN_PROGRESS | M6-W004 |
-| M6-W007 | One minimal example and package entry point | P0 | 3 | BACKLOG | M6-W006 |
-| M6-W008 | Complete suite, build, clean install and smoke test | P0 | 5 | BACKLOG | M6-W007 |
-| M6-W009 | Prepare `1.2.0` prerelease evidence | P1 | 2 | BACKLOG | M6-W008 |
+No unfinished M6 item is reported as complete.
 
-Revised total after scope lock: `44` story points.
-Completed: `29/44` story points and `5/9` work items.
+## M7 product-code backlog
 
-## Verified evidence
-- M6-W002 lifecycle runtime: green on `691c769`;
-- M6-W003 governed contracts: green on `83ce3a3`;
-- M6-W005 fail-closed configuration: green on `a8e7f36`;
-- M6-W004 minimum callable adapter: green on `b138134` for Test Suite, KGO v3, Reference Prototype Tests and Pages.
+| Work item | Deliverable | Priority | Status |
+|---|---|---:|---|
+| M7-W001 | Public `KyvernexPlugin` facade and installed `kyvernex-plugin` command | P0 | CODE_COMPLETE_UNVERIFIED |
+| M7-W002 | File-based JSON input and output for practical host use | P0 | BACKLOG |
+| M7-W003 | Persistent local plugin session wrapper | P0 | BACKLOG |
+| M7-W004 | Minimal developer example using a real host callable | P0 | BACKLOG |
+| M7-W005 | Package version move to the `1.2.0` development line | P1 | BACKLOG |
 
-## M6-W006 acceptance boundary
-M6-W006 may add tests only. It must verify the existing chain:
+## M7-W001 code
+- `src/kyvernex/plugin.py` owns runtime and adapter lifecycle;
+- `KyvernexPlugin.execute()` builds the governed request envelope;
+- `KyvernexPlugin.status()` exposes the runtime state;
+- `KyvernexPlugin.shutdown()` closes the product cleanly;
+- `src/kyvernex/plugin_cli.py` exposes one installed command;
+- `pyproject.toml` registers `kyvernex-plugin`;
+- `src/kyvernex/__init__.py` exports `KyvernexPlugin`.
 
-```text
-host callable -> InProcessCallableAdapter -> KyvernexPluginRuntime -> governed response
-```
+## Product rule
+M7 work must create callable, installable product behavior. Documentation and governance changes may record the work but must not replace code delivery.
 
-Required tests:
-- authorized execution succeeds through the full path;
-- blocked execution never invokes the callable;
-- zero-authority defaults remain present;
-- configured capability intersection is enforced;
-- invalid result and callable failure produce governed failure behavior;
-- lifecycle and shutdown remain deterministic and terminal;
-- no network, filesystem, process, repository, environment or discovery authority is introduced.
-
-M6-W006 must not add a new adapter, transport, host platform, service or runtime capability.
-
-## Remaining path to done
-After M6-W006, execute only M6-W007, M6-W008 and M6-W009 in that order. New feature work is prohibited inside M6.
-
-## Stop policy
-Stop immediately on scope growth, current verification failure, authority expansion, contract contradiction, external publication boundary or milestone completion.
+Testing is not the active workstream and no green claim is made for M7-W001.
