@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kyvernex"
-version = "0.1.0.dev0"
-description = "Reference prototype of the KYVERNEX cognitive governance plugin"
+version = "1.0.0"
+description = "KYVERNEX cognitive governance and execution engine for the ARGUS constitution"
 requires-python = ">=3.11"
 authors = [{name = "Andrea Pernarcic"}]
 license = {file = "LICENSE"}
