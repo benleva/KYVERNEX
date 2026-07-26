@@ -1,4 +1,5 @@
 name: M18 Verification
+run-name: M18 verification · ${{ github.sha }}
 
 on:
   push:
@@ -13,6 +14,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: m18-verification-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   verify-m18:
