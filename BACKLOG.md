@@ -18,7 +18,7 @@
 | M18-W004 | Accent-folded normalization, controlled synonyms and expanded canonical fields | P1 | CODE_COMPLETE_UNVERIFIED |
 | M18-W005 | Reversible canonical symbolic projection | P1 | CODE_COMPLETE_UNVERIFIED |
 | M18-W006 | Reusable staged audit envelope and CLI emission | P1 | CODE_COMPLETE_UNVERIFIED |
-| M18-W007 | End-of-milestone verification manifest and operator runbook | P0 | IN_PROGRESS |
+| M18-W007 | End-of-milestone verification manifest and operator runbook | P0 | DOCUMENTATION_COMPLETE_NOT_EXECUTED |
 | M18-W008 | Execute automated and operator verification | P0 | DEFERRED_UNTIL_MILESTONE_END |
 
 ## Current canonical vocabulary
@@ -39,9 +39,16 @@
 - contradictory values and lossy symbolic projections fail closed;
 - no LLM or external network is used.
 
+## Verification definition
+
+- `docs/M18_VERIFICATION_RUNBOOK.md`: operator sequence V01–V13 and completion criteria;
+- `governance/verification/m18_verification_manifest.json`: machine-readable pending checks and evidence contract;
+- success marker: `M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED`;
+- definition is complete, execution is deferred.
+
 ## Verification policy
 
-No tests are run during M18 implementation. The translator, symbolic round trip, audit envelope, and integrated matrix path will be checked together at milestone closure.
+No tests are run during M18 implementation. The translator, symbolic round trip, audit envelope, integrated matrix path, CLI modes, determinism, and M17 regression boundary will be checked together at milestone closure.
 
 ## Boundary
 
