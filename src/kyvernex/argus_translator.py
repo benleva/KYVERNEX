@@ -2,83 +2,159 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from copy import deepcopy
-from typing import Any, Mapping
+from dataclasses import dataclass
+from typing import Any, Mapping, Sequence
 
 
 class ArgusTranslationError(ValueError):
     """Raised when human text cannot be translated without ambiguity."""
 
 
-_CONSENT_FALSE = (
-    r"\bmanca(?:\s+il)?\s+consenso\b",
-    r"\bsenza\s+consenso\b",
-    r"\bconsenso\s+(?:non\s+)?(?:presente|fornito|dato|concesso)\s*:\s*no\b",
-    r"\bnon\s+(?:ha|hanno|ho|abbiamo)\s+(?:dato|fornito|concesso)\s+(?:il\s+)?consenso\b",
-    r"\bconsenso\s+(?:negato|assente|revocato)\b",
-)
-_CONSENT_TRUE = (
-    r"\b(?:ha|hanno|ho|abbiamo)\s+(?:dato|fornito|concesso)\s+(?:il\s+)?consenso\b",
-    r"\bconsenso\s+(?:presente|fornito|dato|concesso|valido|confermato)\b",
-    r"\bcon\s+(?:il\s+)?consenso\b",
-    r"\bautorizzazione\s+(?:presente|fornita|data|concessa|valida|confermata)\b",
-    r"\b(?:ho|abbiamo)\s+(?:l['’])?autorizzazione\b",
-)
-_RISK_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("critical", (r"\brischio\s+(?:e|è|risulta|considerato)?\s*critico\b", r"\brischio\s+massimo\b")),
-    ("high", (r"\brischio\s+(?:e|è|risulta|considerato)?\s*(?:alto|elevato)\b", r"\balto\s+rischio\b")),
-    ("medium", (r"\brischio\s+(?:e|è|risulta|considerato)?\s*(?:medio|moderato)\b", r"\brischio\s+intermedio\b")),
-    ("low", (r"\brischio\s+(?:e|è|risulta|considerato)?\s*basso\b", r"\bbasso\s+rischio\b", r"\brischio\s+minimo\b")),
+@dataclass(frozen=True)
+class _LexicalRule:
+    rule_id: str
+    path: str
+    value: Any
+    patterns: tuple[str, ...]
+
+
+def _fold_text(text: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", text.casefold())
+    without_marks = "".join(char for char in decomposed if not unicodedata.combining(char))
+    return " ".join(without_marks.replace("’", "'").strip().split())
+
+
+_RULES: tuple[_LexicalRule, ...] = (
+    _LexicalRule(
+        "consent.absent",
+        "consent",
+        False,
+        (
+            r"\bmanca(?:\s+il)?\s+consenso\b",
+            r"\bsenza\s+consenso\b",
+            r"\bconsenso\s+(?:assente|negato|revocato|rifiutato|non valido)\b",
+            r"\bnon\s+(?:ha|hanno|ho|abbiamo)\s+(?:dato|fornito|concesso|espresso)\s+(?:il\s+)?consenso\b",
+            r"\bconsenso\s*:\s*(?:no|falso|false)\b",
+        ),
+    ),
+    _LexicalRule(
+        "consent.present",
+        "consent",
+        True,
+        (
+            r"\b(?:ha|hanno|ho|abbiamo)\s+(?:dato|fornito|concesso|espresso)\s+(?:il\s+)?consenso\b",
+            r"\bconsenso\s+(?:presente|fornito|dato|concesso|espresso|valido|confermato|acquisito)\b",
+            r"\bcon\s+(?:il\s+)?consenso\b",
+            r"\bconsenso\s*:\s*(?:si|vero|true)\b",
+        ),
+    ),
+    _LexicalRule(
+        "authorization.absent",
+        "authorization",
+        False,
+        (
+            r"\bmanca(?:\s+l[' ]?)?autorizzazione\b",
+            r"\bsenza\s+autorizzazione\b",
+            r"\bautorizzazione\s+(?:assente|negata|revocata|rifiutata|non valida)\b",
+            r"\bnon\s+(?:e|è|risulta)\s+autorizzato\b",
+            r"\bnon\s+(?:ha|hanno|ho|abbiamo)\s+(?:autorizzato|approvato)\b",
+        ),
+    ),
+    _LexicalRule(
+        "authorization.present",
+        "authorization",
+        True,
+        (
+            r"\bautorizzazione\s+(?:presente|fornita|data|concessa|valida|confermata|approvata)\b",
+            r"\b(?:ho|abbiamo|ha|hanno)\s+(?:l[' ]?)?autorizzazione\b",
+            r"\b(?:e|è|risulta)\s+autorizzato\b",
+            r"\b(?:ha|hanno|ho|abbiamo)\s+(?:autorizzato|approvato)\b",
+        ),
+    ),
+    _LexicalRule("risk.critical", "risk", "critical", (r"\brischio\s+(?:e\s+|risulta\s+|considerato\s+)?critico\b", r"\brischio\s+massimo\b", r"\bcriticita\s+massima\b")),
+    _LexicalRule("risk.high", "risk", "high", (r"\brischio\s+(?:e\s+|risulta\s+|considerato\s+)?(?:alto|elevato|grave)\b", r"\balto\s+rischio\b")),
+    _LexicalRule("risk.medium", "risk", "medium", (r"\brischio\s+(?:e\s+|risulta\s+|considerato\s+)?(?:medio|moderato)\b", r"\brischio\s+intermedio\b")),
+    _LexicalRule("risk.low", "risk", "low", (r"\brischio\s+(?:e\s+|risulta\s+|considerato\s+)?basso\b", r"\bbasso\s+rischio\b", r"\brischio\s+minimo\b", r"\brischio\s+contenuto\b")),
+    _LexicalRule("subject.minor.true", "subject.minor", True, (r"\b(?:soggetto|utente|cliente|paziente|persona)\s+minorenne\b", r"\be\s+minorenne\b", r"\bminore\s+di\s+eta\b")),
+    _LexicalRule("subject.minor.false", "subject.minor", False, (r"\b(?:soggetto|utente|cliente|paziente|persona)\s+maggiorenne\b", r"\be\s+maggiorenne\b", r"\bmaggiore\s+di\s+eta\b")),
+    _LexicalRule("domain.health", "domain", "health", (r"\bambito\s+(?:sanitario|medico|clinico)\b", r"\bdati?\s+(?:sanitari|medici|clinici)\b", r"\btrattamento\s+sanitario\b")),
+    _LexicalRule("domain.finance", "domain", "finance", (r"\bambito\s+(?:finanziario|bancario|economico)\b", r"\bdati?\s+(?:finanziari|bancari)\b", r"\boperazione\s+(?:finanziaria|bancaria)\b")),
+    _LexicalRule("domain.legal", "domain", "legal", (r"\bambito\s+(?:legale|giuridico)\b", r"\bprocedimento\s+(?:legale|giudiziario)\b")),
+    _LexicalRule("domain.education", "domain", "education", (r"\bambito\s+(?:scolastico|educativo|formativo)\b", r"\bdati?\s+scolastici\b")),
 )
 
 
-def _matches(text: str, patterns: tuple[str, ...]) -> list[str]:
-    return [pattern for pattern in patterns if re.search(pattern, text, flags=re.IGNORECASE)]
+def _set_path(target: dict[str, Any], path: str, value: Any) -> None:
+    parts = path.split(".")
+    current = target
+    for part in parts[:-1]:
+        child = current.get(part)
+        if child is None:
+            child = {}
+            current[part] = child
+        if not isinstance(child, dict):
+            raise ArgusTranslationError(f"canonical path conflict at {path}")
+        current = child
+    current[parts[-1]] = value
+
+
+def _matched_fragments(text: str, patterns: Sequence[str]) -> list[dict[str, str]]:
+    matches: list[dict[str, str]] = []
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            matches.append({"pattern": pattern, "matched_text": match.group(0)})
+    return matches
 
 
 def translate_argus_text(text: str) -> dict[str, Any]:
     """Translate supported Italian statements into a canonical ARGUS request.
 
-    The translator is deliberately closed-world: it extracts only fields backed by
-    explicit patterns and rejects contradictory values instead of guessing.
+    The translator is closed-world and deterministic. It extracts only facts backed
+    by explicit lexical rules and rejects conflicting values instead of guessing.
     """
     if not isinstance(text, str) or not text.strip():
         raise ArgusTranslationError("text must be a non-empty string")
-    normalized = " ".join(text.strip().split())
+
+    source_text = " ".join(text.strip().split())
+    normalized_text = _fold_text(source_text)
+    hits_by_path: dict[str, list[tuple[_LexicalRule, list[dict[str, str]]]]] = {}
+
+    for rule in _RULES:
+        matches = _matched_fragments(normalized_text, rule.patterns)
+        if matches:
+            hits_by_path.setdefault(rule.path, []).append((rule, matches))
+
+    if not hits_by_path:
+        raise ArgusTranslationError("no supported ARGUS facts were found in the text")
+
     request: dict[str, Any] = {}
     trace: list[dict[str, Any]] = []
-
-    false_hits = _matches(normalized, _CONSENT_FALSE)
-    true_hits = _matches(normalized, _CONSENT_TRUE)
-    if false_hits and true_hits:
-        raise ArgusTranslationError("conflicting consent statements detected")
-    if false_hits:
-        request["consent"] = False
-        trace.append({"field": "consent", "value": False, "patterns": false_hits})
-    elif true_hits:
-        request["consent"] = True
-        trace.append({"field": "consent", "value": True, "patterns": true_hits})
-
-    risk_hits: list[tuple[str, list[str]]] = []
-    for value, patterns in _RISK_PATTERNS:
-        hits = _matches(normalized, patterns)
-        if hits:
-            risk_hits.append((value, hits))
-    if len(risk_hits) > 1:
-        values = ", ".join(value for value, _ in risk_hits)
-        raise ArgusTranslationError(f"conflicting risk statements detected: {values}")
-    if risk_hits:
-        value, hits = risk_hits[0]
-        request["risk"] = value
-        trace.append({"field": "risk", "value": value, "patterns": hits})
-
-    if not request:
-        raise ArgusTranslationError("no supported ARGUS facts were found in the text")
+    for path in sorted(hits_by_path):
+        hits = hits_by_path[path]
+        distinct_values = {repr(rule.value) for rule, _ in hits}
+        if len(distinct_values) > 1:
+            rule_ids = ", ".join(rule.rule_id for rule, _ in hits)
+            raise ArgusTranslationError(f"conflicting statements detected for {path}: {rule_ids}")
+        rule, matches = hits[0]
+        _set_path(request, path, deepcopy(rule.value))
+        trace.append(
+            {
+                "field": path,
+                "value": deepcopy(rule.value),
+                "rule_ids": [item.rule_id for item, _ in hits],
+                "matches": [match for _, group in hits for match in group],
+            }
+        )
 
     return {
         "status": "TRANSLATED",
         "language": "it",
-        "source_text": normalized,
+        "translator": {"id": "argus.executive.deterministic.it", "version": "0.2"},
+        "source_text": source_text,
+        "normalized_text": normalized_text,
         "request": deepcopy(request),
         "trace": trace,
         "unresolved": [],
