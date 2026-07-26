@@ -8,8 +8,8 @@
 - Verified milestone: **M17 — ARGUS Matrix Runner**
 - Active milestone: **M18 — ARGUS Executive Translator**
 - Active sprint: **S021 — Human language to canonical ARGUS**
-- KPM cycle: `KPM-CYCLE-046`
-- KGO cycle: `KGO-CYCLE-057`
+- KPM cycle: `KPM-CYCLE-047`
+- KGO cycle: `KGO-CYCLE-058`
 - Development package version: `1.2.0.dev0`
 
 ## M18 objective
@@ -60,8 +60,15 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 - `kyvernex-argus-translate --audit-envelope` emits the envelope directly;
 - normal output now also includes the symbolic projection.
 
+### M18-W007 — Verification manifest and operator runbook
+Status: `DOCUMENTATION_COMPLETE_NOT_EXECUTED`
+
+- `docs/M18_VERIFICATION_RUNBOOK.md` defines the complete V01–V13 campaign;
+- `governance/verification/m18_verification_manifest.json` records every pending check and required evidence;
+- verification remains intentionally unexecuted until milestone closure.
+
 ## Active work
-M18-W007 will define the complete end-of-milestone verification manifest and operator runbook. Execution of that verification remains deferred until the implementation boundary is closed, as directed by the user.
+M18-W008 is the end-of-milestone automated and operator verification campaign. It is now fully specified but remains deferred until the user authorizes milestone closure and execution.
 
 ## Boundary
 M18 remains deterministic and closed-world. It does not use an LLM, infer unstated facts, encode the complete ARGUS Constitution, access external data, learn, or claim release readiness. No tests were run in this change. No tag or release was created.
