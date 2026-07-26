@@ -8,20 +8,21 @@
 - Verified milestone: **M17 — ARGUS Matrix Runner**
 - Active milestone: **M18 — ARGUS Executive Translator**
 - Active sprint: **S021 — Human language to canonical ARGUS**
-- KPM cycle: `KPM-CYCLE-045`
-- KGO cycle: `KGO-CYCLE-056`
+- KPM cycle: `KPM-CYCLE-046`
+- KGO cycle: `KGO-CYCLE-057`
 - Development package version: `1.2.0.dev0`
 
 ## M18 objective
-Translate supported Italian statements into canonical ARGUS JSON without probabilistic inference, then optionally pass that request directly to the existing matrix evaluator.
+Translate supported Italian statements into canonical ARGUS JSON without probabilistic inference, optionally evaluate the request, and preserve a reversible symbolic and audit representation.
 
 ```text
 human Italian text
 -> deterministic normalization
 -> bounded lexical rules
 -> canonical request JSON
--> optional ARGUS matrix evaluation
--> translation trace + decision trace
+-> reversible ARGUS symbols
+-> optional matrix evaluation
+-> audit envelope
 ```
 
 ## M18 delivered code
@@ -29,39 +30,38 @@ human Italian text
 ### M18-W001 — Deterministic Italian translator
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- closed-world translation rejects unsupported text;
-- conflicting values fail closed;
-- output preserves source text, normalized text, canonical request and trace.
-
 ### M18-W002 — Installed translator command
 Status: `CODE_COMPLETE_UNVERIFIED`
-
-- `kyvernex-argus-translate` accepts direct text, file input or stdin;
-- output may be persisted explicitly;
-- replacement requires `--force`.
 
 ### M18-W003 — Direct matrix execution
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `--matrix` sends the canonical request to the existing deterministic Matrix Runner;
-- translator and evaluator traces remain separate in the response.
-
 ### M18-W004 — Controlled vocabulary expansion
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- normalization is case-insensitive, whitespace-stable and accent-folded for matching;
-- consent and authorization are represented as separate boolean fields;
-- risk remains limited to `low`, `medium`, `high`, and `critical`;
-- minor/adult subject status is represented at `subject.minor`;
+- consent and authorization are separate boolean fields;
+- risk is limited to `low`, `medium`, `high`, and `critical`;
+- subject minority is represented at `subject.minor`;
 - bounded domains are `health`, `finance`, `legal`, and `education`;
-- explicit synonyms and negations map to canonical values;
-- every extracted field records lexical rule ids and matched fragments;
-- translator contract version is `0.2`.
+- contradictions fail closed and every match remains traceable.
+
+### M18-W005 — Reversible symbolic projection
+Status: `CODE_COMPLETE_UNVERIFIED`
+
+- `src/kyvernex/argus_symbols.py` maps every currently supported canonical fact to one ARGUS token;
+- encoding fails if a fact cannot be represented without information loss;
+- decoding rejects malformed, unknown, duplicate, or conflicting symbols;
+- canonical facts are ordered before projection, producing stable sequences.
+
+### M18-W006 — Audit envelope
+Status: `CODE_COMPLETE_UNVERIFIED`
+
+- `src/kyvernex/argus_audit.py` records input, normalization, lexical translation, canonical request, symbols, and optional matrix evaluation;
+- `kyvernex-argus-translate --audit-envelope` emits the envelope directly;
+- normal output now also includes the symbolic projection.
 
 ## Active work
-
-M18-W005 will add the canonical symbolic projection and a reusable audit envelope. Tests remain deferred until all M18 implementation items are complete, as directed by the user.
+M18-W007 will define the complete end-of-milestone verification manifest and operator runbook. Execution of that verification remains deferred until the implementation boundary is closed, as directed by the user.
 
 ## Boundary
-
-M18 is a deterministic phrase translator, not general natural-language understanding. It does not use an LLM, infer unstated facts, encode the complete ARGUS Constitution, access external data, learn, or claim release readiness. No tests were run in this change. No tag or release was created.
+M18 remains deterministic and closed-world. It does not use an LLM, infer unstated facts, encode the complete ARGUS Constitution, access external data, learn, or claim release readiness. No tests were run in this change. No tag or release was created.
