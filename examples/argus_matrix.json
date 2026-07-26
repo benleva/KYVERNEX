@@ -1,0 +1,28 @@
+{
+  "matrix_id": "argus.demo.access",
+  "version": "1.0",
+  "default_decision": "REVIEW",
+  "rules": [
+    {
+      "id": "deny-missing-consent",
+      "priority": 10,
+      "when": [
+        {"path": "consent", "operator": "eq", "value": false}
+      ],
+      "decision": "DENY",
+      "reason": "Explicit consent is required.",
+      "stop": true
+    },
+    {
+      "id": "allow-low-risk",
+      "priority": 20,
+      "when": [
+        {"path": "consent", "operator": "eq", "value": true},
+        {"path": "risk", "operator": "in", "value": ["low", "minimal"]}
+      ],
+      "decision": "ALLOW",
+      "reason": "Consent is present and declared risk is low.",
+      "stop": true
+    }
+  ]
+}
