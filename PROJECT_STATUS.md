@@ -6,10 +6,7 @@
 - Paused milestone: **M6 — KYVERNEX Plugin Runtime**
 - Verified milestone: **M16 — Local Verification Report**
 - Verified milestone: **M17 — ARGUS Matrix Runner**
-- Active milestone: **M18 — ARGUS Executive Translator**
-- Active sprint: **S021 — Human language to canonical ARGUS**
-- KPM cycle: `KPM-CYCLE-048`
-- KGO cycle: `KGO-CYCLE-059`
+- Verified milestone: **M18 — ARGUS Executive Translator**
 - Development package version: `1.2.0.dev0`
 
 ## M18 objective
@@ -25,19 +22,19 @@ human Italian text
 -> audit envelope
 ```
 
-## M18 delivered code
+## M18 delivered and verified
 
 ### M18-W001 — Deterministic Italian translator
-Status: `CODE_COMPLETE_UNVERIFIED`
+Status: `VERIFIED`
 
 ### M18-W002 — Installed translator command
-Status: `CODE_COMPLETE_UNVERIFIED`
+Status: `VERIFIED`
 
 ### M18-W003 — Direct matrix execution
-Status: `CODE_COMPLETE_UNVERIFIED`
+Status: `VERIFIED`
 
 ### M18-W004 — Controlled vocabulary expansion
-Status: `CODE_COMPLETE_UNVERIFIED`
+Status: `VERIFIED`
 
 - consent and authorization are separate boolean fields;
 - risk is limited to `low`, `medium`, `high`, and `critical`;
@@ -46,7 +43,7 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 - contradictions fail closed and every match remains traceable.
 
 ### M18-W005 — Reversible symbolic projection
-Status: `CODE_COMPLETE_UNVERIFIED`
+Status: `VERIFIED`
 
 - `src/kyvernex/argus_symbols.py` maps every currently supported canonical fact to one ARGUS token;
 - encoding fails if a fact cannot be represented without information loss;
@@ -54,29 +51,29 @@ Status: `CODE_COMPLETE_UNVERIFIED`
 - canonical facts are ordered before projection, producing stable sequences.
 
 ### M18-W006 — Audit envelope
-Status: `CODE_COMPLETE_UNVERIFIED`
+Status: `VERIFIED`
 
 - `src/kyvernex/argus_audit.py` records input, normalization, lexical translation, canonical request, symbols, and optional matrix evaluation;
 - `kyvernex-argus-translate --audit-envelope` emits the envelope directly;
 - normal output also includes the symbolic projection.
 
 ### M18-W007 — Verification manifest and operator runbook
-Status: `DOCUMENTATION_COMPLETE`
+Status: `VERIFIED`
 
 - `docs/M18_VERIFICATION_RUNBOOK.md` defines V01–V13;
-- `governance/verification/m18_verification_manifest.json` defines required evidence.
+- `governance/verification/m18_verification_manifest.json` records the completed verification.
 
 ### M18-W008 — Repository verification campaign
-Status: `EXECUTING_IN_GITHUB_ACTIONS`
+Status: `VERIFIED`
 
 - `tests/test_argus_translator_m18.py` implements the M18 verification suite;
 - `.github/workflows/m18-verification.yml` executes package installation, command discovery, M18 tests, the full regression suite, and evidence upload;
 - the workflow matrix covers Python 3.11, 3.12, and 3.13;
-- verification evidence is retained as GitHub Actions artifacts for 90 days;
-- M18 remains unverified until every workflow job completes successfully and the evidence is inspected.
+- GitHub Actions completed `M18 Verification #3` successfully for commit `4ce2c5a04530e89496994cf26d38acfb6bad2065`;
+- success marker: `M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED`.
 
-## Active work
-Inspect the GitHub Actions run created by commit `a87c8365ef1cd57eac101f2664ef638e2466c752`. Any failing check must be corrected and rerun. Only complete success may produce the marker `M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED`.
+## Current state
+M18 is closed as verified. No tag or release was created. The stable release and immutable stable tag remain unchanged.
 
 ## Boundary
-M18 remains deterministic and closed-world. It does not use an LLM, infer unstated facts, encode the complete ARGUS Constitution, access external data, learn, or claim release readiness. No tag or release was created. Stable `v1.1.0` remains unchanged.
+M18 remains deterministic and closed-world. It does not use an LLM, infer unstated facts, encode the complete ARGUS Constitution, access external data, learn, or claim release readiness. Stable `v1.1.0` remains unchanged.
