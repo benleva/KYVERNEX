@@ -8,42 +8,60 @@
 - Verified milestone: **M17 — ARGUS Matrix Runner**
 - Active milestone: **M18 — ARGUS Executive Translator**
 - Active sprint: **S021 — Human language to canonical ARGUS**
-- KPM cycle: `KPM-CYCLE-044`
-- KGO cycle: `KGO-CYCLE-055`
+- KPM cycle: `KPM-CYCLE-045`
+- KGO cycle: `KGO-CYCLE-056`
 - Development package version: `1.2.0.dev0`
-
-## Verified ARGUS matrix path
-The operator executed `kyvernex-argus` in GitHub Codespaces. The saved request produced `status: DECIDED`, decision `ALLOW`, selected rule `allow-low-risk`, the expected reason, and an ordered rule trace. M17 is therefore `ARGUS_MATRIX_SMOKE_VERIFIED`, not fully tested.
 
 ## M18 objective
 Translate supported Italian statements into canonical ARGUS JSON without probabilistic inference, then optionally pass that request directly to the existing matrix evaluator.
 
 ```text
 human Italian text
--> deterministic executive translator
+-> deterministic normalization
+-> bounded lexical rules
 -> canonical request JSON
 -> optional ARGUS matrix evaluation
 -> translation trace + decision trace
 ```
 
 ## M18 delivered code
+
 ### M18-W001 — Deterministic Italian translator
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `src/kyvernex/argus_translator.py` recognizes explicit consent and risk statements;
-- consent values are boolean and risk values are `low`, `medium`, `high`, or `critical`;
-- conflicting statements fail closed instead of being guessed;
-- unsupported text fails with an explicit translation error;
-- output contains normalized source text, canonical request, extraction trace, and unresolved fields.
+- closed-world translation rejects unsupported text;
+- conflicting values fail closed;
+- output preserves source text, normalized text, canonical request and trace.
 
-### M18-W002 — Installed translator and direct matrix path
+### M18-W002 — Installed translator command
 Status: `CODE_COMPLETE_UNVERIFIED`
 
-- `src/kyvernex/argus_translator_cli.py` provides `kyvernex-argus-translate`;
-- text may be supplied with `--text`, from a file, or through stdin;
-- `--matrix` immediately evaluates the translated request with the existing Matrix Runner;
-- optional output replacement requires `--force`;
-- `pyproject.toml` installs the command.
+- `kyvernex-argus-translate` accepts direct text, file input or stdin;
+- output may be persisted explicitly;
+- replacement requires `--force`.
+
+### M18-W003 — Direct matrix execution
+Status: `CODE_COMPLETE_UNVERIFIED`
+
+- `--matrix` sends the canonical request to the existing deterministic Matrix Runner;
+- translator and evaluator traces remain separate in the response.
+
+### M18-W004 — Controlled vocabulary expansion
+Status: `CODE_COMPLETE_UNVERIFIED`
+
+- normalization is case-insensitive, whitespace-stable and accent-folded for matching;
+- consent and authorization are represented as separate boolean fields;
+- risk remains limited to `low`, `medium`, `high`, and `critical`;
+- minor/adult subject status is represented at `subject.minor`;
+- bounded domains are `health`, `finance`, `legal`, and `education`;
+- explicit synonyms and negations map to canonical values;
+- every extracted field records lexical rule ids and matched fragments;
+- translator contract version is `0.2`.
+
+## Active work
+
+M18-W005 will add the canonical symbolic projection and a reusable audit envelope. Tests remain deferred until all M18 implementation items are complete, as directed by the user.
 
 ## Boundary
-M18 is a deterministic phrase translator, not general natural-language understanding. It does not use an LLM, infer unstated facts, encode the complete ARGUS Constitution, access external data, learn, or claim release readiness. Tests are deferred until the milestone is complete, as directed by the user. No tag or release was created.
+
+M18 is a deterministic phrase translator, not general natural-language understanding. It does not use an LLM, infer unstated facts, encode the complete ARGUS Constitution, access external data, learn, or claim release readiness. No tests were run in this change. No tag or release was created.
