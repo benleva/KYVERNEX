@@ -24,6 +24,7 @@ kyvernex-ai-setup = "kyvernex.local_ai_setup_cli:main"
 kyvernex-ai-shortcut = "kyvernex.local_ai_shortcut_cli:main"
 kyvernex-ai-project = "kyvernex.local_ai_project_cli:main"
 kyvernex-ai-smoke = "kyvernex.local_ai_smoke_cli:main"
+kyvernex-argus = "kyvernex.argus_matrix_cli:main"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
