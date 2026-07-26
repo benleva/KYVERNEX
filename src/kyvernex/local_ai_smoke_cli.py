@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from threading import Thread
 from typing import Any, Mapping
@@ -11,6 +12,8 @@ from urllib.request import Request, urlopen
 
 from .ai_bridge import KyvernexAIBridge
 from .local_ai_server import KyvernexLocalAIServer
+
+_COMMAND_VERSION = "1.0"
 
 
 def _demo_handler(
@@ -38,7 +41,37 @@ def _parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Replace an existing report file",
     )
+    parser.add_argument(
+        "--diagnose",
+        action="store_true",
+        help="Print package, Python and loaded-module details without running verification",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {_COMMAND_VERSION}",
+    )
     return parser
+
+
+def _package_version() -> str:
+    try:
+        return version("kyvernex")
+    except PackageNotFoundError:
+        return "NOT_INSTALLED"
+
+
+def _diagnostic_report() -> dict[str, Any]:
+    return {
+        "status": "DIAGNOSTIC",
+        "command": "kyvernex-ai-smoke",
+        "command_version": _COMMAND_VERSION,
+        "package_version": _package_version(),
+        "module_file": str(Path(__file__).resolve()),
+        "python_executable": sys.executable,
+        "working_directory": str(Path.cwd()),
+        "supported_options": ["--diagnose", "--force", "--help", "--output", "--version"],
+    }
 
 
 def _read_json(url: str) -> dict[str, Any]:
@@ -82,6 +115,10 @@ def _write_report(path: Path | None, report: Mapping[str, Any], *, force: bool) 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if args.diagnose:
+        print(json.dumps(_diagnostic_report(), ensure_ascii=False, sort_keys=True))
+        return 0
+
     output = Path(args.output).expanduser() if args.output else None
 
     bridge = KyvernexAIBridge(_demo_handler, principal="smoke-user")
@@ -152,6 +189,8 @@ def main(argv: list[str] | None = None) -> int:
         report = {
             "status": "SUCCEEDED",
             "verification": "LOCAL_APP_SMOKE_VERIFIED",
+            "package_version": _package_version(),
+            "module_file": str(Path(__file__).resolve()),
             "server": base_url,
             "checks": checks,
             "not_verified": [
@@ -168,6 +207,8 @@ def main(argv: list[str] | None = None) -> int:
         report = {
             "status": "FAILED",
             "verification": "NOT_VERIFIED",
+            "package_version": _package_version(),
+            "module_file": str(Path(__file__).resolve()),
             "server": base_url,
             "error": str(exc),
             "checks": checks,
