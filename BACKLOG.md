@@ -5,21 +5,21 @@
 - Paused milestone: `M6 — KYVERNEX Plugin Runtime`
 - Verified local report: `M16 — LOCAL_APP_SMOKE_VERIFIED`
 - Verified matrix runner: `M17 — ARGUS_MATRIX_SMOKE_VERIFIED`
-- Active milestone: `M18 — ARGUS Executive Translator`
+- Verified milestone: `M18 — ARGUS Executive Translator`
 - Development package version: `1.2.0.dev0`
 
 ## M18 product-code backlog
 
 | Work item | Deliverable | Priority | Status |
 |---|---|---:|---|
-| M18-W001 | Deterministic Italian translator | P0 | CODE_COMPLETE_UNVERIFIED |
-| M18-W002 | Installed `kyvernex-argus-translate` command | P0 | CODE_COMPLETE_UNVERIFIED |
-| M18-W003 | Direct translator-to-matrix execution path | P0 | CODE_COMPLETE_UNVERIFIED |
-| M18-W004 | Accent-folded normalization, controlled synonyms and expanded canonical fields | P1 | CODE_COMPLETE_UNVERIFIED |
-| M18-W005 | Reversible canonical symbolic projection | P1 | CODE_COMPLETE_UNVERIFIED |
-| M18-W006 | Reusable staged audit envelope and CLI emission | P1 | CODE_COMPLETE_UNVERIFIED |
-| M18-W007 | End-of-milestone verification manifest and operator runbook | P0 | DOCUMENTATION_COMPLETE |
-| M18-W008 | Execute automated and operator verification | P0 | EXECUTING_IN_GITHUB_ACTIONS |
+| M18-W001 | Deterministic Italian translator | P0 | VERIFIED |
+| M18-W002 | Installed `kyvernex-argus-translate` command | P0 | VERIFIED |
+| M18-W003 | Direct translator-to-matrix execution path | P0 | VERIFIED |
+| M18-W004 | Accent-folded normalization, controlled synonyms and expanded canonical fields | P1 | VERIFIED |
+| M18-W005 | Reversible canonical symbolic projection | P1 | VERIFIED |
+| M18-W006 | Reusable staged audit envelope and CLI emission | P1 | VERIFIED |
+| M18-W007 | End-of-milestone verification manifest and operator runbook | P0 | VERIFIED |
+| M18-W008 | Execute automated and operator verification | P0 | VERIFIED |
 
 ## Current canonical vocabulary
 
@@ -39,17 +39,19 @@
 - contradictory values and lossy symbolic projections fail closed;
 - no LLM or external network is used.
 
-## Verification implementation
+## Verification evidence
 
 - `tests/test_argus_translator_m18.py`: automated V02–V13 coverage plus CLI integration;
 - `.github/workflows/m18-verification.yml`: isolated installation, installed-command verification, M18 suite, complete regression suite, Python 3.11–3.13 matrix, and retained artifacts;
 - `docs/M18_VERIFICATION_RUNBOOK.md`: operator sequence V01–V13 and completion criteria;
-- `governance/verification/m18_verification_manifest.json`: machine-readable evidence contract;
-- expected success marker: `M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED`.
+- `governance/verification/m18_verification_manifest.json`: completed machine-readable evidence record;
+- successful workflow: `M18 Verification #3`;
+- verified commit: `4ce2c5a04530e89496994cf26d38acfb6bad2065`;
+- success marker: `M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED`.
 
 ## Verification policy
 
-The campaign is now executing in the repository. No work item may be marked verified until all GitHub Actions jobs pass and their evidence is inspected. A failed or missing check leaves M18 unverified.
+M18 is verified because the dedicated GitHub Actions workflow completed successfully across its configured Python matrix. A separate workflow failure does not alter this milestone-specific result unless it demonstrates a regression inside the M18 verification boundary.
 
 ## Boundary
 
