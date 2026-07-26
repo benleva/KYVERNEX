@@ -3,77 +3,39 @@
 ## Control
 - Stable published release: `1.1.0`
 - Immutable stable tag: `v1.1.0`
-- Paused milestone: **M6 — KYVERNEX Plugin Runtime**
 - Verified milestone: **M16 — Local Verification Report**
 - Verified milestone: **M17 — ARGUS Matrix Runner**
 - Verified milestone: **M18 — ARGUS Executive Translator**
+- Active delivery cycle: **PLUGIN FIRST — operational publication**
 - Development package version: `1.2.0.dev0`
 
-## M18 objective
-Translate supported Italian statements into canonical ARGUS JSON without probabilistic inference, optionally evaluate the request, and preserve a reversible symbolic and audit representation.
+## Closed milestone
+M18 is closed and verified. GitHub Actions completed `M18 Verification #3` successfully for commit `4ce2c5a04530e89496994cf26d38acfb6bad2065`.
+
+Success marker:
 
 ```text
-human Italian text
--> deterministic normalization
--> bounded lexical rules
--> canonical request JSON
--> reversible ARGUS symbols
--> optional matrix evaluation
--> audit envelope
+M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED
 ```
 
-## M18 delivered and verified
+## Current objective
+Publish an installable and operational KYVERNEX plugin as soon as practical, without adding nonessential scope.
 
-### M18-W001 — Deterministic Italian translator
-Status: `VERIFIED`
+## KPM priorities
+1. Make the primary `kyvernex` command initialize and run the plugin with minimal setup.
+2. Provide one default local configuration and one working example request.
+3. Prepare the package metadata and user-facing files required for publication.
+4. Publish only after a direct installation and operational run can be demonstrated.
 
-### M18-W002 — Installed translator command
-Status: `VERIFIED`
+## KGO boundary
+- keep stable release `1.1.0` and tag `v1.1.0` untouched;
+- do not create a release or tag without explicit authorization;
+- preserve the verified runtime and expose it through a simpler product interface;
+- defer new test campaigns and nonessential documentation during this delivery cycle;
+- block only critical packaging, compatibility, security, or execution defects.
 
-### M18-W003 — Direct matrix execution
-Status: `VERIFIED`
-
-### M18-W004 — Controlled vocabulary expansion
-Status: `VERIFIED`
-
-- consent and authorization are separate boolean fields;
-- risk is limited to `low`, `medium`, `high`, and `critical`;
-- subject minority is represented at `subject.minor`;
-- bounded domains are `health`, `finance`, `legal`, and `education`;
-- contradictions fail closed and every match remains traceable.
-
-### M18-W005 — Reversible symbolic projection
-Status: `VERIFIED`
-
-- `src/kyvernex/argus_symbols.py` maps every currently supported canonical fact to one ARGUS token;
-- encoding fails if a fact cannot be represented without information loss;
-- decoding rejects malformed, unknown, duplicate, or conflicting symbols;
-- canonical facts are ordered before projection, producing stable sequences.
-
-### M18-W006 — Audit envelope
-Status: `VERIFIED`
-
-- `src/kyvernex/argus_audit.py` records input, normalization, lexical translation, canonical request, symbols, and optional matrix evaluation;
-- `kyvernex-argus-translate --audit-envelope` emits the envelope directly;
-- normal output also includes the symbolic projection.
-
-### M18-W007 — Verification manifest and operator runbook
-Status: `VERIFIED`
-
-- `docs/M18_VERIFICATION_RUNBOOK.md` defines V01–V13;
-- `governance/verification/m18_verification_manifest.json` records the completed verification.
-
-### M18-W008 — Repository verification campaign
-Status: `VERIFIED`
-
-- `tests/test_argus_translator_m18.py` implements the M18 verification suite;
-- `.github/workflows/m18-verification.yml` executes package installation, command discovery, M18 tests, the full regression suite, and evidence upload;
-- the workflow matrix covers Python 3.11, 3.12, and 3.13;
-- GitHub Actions completed `M18 Verification #3` successfully for commit `4ce2c5a04530e89496994cf26d38acfb6bad2065`;
-- success marker: `M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED`.
-
-## Current state
-M18 is closed as verified. No tag or release was created. The stable release and immutable stable tag remain unchanged.
-
-## Boundary
-M18 remains deterministic and closed-world. It does not use an LLM, infer unstated facts, encode the complete ARGUS Constitution, access external data, learn, or claim release readiness. Stable `v1.1.0` remains unchanged.
+## Work started
+- `src/kyvernex/product_cli.py` adds `kyvernex init`, `kyvernex status`, and `kyvernex run`;
+- `kyvernex run` delegates execution to the existing governed plugin runtime;
+- `pyproject.toml` exposes the product CLI as `kyvernex` and preserves the previous prototype command as `kyvernex-core`;
+- no tag or release has been created.
