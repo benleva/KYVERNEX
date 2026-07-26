@@ -18,8 +18,8 @@
 | M18-W004 | Accent-folded normalization, controlled synonyms and expanded canonical fields | P1 | CODE_COMPLETE_UNVERIFIED |
 | M18-W005 | Reversible canonical symbolic projection | P1 | CODE_COMPLETE_UNVERIFIED |
 | M18-W006 | Reusable staged audit envelope and CLI emission | P1 | CODE_COMPLETE_UNVERIFIED |
-| M18-W007 | End-of-milestone verification manifest and operator runbook | P0 | DOCUMENTATION_COMPLETE_NOT_EXECUTED |
-| M18-W008 | Execute automated and operator verification | P0 | DEFERRED_UNTIL_MILESTONE_END |
+| M18-W007 | End-of-milestone verification manifest and operator runbook | P0 | DOCUMENTATION_COMPLETE |
+| M18-W008 | Execute automated and operator verification | P0 | EXECUTING_IN_GITHUB_ACTIONS |
 
 ## Current canonical vocabulary
 
@@ -39,17 +39,18 @@
 - contradictory values and lossy symbolic projections fail closed;
 - no LLM or external network is used.
 
-## Verification definition
+## Verification implementation
 
+- `tests/test_argus_translator_m18.py`: automated V02–V13 coverage plus CLI integration;
+- `.github/workflows/m18-verification.yml`: isolated installation, installed-command verification, M18 suite, complete regression suite, Python 3.11–3.13 matrix, and retained artifacts;
 - `docs/M18_VERIFICATION_RUNBOOK.md`: operator sequence V01–V13 and completion criteria;
-- `governance/verification/m18_verification_manifest.json`: machine-readable pending checks and evidence contract;
-- success marker: `M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED`;
-- definition is complete, execution is deferred.
+- `governance/verification/m18_verification_manifest.json`: machine-readable evidence contract;
+- expected success marker: `M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED`.
 
 ## Verification policy
 
-No tests are run during M18 implementation. The translator, symbolic round trip, audit envelope, integrated matrix path, CLI modes, determinism, and M17 regression boundary will be checked together at milestone closure.
+The campaign is now executing in the repository. No work item may be marked verified until all GitHub Actions jobs pass and their evidence is inspected. A failed or missing check leaves M18 unverified.
 
 ## Boundary
 
-M18 translates only explicitly supported Italian statements. General semantics, complete constitutional vocabulary, probabilistic inference, learning, external data, and release qualification remain outside the current code. Stable `v1.1.0` remains unchanged.
+M18 translates only explicitly supported Italian statements. General semantics, complete constitutional vocabulary, probabilistic inference, learning, external data, and release qualification remain outside the current code. Stable `v1.1.0` remains unchanged. No tag or release was created.
