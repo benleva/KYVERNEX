@@ -108,7 +108,7 @@ def test_v06_symbolic_projection_is_stable() -> None:
 
 
 @pytest.mark.parametrize(
-    "request",
+    "canonical_request",
     [
         {"consent": True},
         {"authorization": False, "risk": "critical"},
@@ -122,9 +122,9 @@ def test_v06_symbolic_projection_is_stable() -> None:
         },
     ],
 )
-def test_v07_symbolic_round_trip(request: dict[str, object]) -> None:
-    projection = encode_argus_symbols(request)
-    assert decode_argus_symbols(projection["sequence"]) == request
+def test_v07_symbolic_round_trip(canonical_request: dict[str, object]) -> None:
+    projection = encode_argus_symbols(canonical_request)
+    assert decode_argus_symbols(projection["sequence"]) == canonical_request
 
 
 @pytest.mark.parametrize(
