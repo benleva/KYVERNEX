@@ -39,13 +39,13 @@
     "title": "Human language to canonical ARGUS",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-055",
-  "kpm_cycle": "KPM-CYCLE-044",
-  "completed_code_tasks": ["M18-W001", "M18-W002", "M18-W003"],
+  "cycle": "KGO-CYCLE-056",
+  "kpm_cycle": "KPM-CYCLE-045",
+  "completed_code_tasks": ["M18-W001", "M18-W002", "M18-W003", "M18-W004"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
   "active_task": {
-    "id": "M18-W004",
-    "title": "Expand the bounded translator vocabulary and define end-of-milestone verification cases",
+    "id": "M18-W005",
+    "title": "Add canonical symbolic projection and reusable translation audit envelope",
     "status": "IN_PROGRESS",
     "priority": "P1"
   },
@@ -54,16 +54,17 @@
     "translator_command": "src/kyvernex/argus_translator_cli.py",
     "matrix_evaluator": "src/kyvernex/argus_matrix.py",
     "package_entry_point": "kyvernex-argus-translate",
-    "translator_commit": "d87952cb1cc7b0c597da37c5f9a4480986332cd0",
-    "cli_commit": "93a5f6ad58a28f9847eabb52aa29cad3bdc747a9",
-    "entry_point_commit": "f1f6d540bd61a23aecd3809b2a66b8ae56c60c98"
+    "latest_translator_commit": "8959a59a606e80c812c8d49bb02aadf5ebbc0b0c",
+    "translator_contract_version": "0.2"
   },
   "translator_boundary": {
     "language": "it",
     "deterministic": true,
     "closed_world": true,
-    "fields": ["consent", "risk"],
+    "accent_folded_matching": true,
+    "fields": ["consent", "authorization", "risk", "subject.minor", "domain"],
     "risk_values": ["low", "medium", "high", "critical"],
+    "domain_values": ["health", "finance", "legal", "education"],
     "conflicts_fail_closed": true,
     "direct_matrix_evaluation": true,
     "llm_used": false,
@@ -74,7 +75,7 @@
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Continue M18 product code without running tests until the milestone implementation is complete. Preserve deterministic closed-world translation and the existing matrix evaluator. Do not infer general natural-language understanding, complete constitutional coverage, learning, external authority, or release qualification.",
+  "resume_rule": "Continue M18 product code without running tests until implementation is complete. Next add symbolic projection and audit envelope while preserving deterministic closed-world translation and the existing matrix evaluator.",
   "stop_conditions": [
     "MILESTONE_IMPLEMENTATION_COMPLETE",
     "AUTHORITY_EXPANSION",
