@@ -14,7 +14,8 @@ license = {file = "LICENSE"}
 test = ["pytest>=8.0"]
 
 [project.scripts]
-kyvernex = "kyvernex.cli:main"
+kyvernex = "kyvernex.product_cli:main"
+kyvernex-core = "kyvernex.cli:main"
 kyvernex-governance = "kyvernex.governance_cli:main"
 kyvernex-plugin = "kyvernex.plugin_cli:main"
 kyvernex-ai-plugin = "kyvernex.ai_plugin_cli:main"
