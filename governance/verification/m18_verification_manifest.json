@@ -1,0 +1,41 @@
+{
+  "schema": "kyvernex.verification-manifest.v1",
+  "milestone": "M18",
+  "title": "ARGUS Executive Translator",
+  "status": "DEFINED_NOT_EXECUTED",
+  "execution_policy": "END_OF_MILESTONE_ONLY",
+  "expected_package_version": "1.2.0.dev0",
+  "stable_release_untouched": "1.1.0",
+  "stable_tag_untouched": "v1.1.0",
+  "success_marker": "M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED",
+  "runbook": "docs/M18_VERIFICATION_RUNBOOK.md",
+  "checks": [
+    {"id": "V01", "name": "package_installation", "status": "PENDING"},
+    {"id": "V02", "name": "translator_positive_cases", "status": "PENDING"},
+    {"id": "V03", "name": "normalization_equivalence", "status": "PENDING"},
+    {"id": "V04", "name": "closed_world_rejection", "status": "PENDING"},
+    {"id": "V05", "name": "contradiction_rejection", "status": "PENDING"},
+    {"id": "V06", "name": "symbolic_projection", "status": "PENDING"},
+    {"id": "V07", "name": "symbolic_round_trip", "status": "PENDING"},
+    {"id": "V08", "name": "symbol_rejection", "status": "PENDING"},
+    {"id": "V09", "name": "audit_envelope", "status": "PENDING"},
+    {"id": "V10", "name": "matrix_integration", "status": "PENDING"},
+    {"id": "V11", "name": "cli_input_modes", "status": "PENDING"},
+    {"id": "V12", "name": "determinism_repetition", "status": "PENDING"},
+    {"id": "V13", "name": "m17_regression_boundary", "status": "PENDING"}
+  ],
+  "evidence_required": [
+    "environment_metadata",
+    "commit_sha",
+    "command_transcript",
+    "automated_test_output",
+    "operator_output_files",
+    "failure_log",
+    "final_verification_report"
+  ],
+  "notes": [
+    "This manifest defines verification but does not execute it.",
+    "Any failed check keeps M18 unverified.",
+    "Verification does not create or authorize a tag or release."
+  ]
+}
