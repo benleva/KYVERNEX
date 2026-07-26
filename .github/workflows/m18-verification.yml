@@ -1,0 +1,91 @@
+name: M18 Verification
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/kyvernex/argus_*.py"
+      - "tests/test_argus_translator_m18.py"
+      - "pyproject.toml"
+      - ".github/workflows/m18-verification.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-m18:
+    name: Verify M18 on Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Create evidence directory
+        run: mkdir -p verification-evidence/m18/python-${{ matrix.python-version }}
+
+      - name: Record environment
+        shell: bash
+        run: |
+          {
+            echo "commit_sha=${GITHUB_SHA}"
+            echo "ref=${GITHUB_REF}"
+            echo "runner_os=${RUNNER_OS}"
+            python --version
+            python -m pip --version
+          } | tee verification-evidence/m18/python-${{ matrix.python-version }}/environment.txt
+
+      - name: Install package and test dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+          python -m pip freeze | tee verification-evidence/m18/python-${{ matrix.python-version }}/pip-freeze.txt
+
+      - name: Verify installed commands
+        shell: bash
+        run: |
+          command -v kyvernex-argus
+          command -v kyvernex-argus-translate
+          kyvernex-argus --help > verification-evidence/m18/python-${{ matrix.python-version }}/kyvernex-argus-help.txt
+          kyvernex-argus-translate --help > verification-evidence/m18/python-${{ matrix.python-version }}/kyvernex-argus-translate-help.txt
+          python -c "from importlib.metadata import version; print(version('kyvernex'))" | tee verification-evidence/m18/python-${{ matrix.python-version }}/package-version.txt
+
+      - name: Run M18 verification suite
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m pytest -q tests/test_argus_translator_m18.py 2>&1 | tee verification-evidence/m18/python-${{ matrix.python-version }}/pytest-m18.txt
+
+      - name: Run full regression suite
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m pytest -q 2>&1 | tee verification-evidence/m18/python-${{ matrix.python-version }}/pytest-full.txt
+
+      - name: Write verification marker
+        if: success()
+        shell: bash
+        run: |
+          echo "M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED" | tee verification-evidence/m18/python-${{ matrix.python-version }}/verification-marker.txt
+
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m18-verification-python-${{ matrix.python-version }}
+          path: verification-evidence/m18/python-${{ matrix.python-version }}
+          if-no-files-found: error
+          retention-days: 90
