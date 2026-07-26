@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 import json
 import sys
 from pathlib import Path
 from typing import Sequence
 
 from . import plugin_cli
+from .plugin_loader import PluginHandlerLoadError, load_plugin_handler
 
 CONFIG_DIR = ".kyvernex"
 CONFIG_FILE = "config.json"
@@ -25,6 +27,13 @@ DEFAULT_REQUEST = {
         "message": "Hello from KYVERNEX"
     }
 }
+
+
+def _package_version() -> str:
+    try:
+        return importlib.metadata.version("kyvernex")
+    except importlib.metadata.PackageNotFoundError:
+        return "development"
 
 
 def _write_json(path: Path, payload: object, *, force: bool = False) -> bool:
@@ -51,11 +60,38 @@ def _load_config(root: Path) -> dict[str, object]:
     return payload
 
 
+def _validated_settings(config: dict[str, object]) -> tuple[str, str | None, list[str]]:
+    schema = config.get("schema")
+    if schema != DEFAULT_CONFIG["schema"]:
+        raise ValueError(
+            f"unsupported configuration schema {schema!r}; expected {DEFAULT_CONFIG['schema']!r}"
+        )
+
+    principal = config.get("principal") or "local-user"
+    if not isinstance(principal, str) or not principal.strip():
+        raise ValueError("configured principal must be a non-empty string")
+
+    handler = config.get("handler")
+    if handler is not None and (not isinstance(handler, str) or not handler.strip()):
+        raise ValueError("configured handler must be null or a non-empty MODULE:ATTRIBUTE string")
+
+    capabilities = config.get("capabilities") or ["governed.execute"]
+    if (
+        not isinstance(capabilities, list)
+        or not capabilities
+        or not all(isinstance(item, str) and item.strip() for item in capabilities)
+    ):
+        raise ValueError("configured capabilities must be a non-empty list of strings")
+
+    return principal.strip(), handler.strip() if isinstance(handler, str) else None, capabilities
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="kyvernex",
-        description="Initialize and run the KYVERNEX governed plugin.",
+        description="Initialize, diagnose and run the KYVERNEX governed plugin.",
     )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {_package_version()}")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     init_parser = subparsers.add_parser("init", help="initialize KYVERNEX in a directory")
@@ -65,8 +101,12 @@ def _build_parser() -> argparse.ArgumentParser:
     status_parser = subparsers.add_parser("status", help="show local product configuration")
     status_parser.add_argument("directory", nargs="?", type=Path, default=Path.cwd())
 
+    doctor_parser = subparsers.add_parser("doctor", help="diagnose installation and configuration")
+    doctor_parser.add_argument("directory", nargs="?", type=Path, default=Path.cwd())
+
     run_parser = subparsers.add_parser("run", help="execute one governed plugin request")
     source = run_parser.add_mutually_exclusive_group()
+    source.add_argument("--text", help="plain text wrapped as a KYVERNEX message request")
     source.add_argument("--input", help="inline JSON request")
     source.add_argument("--input-file", type=Path, help="UTF-8 JSON request file")
     run_parser.add_argument("--directory", type=Path, default=Path.cwd())
@@ -92,11 +132,12 @@ def _command_init(directory: Path, *, force: bool) -> int:
     ]
     result = {
         "status": "INITIALIZED",
+        "version": _package_version(),
         "root": str(root),
         "created": [str(path) for path in created],
         "config": str(config_path),
         "example": str(example_path),
-        "next": f"kyvernex run --directory {root}",
+        "next": f"kyvernex doctor {root}",
     }
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
@@ -105,8 +146,10 @@ def _command_init(directory: Path, *, force: bool) -> int:
 def _command_status(directory: Path) -> int:
     root = directory.expanduser().resolve()
     config = _load_config(root)
+    _validated_settings(config)
     result = {
         "status": "READY",
+        "version": _package_version(),
         "root": str(root),
         "config": config,
         "example_exists": (root / CONFIG_DIR / EXAMPLE_FILE).exists(),
@@ -115,20 +158,59 @@ def _command_status(directory: Path) -> int:
     return 0
 
 
+def _command_doctor(directory: Path) -> int:
+    root = directory.expanduser().resolve()
+    checks: list[dict[str, object]] = []
+
+    config_path = root / CONFIG_DIR / CONFIG_FILE
+    checks.append({"name": "configuration_file", "ok": config_path.is_file(), "path": str(config_path)})
+
+    try:
+        config = _load_config(root)
+        principal, handler, capabilities = _validated_settings(config)
+        checks.append({"name": "configuration_schema", "ok": True})
+        checks.append({"name": "principal", "ok": True, "value": principal})
+        checks.append({"name": "capabilities", "ok": True, "count": len(capabilities)})
+        if handler:
+            try:
+                load_plugin_handler(handler)
+                checks.append({"name": "handler", "ok": True, "value": handler})
+            except PluginHandlerLoadError as exc:
+                checks.append({"name": "handler", "ok": False, "value": handler, "error": str(exc)})
+        else:
+            checks.append({"name": "handler", "ok": True, "value": "built-in echo handler"})
+    except (OSError, TypeError, ValueError) as exc:
+        checks.append({"name": "configuration", "ok": False, "error": str(exc)})
+
+    example_path = root / CONFIG_DIR / EXAMPLE_FILE
+    checks.append({"name": "example_request", "ok": example_path.is_file(), "path": str(example_path)})
+
+    healthy = all(bool(check.get("ok")) for check in checks)
+    result = {
+        "status": "READY" if healthy else "NOT_READY",
+        "version": _package_version(),
+        "root": str(root),
+        "checks": checks,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if healthy else 2
+
+
 def _command_run(args: argparse.Namespace) -> int:
     root = args.directory.expanduser().resolve()
     config = _load_config(root)
+    configured_principal, configured_handler, configured_capabilities = _validated_settings(config)
 
     inline = args.input
     input_file = args.input_file
-    if inline is None and input_file is None:
+    if args.text is not None:
+        inline = json.dumps({"input": {"message": args.text}}, ensure_ascii=False)
+    elif inline is None and input_file is None:
         input_file = root / CONFIG_DIR / EXAMPLE_FILE
 
-    principal = args.principal or str(config.get("principal") or "local-user")
-    handler = args.handler if args.handler is not None else config.get("handler")
-    capabilities = args.capabilities or config.get("capabilities") or ["governed.execute"]
-    if not isinstance(capabilities, list) or not all(isinstance(item, str) for item in capabilities):
-        raise ValueError("configured capabilities must be a list of strings")
+    principal = args.principal or configured_principal
+    handler = args.handler if args.handler is not None else configured_handler
+    capabilities = args.capabilities or configured_capabilities
 
     forwarded: list[str] = []
     if inline is not None:
@@ -154,6 +236,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _command_init(args.directory, force=args.force)
         if args.command == "status":
             return _command_status(args.directory)
+        if args.command == "doctor":
+            return _command_doctor(args.directory)
         if args.command == "run":
             return _command_run(args)
         raise ValueError(f"unsupported command: {args.command}")
