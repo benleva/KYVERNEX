@@ -7,7 +7,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from .argus_audit import ArgusAuditError, build_argus_audit_envelope
 from .argus_matrix import ArgusMatrixError, evaluate_argus_matrix
+from .argus_symbols import ArgusSymbolError, encode_argus_symbols
 from .argus_translator import ArgusTranslationError, extract_argus_request, translate_argus_text
 
 
@@ -22,6 +24,11 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--matrix", help="Optional ARGUS matrix JSON to evaluate immediately")
     parser.add_argument("--output", help="Optional UTF-8 JSON output path")
     parser.add_argument("--force", action="store_true", help="Replace an existing output file")
+    parser.add_argument(
+        "--audit-envelope",
+        action="store_true",
+        help="Emit the canonical audit envelope as the top-level result",
+    )
     return parser
 
 
@@ -47,20 +54,37 @@ def main(argv: list[str] | None = None) -> int:
         if output_path and output_path.exists() and not args.force:
             raise ArgusTranslationError(f"output already exists: {output_path}; use --force to replace it")
         translation = translate_argus_text(_read_text(args))
-        result: dict[str, Any] = {"translation": translation}
+        request = extract_argus_request(translation)
+        symbols = encode_argus_symbols(request)
+        decision: dict[str, Any] | None = None
         if args.matrix:
-            request = extract_argus_request(translation)
-            result["decision"] = evaluate_argus_matrix(_load_matrix(args.matrix), request)
-            result["status"] = "DECIDED"
+            decision = evaluate_argus_matrix(_load_matrix(args.matrix), request)
+
+        if args.audit_envelope:
+            result = build_argus_audit_envelope(translation, decision)
         else:
-            result["status"] = "TRANSLATED"
+            result = {
+                "status": "DECIDED" if decision is not None else "TRANSLATED",
+                "translation": translation,
+                "symbols": symbols,
+            }
+            if decision is not None:
+                result["decision"] = decision
+
         rendered = json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
         if output_path:
             output_path.parent.mkdir(parents=True, exist_ok=True)
             output_path.write_text(rendered, encoding="utf-8")
         sys.stdout.write(rendered)
         return 0
-    except (OSError, json.JSONDecodeError, ArgusTranslationError, ArgusMatrixError) as exc:
+    except (
+        OSError,
+        json.JSONDecodeError,
+        ArgusTranslationError,
+        ArgusSymbolError,
+        ArgusAuditError,
+        ArgusMatrixError,
+    ) as exc:
         print(json.dumps({"status": "FAILED", "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
         return 1
 
