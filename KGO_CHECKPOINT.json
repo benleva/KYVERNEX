@@ -26,57 +26,59 @@
     {"id": "M13", "title": "Local Project Scaffold", "status": "LOCAL_APP_SMOKE_VERIFIED"},
     {"id": "M14", "title": "Public API Hardening", "status": "CODE_COMPLETE_PARTIALLY_VERIFIED"},
     {"id": "M15", "title": "Canonical Tool Call Envelope", "status": "LOCAL_HTTP_SMOKE_VERIFIED"},
-    {"id": "M16", "title": "Local Verification Report", "status": "LOCAL_APP_SMOKE_VERIFIED"}
+    {"id": "M16", "title": "Local Verification Report", "status": "LOCAL_APP_SMOKE_VERIFIED"},
+    {"id": "M17", "title": "ARGUS Matrix Runner", "status": "ARGUS_MATRIX_SMOKE_VERIFIED"}
   ],
   "milestone": {
-    "id": "M17",
-    "title": "ARGUS Matrix Runner",
+    "id": "M18",
+    "title": "ARGUS Executive Translator",
     "status": "ACTIVE"
   },
   "sprint": {
-    "id": "S020",
-    "title": "First executable ARGUS use case",
+    "id": "S021",
+    "title": "Human language to canonical ARGUS",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-054",
-  "kpm_cycle": "KPM-CYCLE-043",
-  "completed_code_tasks": ["M17-W001", "M17-W002"],
+  "cycle": "KGO-CYCLE-055",
+  "kpm_cycle": "KPM-CYCLE-044",
+  "completed_code_tasks": ["M18-W001", "M18-W002", "M18-W003"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
   "active_task": {
-    "id": "M17-W003",
-    "title": "Execute the example ARGUS matrix and save a decision report",
-    "status": "READY_FOR_OPERATOR_RUN",
-    "priority": "P0"
+    "id": "M18-W004",
+    "title": "Expand the bounded translator vocabulary and define end-of-milestone verification cases",
+    "status": "IN_PROGRESS",
+    "priority": "P1"
   },
-  "m17_code_evidence": {
+  "m18_code_evidence": {
+    "translator": "src/kyvernex/argus_translator.py",
+    "translator_command": "src/kyvernex/argus_translator_cli.py",
     "matrix_evaluator": "src/kyvernex/argus_matrix.py",
-    "matrix_command": "src/kyvernex/argus_matrix_cli.py",
-    "example_matrix": "examples/argus_matrix.json",
-    "package_entry_point": "kyvernex-argus",
-    "evaluator_commit": "f88bdabdbed728045be77e658bc19baaddcabd11",
-    "cli_commit": "359efd8a828f85b0c90961bdac5f85710487a827",
-    "example_commit": "ca26b9f5b6497318b6fc1c5d23b42710490e2178",
-    "entry_point_commit": "0d024dfe565a27add60326e8b708e5ec7f43e671"
+    "package_entry_point": "kyvernex-argus-translate",
+    "translator_commit": "d87952cb1cc7b0c597da37c5f9a4480986332cd0",
+    "cli_commit": "93a5f6ad58a28f9847eabb52aa29cad3bdc747a9",
+    "entry_point_commit": "f1f6d540bd61a23aecd3809b2a66b8ae56c60c98"
   },
-  "argus_boundary": {
-    "json_matrix_only": true,
-    "deterministic_order": true,
-    "decisions": ["ALLOW", "DENY", "REVIEW", "ABSTAIN"],
-    "operators": ["eq", "ne", "in", "contains", "exists"],
-    "natural_language_translation": false,
-    "complete_constitution_encoded": false,
+  "translator_boundary": {
+    "language": "it",
+    "deterministic": true,
+    "closed_world": true,
+    "fields": ["consent", "risk"],
+    "risk_values": ["low", "medium", "high", "critical"],
+    "conflicts_fail_closed": true,
+    "direct_matrix_evaluation": true,
+    "llm_used": false,
     "external_data_access": false,
-    "learning": false,
+    "complete_constitution_encoded": false,
+    "tests_deferred_until_milestone_end": true,
     "release_qualified": false
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Continue only after operator evidence from kyvernex-argus or by adding a named bounded ARGUS capability. Do not infer complete constitutional coverage, natural-language understanding, learning, external authority, full testing, or release qualification.",
+  "resume_rule": "Continue M18 product code without running tests until the milestone implementation is complete. Preserve deterministic closed-world translation and the existing matrix evaluator. Do not infer general natural-language understanding, complete constitutional coverage, learning, external authority, or release qualification.",
   "stop_conditions": [
-    "OPERATOR_RUN_REQUIRED",
+    "MILESTONE_IMPLEMENTATION_COMPLETE",
     "AUTHORITY_EXPANSION",
     "UNSUPPORTED_ARGUS_CLAIM",
-    "EXTERNAL_PUBLICATION_BOUNDARY",
-    "MILESTONE_DONE"
+    "EXTERNAL_PUBLICATION_BOUNDARY"
   ]
 }
