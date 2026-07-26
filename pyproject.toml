@@ -5,13 +5,38 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "kyvernex"
 version = "1.2.0.dev0"
-description = "KYVERNEX cognitive governance and execution engine for the ARGUS constitution"
+description = "Deterministic cognitive governance and plugin execution engine for the ARGUS constitution"
+readme = "README.md"
 requires-python = ">=3.11"
 authors = [{name = "Andrea Pernarcic"}]
 license = {file = "LICENSE"}
+keywords = [
+  "artificial-intelligence",
+  "governance",
+  "policy-engine",
+  "plugin-runtime",
+  "argus",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+
+[project.urls]
+Homepage = "https://github.com/benleva/KYVERNEX"
+Repository = "https://github.com/benleva/KYVERNEX"
+Issues = "https://github.com/benleva/KYVERNEX/issues"
 
 [project.optional-dependencies]
 test = ["pytest>=8.0"]
+build = ["build>=1.2"]
 
 [project.scripts]
 kyvernex = "kyvernex.product_cli:main"
