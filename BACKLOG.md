@@ -18,28 +18,26 @@
 
 | Work item | Deliverable | Priority | Status |
 |---|---|---:|---|
-| M16-W001 | Expanded `kyvernex-ai-smoke` checks and optional persistent JSON report | P0 | CODE_COMPLETE_UNVERIFIED |
-| M16-W002 | Operator execution of the expanded command with saved report | P0 | READY_FOR_OPERATOR_RUN |
+| M16-W001 | Expanded `kyvernex-ai-smoke` checks, diagnostics and optional persistent JSON report | P0 | CODE_COMPLETE_UNVERIFIED |
+| M16-W002 | Operator diagnosis and execution of the expanded command with saved report | P0 | READY_FOR_OPERATOR_RUN |
 
 ## M16 code evidence
 
-- `src/kyvernex/local_ai_smoke_cli.py` accepts `--output` and `--force`;
+- `src/kyvernex/local_ai_smoke_cli.py` accepts `--output`, `--force`, `--diagnose` and `--version`;
+- diagnostics identify the package version, loaded module path, Python executable and working directory;
+- every verification report also records package version and module path;
 - adapter health, four provider manifest shapes and OpenAPI invocation routes are checked;
 - `/invoke` and `/tool-call` must both succeed;
 - tool-call correlation id preservation is checked;
-- report output lists remaining unverified areas instead of implying full qualification;
 - existing report files require `--force` before replacement.
 
-## Operator command
+## Operator commands
 
 ```text
+git pull
 python -m pip install -e .
-kyvernex-ai-smoke --output local-verification.json
-```
-
-Readable output:
-
-```text
+kyvernex-ai-smoke --diagnose
+kyvernex-ai-smoke --output local-verification.json --force
 python -m json.tool local-verification.json
 ```
 
@@ -47,7 +45,7 @@ python -m json.tool local-verification.json
 
 | Verification item | Priority | Status |
 |---|---:|---|
-| Expanded M16 verification run | P0 | READY_FOR_OPERATOR_RUN |
+| Expanded M16 diagnostic and verification run | P0 | READY_FOR_OPERATOR_RUN |
 | Full automated test suite | P0 | NOT_RUN |
 | Clean install outside Codespaces | P0 | NOT_RUN |
 | Windows portable launcher | P1 | NOT_RUN |
@@ -60,4 +58,4 @@ python -m json.tool local-verification.json
 
 ## Boundary
 
-The existing successful smoke run verifies one concrete local Codespaces path. M16 adds repeatable reporting but remains unverified until the operator runs the updated command. Stable `v1.1.0` remains unchanged.
+The existing successful smoke run verifies one concrete local Codespaces path. M16 adds repeatable reporting and installation diagnostics but remains unverified until the operator runs the updated command. Stable `v1.1.0` remains unchanged.
