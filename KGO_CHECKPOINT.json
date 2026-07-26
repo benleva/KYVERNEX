@@ -37,13 +37,13 @@
     "title": "Repeatable local verification",
     "status": "ACTIVE"
   },
-  "cycle": "KGO-CYCLE-052",
-  "kpm_cycle": "KPM-CYCLE-041",
+  "cycle": "KGO-CYCLE-053",
+  "kpm_cycle": "KPM-CYCLE-042",
   "completed_code_tasks": ["M16-W001"],
   "completion_qualifier": "CODE_COMPLETE_UNVERIFIED",
   "active_task": {
     "id": "M16-W002",
-    "title": "Execute the expanded local verification command and save its JSON report",
+    "title": "Diagnose the installed smoke command, execute expanded verification and save its JSON report",
     "status": "READY_FOR_OPERATOR_RUN",
     "priority": "P0"
   },
@@ -56,9 +56,13 @@
   },
   "m16_code_evidence": {
     "verification_command": "src/kyvernex/local_ai_smoke_cli.py",
-    "latest_code_commit": "a464c7af38461010f427c82f48cc821ea6a550c6",
+    "latest_code_commit": "7e97d4f30e6a8907b59a45dfa7bff6d1308f367f",
     "optional_report_output": true,
     "replace_requires_force": true,
+    "installation_diagnostics": true,
+    "command_version_output": true,
+    "report_includes_package_version": true,
+    "report_includes_module_path": true,
     "health_check": true,
     "provider_manifest_checks": ["canonical", "openai", "anthropic", "gemini"],
     "openapi_route_check": true,
@@ -78,7 +82,7 @@
   },
   "autonomous_continuation": true,
   "requires_user_proceed": false,
-  "resume_rule": "Continue only after operator evidence from the expanded kyvernex-ai-smoke command. Preserve the earlier Codespaces smoke evidence and do not infer full-suite, cross-platform or release qualification.",
+  "resume_rule": "Continue only after operator evidence from kyvernex-ai-smoke --diagnose and the expanded saved-report run. Preserve the earlier Codespaces smoke evidence and do not infer full-suite, cross-platform or release qualification.",
   "stop_conditions": [
     "OPERATOR_RUN_REQUIRED",
     "PUBLIC_BIND_REQUEST",
