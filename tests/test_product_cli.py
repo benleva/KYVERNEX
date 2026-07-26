@@ -137,6 +137,44 @@ def test_run_text_wraps_text_in_input_message(tmp_path, capsys):
     assert output["result"]["principal"] == "local-user"
 
 
+def test_run_rejects_invalid_input_json(tmp_path, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+
+    rc = main(["run", "--input", "{not valid}", "--directory", str(tmp_path)])
+    err = capsys.readouterr().err
+    output = json.loads(err)
+
+    assert rc == 1
+    assert output["status"] == "FAILED"
+    assert "input must contain valid JSON" in output["error"]
+
+
+def test_run_rejects_missing_input_file(tmp_path, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+
+    rc = main(["run", "--input-file", str(tmp_path / "missing.json"), "--directory", str(tmp_path)])
+    err = capsys.readouterr().err
+    output = json.loads(err)
+
+    assert rc == 1
+    assert output["status"] == "FAILED"
+    assert "cannot read input file" in output["error"]
+
+
+def test_run_accepts_empty_text_as_message(tmp_path, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+
+    rc = main(["run", "--text", "", "--directory", str(tmp_path)])
+    output = json.loads(capsys.readouterr().out)
+
+    assert rc == 0
+    assert output["status"] == "SUCCEEDED"
+    assert output["result"]["input"] == {"input": {"message": ""}}
+
+
 @pytest.mark.parametrize(
     "args",
     [
