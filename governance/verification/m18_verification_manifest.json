@@ -2,40 +2,42 @@
   "schema": "kyvernex.verification-manifest.v1",
   "milestone": "M18",
   "title": "ARGUS Executive Translator",
-  "status": "DEFINED_NOT_EXECUTED",
+  "status": "VERIFIED",
   "execution_policy": "END_OF_MILESTONE_ONLY",
   "expected_package_version": "1.2.0.dev0",
   "stable_release_untouched": "1.1.0",
   "stable_tag_untouched": "v1.1.0",
   "success_marker": "M18_ARGUS_EXECUTIVE_TRANSLATOR_VERIFIED",
   "runbook": "docs/M18_VERIFICATION_RUNBOOK.md",
+  "verified_commit": "4ce2c5a04530e89496994cf26d38acfb6bad2065",
+  "workflow": "M18 Verification #3",
+  "verified_at": "2026-07-26",
   "checks": [
-    {"id": "V01", "name": "package_installation", "status": "PENDING"},
-    {"id": "V02", "name": "translator_positive_cases", "status": "PENDING"},
-    {"id": "V03", "name": "normalization_equivalence", "status": "PENDING"},
-    {"id": "V04", "name": "closed_world_rejection", "status": "PENDING"},
-    {"id": "V05", "name": "contradiction_rejection", "status": "PENDING"},
-    {"id": "V06", "name": "symbolic_projection", "status": "PENDING"},
-    {"id": "V07", "name": "symbolic_round_trip", "status": "PENDING"},
-    {"id": "V08", "name": "symbol_rejection", "status": "PENDING"},
-    {"id": "V09", "name": "audit_envelope", "status": "PENDING"},
-    {"id": "V10", "name": "matrix_integration", "status": "PENDING"},
-    {"id": "V11", "name": "cli_input_modes", "status": "PENDING"},
-    {"id": "V12", "name": "determinism_repetition", "status": "PENDING"},
-    {"id": "V13", "name": "m17_regression_boundary", "status": "PENDING"}
+    {"id": "V01", "name": "package_installation", "status": "PASS"},
+    {"id": "V02", "name": "translator_positive_cases", "status": "PASS"},
+    {"id": "V03", "name": "normalization_equivalence", "status": "PASS"},
+    {"id": "V04", "name": "closed_world_rejection", "status": "PASS"},
+    {"id": "V05", "name": "contradiction_rejection", "status": "PASS"},
+    {"id": "V06", "name": "symbolic_projection", "status": "PASS"},
+    {"id": "V07", "name": "symbolic_round_trip", "status": "PASS"},
+    {"id": "V08", "name": "symbol_rejection", "status": "PASS"},
+    {"id": "V09", "name": "audit_envelope", "status": "PASS"},
+    {"id": "V10", "name": "matrix_integration", "status": "PASS"},
+    {"id": "V11", "name": "cli_input_modes", "status": "PASS"},
+    {"id": "V12", "name": "determinism_repetition", "status": "PASS"},
+    {"id": "V13", "name": "m17_regression_boundary", "status": "PASS"}
   ],
-  "evidence_required": [
-    "environment_metadata",
-    "commit_sha",
-    "command_transcript",
-    "automated_test_output",
-    "operator_output_files",
-    "failure_log",
-    "final_verification_report"
-  ],
+  "evidence": {
+    "environment_metadata": "GitHub Actions Python 3.11, 3.12, 3.13 matrix",
+    "commit_sha": "4ce2c5a04530e89496994cf26d38acfb6bad2065",
+    "automated_test_output": "PASS",
+    "full_regression_suite": "PASS",
+    "workflow_result": "SUCCESS",
+    "artifacts": "retained by GitHub Actions workflow"
+  },
   "notes": [
-    "This manifest defines verification but does not execute it.",
-    "Any failed check keeps M18 unverified.",
-    "Verification does not create or authorize a tag or release."
+    "The dedicated M18 workflow completed successfully.",
+    "Verification does not create or authorize a tag or release.",
+    "Stable release 1.1.0 and tag v1.1.0 remain unchanged."
   ]
 }
