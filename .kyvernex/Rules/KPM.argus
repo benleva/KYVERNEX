@@ -1,0 +1,13 @@
+{
+  "schema": "kyvernex.argus.rules.v1",
+  "module": "KPM",
+  "created_at": "2026-07-27T12:36:08+02:00",
+  "updated_at": "2026-07-27T12:36:08+02:00",
+  "timezone": "Europe/Rome",
+  "time_source": "SYSTEM",
+  "rules": [
+    {"id": "KPM-001", "when": "startup", "action": "LOAD_STATE", "mandatory": true},
+    {"id": "KPM-002", "when": "session_end", "action": "SAVE_CHECKPOINT", "mandatory": true},
+    {"id": "KPM-003", "when": "task_completed", "action": "RECORD_FILES_TESTS_AND_DECISIONS", "mandatory": true}
+  ]
+}

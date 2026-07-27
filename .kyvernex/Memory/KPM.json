@@ -1,0 +1,32 @@
+{
+  "schema": "kyvernex.kpm.state.v1",
+  "project_id": "KYVERNEX",
+  "phase": "alpha",
+  "current_branch": "feature/argus-executable-bootstrap",
+  "current_state": "BOOTSTRAP_LOADER_IMPLEMENTED",
+  "active_objective_id": 1,
+  "active_task_id": "ALPHA-001",
+  "last_checkpoint": "2026-07-27T12:51:15+02:00",
+  "timezone": "Europe/Rome",
+  "time_source": "SYSTEM",
+  "completed_steps": [
+    "Created executable ARGUS bootstrap documents",
+    "Created operational constitution",
+    "Created KPM, KGO and KTC rules",
+    "Implemented src/kyvernex/bootstrap.py with deterministic document loading",
+    "Implemented highest-priority READY task selection",
+    "Added focused bootstrap regression tests"
+  ],
+  "pending_steps": [
+    "Run focused bootstrap tests and broader regression suite",
+    "Connect boot(project_path) to VS Code plugin activation",
+    "Expose KPM and KGO state to the AI agent",
+    "Stamp every AI response through the host adapter"
+  ],
+  "modified_files": [
+    "src/kyvernex/bootstrap.py",
+    "tests/test_bootstrap.py",
+    ".kyvernex/Memory/KPM.json",
+    ".kyvernex/Memory/KGO_BACKLOG.json"
+  ]
+}
