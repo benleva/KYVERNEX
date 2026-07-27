@@ -1,0 +1,21 @@
+{
+  "schema": "kyvernex.kpm.state.v1",
+  "project_id": "KYVERNEX",
+  "phase": "alpha",
+  "current_branch": "feature/argus-executable-bootstrap",
+  "current_state": "BOOTSTRAP_EXECUTABLE",
+  "active_objective_id": 1,
+  "last_checkpoint": "2026-07-27T12:36:08+02:00",
+  "timezone": "Europe/Rome",
+  "time_source": "SYSTEM",
+  "completed_steps": [
+    "Created executable ARGUS bootstrap",
+    "Created operational constitution",
+    "Created KPM, KGO and KTC rules"
+  ],
+  "pending_steps": [
+    "Connect bootstrap loader to VS Code plugin activation",
+    "Expose KPM and KGO state to the AI agent",
+    "Stamp every AI response through the host adapter"
+  ]
+}
