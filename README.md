@@ -70,9 +70,11 @@ The initialization command creates:
 ## Product commands
 
 ```text
-kyvernex init     create the local configuration and example request
-kyvernex status   show product and configuration status
-kyvernex run      execute a governed plugin request
+kyvernex --version   show installed KYVERNEX version
+kyvernex init        create the local configuration and example request
+kyvernex status      show product and configuration status
+kyvernex doctor      diagnose installation and configuration
+kyvernex run         execute a governed plugin request
 ```
 
 The previous reference-engine command remains available as:
