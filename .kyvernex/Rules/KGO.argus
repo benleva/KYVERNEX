@@ -1,0 +1,14 @@
+{
+  "schema": "kyvernex.argus.rules.v1",
+  "module": "KGO",
+  "created_at": "2026-07-27T12:36:08+02:00",
+  "updated_at": "2026-07-27T12:36:08+02:00",
+  "timezone": "Europe/Rome",
+  "time_source": "SYSTEM",
+  "rules": [
+    {"id": "KGO-001", "when": "startup", "action": "SELECT_HIGHEST_PRIORITY_READY_TASK", "mandatory": true},
+    {"id": "KGO-002", "when": "before_implementation", "condition": "task.objective_id in [1, 2]", "then": "AUTHORIZE", "otherwise": "BLOCK"},
+    {"id": "KGO-003", "when": "tests_failed", "action": "BLOCK_COMPLETION", "mandatory": true},
+    {"id": "KGO-004", "when": "task_completed", "action": "ADVANCE_BACKLOG", "mandatory": true}
+  ]
+}
